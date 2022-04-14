@@ -1,4 +1,7 @@
 package com.ssaffron.business.api.repository;
 
-public class PaymentRepository {
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface PaymentRepository {
 }
