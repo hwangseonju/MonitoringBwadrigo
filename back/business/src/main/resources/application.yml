@@ -22,10 +22,10 @@ spring:
     host: "j6c204.p.ssafy.io"
     port: 8180
 
-jwt:
-  header: Authorization
-  secret: 4oCYc3ByaW5nLWJvb3Qtand0LXNlY3JldC1zc2FmeS1DMjA0LWJhZWtqb29uLWFsZ29yaXRobS1yZWNvbW1lbmQtd2ViLWFwcGxpY2F0aW9u4oCZCg==
-  token-validity-in-seconds: 86400
+#jwt:
+#  header: Authorization
+#  secret: 4oCYc3ByaW5nLWJvb3Qtand0LXNlY3JldC1zc2FmeS1DMjA0LWJhZWtqb29uLWFsZ29yaXRobS1yZWNvbW1lbmQtd2ViLWFwcGxpY2F0aW9u4oCZCg==
+#  token-validity-in-seconds: 86400
 
 server:
   port: 8081
