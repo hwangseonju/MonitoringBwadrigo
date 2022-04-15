@@ -29,6 +29,6 @@ public class CollectionEntity {
     @JoinColumn(name = "user_idx")
     private UserEntity userIdx;
 
-    @OneToMany(mappedBy = "chargeIdx")
+    @OneToMany(mappedBy = "collectionEntity")
     private List<ChargeEntity> chargeEntity;
 }

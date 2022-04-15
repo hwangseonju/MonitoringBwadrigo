@@ -18,7 +18,7 @@ public class ChargeEntity {
     @Column(name = "responsed_at")
     private LocalDateTime responsedAt;
 
-    @Column(name = "responsed_at")
+    @Column(name = "pick_date")
     private LocalDateTime pickDate;
 
 //    @OneToOne(mappedBy = "optionalIdx")
@@ -34,7 +34,7 @@ public class ChargeEntity {
     @JoinColumn(name = "user_idx")
     private UserEntity userEntity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fee_idx")
     private FeeEntity feeEntity;
 }
