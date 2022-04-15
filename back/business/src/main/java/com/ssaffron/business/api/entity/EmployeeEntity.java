@@ -1,11 +1,16 @@
 package com.ssaffron.business.api.entity;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "employee")
 @Entity
+@Getter
+@RequiredArgsConstructor
 public class EmployeeEntity {
 
     @Id

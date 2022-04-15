@@ -1,5 +1,8 @@
 package com.ssaffron.business.api.entity;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -7,6 +10,8 @@ import java.util.List;
 
 @Entity
 @Table(name="collection")
+@Getter
+@RequiredArgsConstructor
 public class CollectionEntity {
 
     @Id
