@@ -1,7 +1,5 @@
 package com.ssaffron.business.api.controller;
 
-import com.ssaffron.business.api.dto.FeeDto;
-import com.ssaffron.business.api.dto.PaymentDto;
 import com.ssaffron.business.api.entity.FeeEntity;
 import com.ssaffron.business.api.entity.PaymentEntity;
 import lombok.RequiredArgsConstructor;
@@ -37,4 +35,18 @@ public class PayController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PostMapping("/{payId}")
+    public ResponseEntity applicationPayment(@PathVariable("payId") int payId) { //신청
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/{payId}")
+    public ResponseEntity updatePayment(@PathVariable("payId") int payId) { // 수정
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{payId}")
+    public ResponseEntity deletePayment(@PathVariable("payId") int payId) { // 삭제
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
