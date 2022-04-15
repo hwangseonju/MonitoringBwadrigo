@@ -1,6 +1,8 @@
 package com.ssaffron.business.api.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "employee")
 @Entity
@@ -16,4 +18,7 @@ public class EmployeeEntity {
 
     @Column(name = "employee_phone", nullable = false, length = 30)
     private String employeePhone;
+
+    @OneToMany(mappedBy = "employeeEntity", cascade = CascadeType.ALL)
+    private List<CollectionEntity> collectionEntities = new ArrayList<>();
 }
