@@ -23,4 +23,6 @@ public class FeeEntity {
     @Column(name = "description", nullable = false, length = 20)
     private String description;
 
+//    @OneToOne(mappedBy = "feeEntity")
+//    private ChargeEntity chargeEntity;
 }
