@@ -1,9 +1,8 @@
 package com.ssaffron.business.api.entity;
 
-import org.apache.catalina.User;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,12 +22,12 @@ public class CollectionEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_idx")
-    private EmployeeEntity employeeIdx;
+    private EmployeeEntity employeeEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
-    private UserEntity userIdx;
+    private UserEntity userEntity;
 
     @OneToMany(mappedBy = "collectionEntity")
-    private List<ChargeEntity> chargeEntity;
+    private List<ChargeEntity> chargeEntities = new ArrayList<>();
 }
