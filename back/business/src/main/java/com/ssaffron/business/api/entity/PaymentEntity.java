@@ -1,10 +1,14 @@
 package com.ssaffron.business.api.entity;
 
 import lombok.Cleanup;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
+@RequiredArgsConstructor
 @Table(name = "payment")
 public class PaymentEntity {
 

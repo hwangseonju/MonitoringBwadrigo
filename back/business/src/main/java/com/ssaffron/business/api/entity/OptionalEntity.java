@@ -1,14 +1,15 @@
 package com.ssaffron.business.api.entity;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "optional")
+@RequiredArgsConstructor
 public class OptionalEntity {
 
     @Id

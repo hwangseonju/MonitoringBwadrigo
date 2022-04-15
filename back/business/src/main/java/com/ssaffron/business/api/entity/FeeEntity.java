@@ -1,9 +1,14 @@
 package com.ssaffron.business.api.entity;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "fee")
+@Getter
+@RequiredArgsConstructor
 public class FeeEntity {
 
     @Id

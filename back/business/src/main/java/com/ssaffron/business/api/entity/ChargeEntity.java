@@ -1,10 +1,17 @@
 package com.ssaffron.business.api.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name="charge")
+@RequiredArgsConstructor
+@Getter
 public class ChargeEntity {
 
     @Id
