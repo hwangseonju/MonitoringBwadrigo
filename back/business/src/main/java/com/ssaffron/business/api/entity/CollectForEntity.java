@@ -31,8 +31,8 @@ public class CollectForEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_index")
-    private memberEntity memberEntity;
+    private MemberEntity memberEntity;
 
     @OneToMany(mappedBy = "collectForEntity")
-    private List<payForEntity> payForEntities = new ArrayList<>();
+    private List<PayForEntity> payForEntities = new ArrayList<>();
 }

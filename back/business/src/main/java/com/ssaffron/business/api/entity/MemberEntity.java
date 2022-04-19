@@ -41,9 +41,9 @@ public class MemberEntity {
     @Column(name = "member_status")
     private MemberStatus memberStatus;
 
-    @OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL)
-    private List<ChargeEntity> chargeEntities = new ArrayList<>();
+    @OneToMany(mappedBy = "memberEntity",cascade = CascadeType.ALL)
+    private List<PayForEntity> chargeEntities = new ArrayList<>();
 
-    @OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL)
-    private List<CollectionEntity> collectionEntities = new ArrayList<>();
+    @OneToMany(mappedBy = "memberEntity",cascade = CascadeType.ALL)
+    private List<CollectForEntity> collectionEntities = new ArrayList<>();
 }

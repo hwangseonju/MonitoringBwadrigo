@@ -33,10 +33,10 @@ public class ApplyForEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_index")
-    private UserEntity memberIndex;
+    private MemberEntity memberIndex;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "month_plan_index")
-    private PaymentEntity monthPlanIndex;
+    private MonthPlanEntity monthPlanIndex;
 
 }
