@@ -11,13 +11,13 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChargeDto {
+public class PayForDto {
 
-    private long chargeIdx;
+    private long payForIndex;
 
-    private int requestCnt;
+    private int payForrequestCount;
 
-    private LocalDateTime responsedAt;
+    private LocalDateTime payForresponseDate;
 
-    private LocalDateTime pickDate;
+    private LocalDateTime payForpickDate;
 }
