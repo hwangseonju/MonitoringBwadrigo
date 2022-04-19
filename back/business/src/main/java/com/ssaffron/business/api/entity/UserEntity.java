@@ -39,7 +39,7 @@ public class UserEntity {
     private int userAge;
 
     @OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL)
-    private List<ChargeEntity> chargeEntities = new ArrayList<>();
+    private List<PayForEntity> chargeEntities = new ArrayList<>();
 
     @OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL)
     private List<CollectionEntity> collectionEntities = new ArrayList<>();

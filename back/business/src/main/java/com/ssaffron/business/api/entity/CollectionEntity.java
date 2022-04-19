@@ -34,5 +34,5 @@ public class CollectionEntity {
     private UserEntity userEntity;
 
     @OneToMany(mappedBy = "collectionEntity")
-    private List<ChargeEntity> chargeEntities = new ArrayList<>();
+    private List<PayForEntity> chargeEntities = new ArrayList<>();
 }
