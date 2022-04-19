@@ -1,8 +1,7 @@
 package com.ssaffron.business.api.controller;
 
 import com.ssaffron.business.api.dto.LoginRequestDto;
-import com.ssaffron.business.api.dto.UserDto;
-import lombok.Getter;
+import com.ssaffron.business.api.dto.MemberDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -15,35 +14,35 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Slf4j
-public class UserController {
+public class MemberController {
 
     @PostMapping("/signup")
-    public ResponseEntity registerUser(@RequestBody UserDto userDto){
+    public ResponseEntity registerUser(@RequestBody MemberDto userDto){
         log.info("registerUser in "+userDto.getUserEmail());
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserDto> login(@RequestBody LoginRequestDto loginRequestDto){
+    public ResponseEntity<MemberDto> login(@RequestBody LoginRequestDto loginRequestDto){
         //로그인 할 때, JWT를 헤더에 넣어서 반환
         log.info("login in "+loginRequestDto.getUserEmail());
-        UserDto userDto = new UserDto();
+        MemberDto userDto = new MemberDto();
         HttpHeaders headers = new HttpHeaders();
 //        headers.add(JWT에 관한 내용)
         return new ResponseEntity<>(userDto, headers, HttpStatus.OK);
     }
 
     @GetMapping("/{useremail}")
-    public ResponseEntity<UserDto> getUser(@PathVariable("useremail") String userEmail){
-        UserDto userDto = new UserDto();
+    public ResponseEntity<MemberDto> getUser(@PathVariable("useremail") String userEmail){
+        MemberDto userDto = new MemberDto();
         userDto.setUserEmail(userEmail);
         log.info("getUser in "+userEmail);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
     @PutMapping("{useremail}")
-    public ResponseEntity updateUser(@PathVariable("useremail") String userEmail, @RequestBody UserDto userDto){
-        UserDto responseDto = new UserDto();
+    public ResponseEntity updateUser(@PathVariable("useremail") String userEmail, @RequestBody MemberDto userDto){
+        MemberDto responseDto = new MemberDto();
         responseDto.setUserEmail(userEmail);
         log.info("updateUser in "+userEmail);
         log.info("updateUser in "+userDto.toString());
