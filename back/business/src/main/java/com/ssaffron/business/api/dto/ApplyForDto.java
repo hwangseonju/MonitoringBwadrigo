@@ -9,17 +9,19 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OptionalDto {
+public class ApplyForDto {
 
-    private int optionalIdx;
+    private int applyForIndex;
 
-    private int washCnt;
+    private int applyForWashCount;
 
-    private int beddingCnt;
+    private int applyForBeddingCount;
 
-    private int deliveryCnt;
+    private int applyForDeliveryCount;
 
-    private int cleaningCnt;
+    private int applyForCleaningCount;
+
+    private int applyForShirtCount;
 
     private int userIdx;
 
