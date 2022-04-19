@@ -1,7 +1,6 @@
 package com.ssaffron.business.api.controller;
 
-import com.ssaffron.business.api.entity.ChargeEntity;
-import com.ssaffron.business.api.entity.CollectionEntity;
+import com.ssaffron.business.api.entity.PayForEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,7 @@ public class OrderController {
     }
 
     @GetMapping("/pickresponse")
-    public ResponseEntity<ChargeEntity> pickResponse(){
+    public ResponseEntity<PayForEntity> pickResponse(){
         return new ResponseEntity(HttpStatus.OK);
     }
 }

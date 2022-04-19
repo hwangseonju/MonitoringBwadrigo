@@ -1,8 +1,7 @@
 package com.ssaffron.business.api.controller;
 
 import com.ssaffron.business.api.dto.LoginRequestDto;
-import com.ssaffron.business.api.dto.UserDto;
-import lombok.Getter;
+import com.ssaffron.business.api.dto.MemberDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -15,38 +14,38 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Slf4j
-public class UserController {
+public class MemberController {
 
     @PostMapping("/signup")
-    public ResponseEntity registerUser(@RequestBody UserDto userDto){
-        log.info("registerUser in "+userDto.getUserEmail());
+    public ResponseEntity registerUser(@RequestBody MemberDto memberDto){
+        log.info("registerUser in "+memberDto.getMemberEmail());
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserDto> login(@RequestBody LoginRequestDto loginRequestDto){
+    public ResponseEntity<MemberDto> login(@RequestBody LoginRequestDto loginRequestDto){
         //로그인 할 때, JWT를 헤더에 넣어서 반환
         log.info("login in "+loginRequestDto.getUserEmail());
-        UserDto userDto = new UserDto();
+        MemberDto memberDto = new MemberDto();
         HttpHeaders headers = new HttpHeaders();
 //        headers.add(JWT에 관한 내용)
-        return new ResponseEntity<>(userDto, headers, HttpStatus.OK);
+        return new ResponseEntity<>(memberDto, headers, HttpStatus.OK);
     }
 
     @GetMapping("/{useremail}")
-    public ResponseEntity<UserDto> getUser(@PathVariable("useremail") String userEmail){
-        UserDto userDto = new UserDto();
-        userDto.setUserEmail(userEmail);
+    public ResponseEntity<MemberDto> getUser(@PathVariable("useremail") String userEmail){
+        MemberDto memberDto = new MemberDto();
+        memberDto.setMemberEmail(userEmail);
         log.info("getUser in "+userEmail);
-        return new ResponseEntity<>(userDto, HttpStatus.OK);
+        return new ResponseEntity<>(memberDto, HttpStatus.OK);
     }
 
     @PutMapping("{useremail}")
-    public ResponseEntity updateUser(@PathVariable("useremail") String userEmail, @RequestBody UserDto userDto){
-        UserDto responseDto = new UserDto();
-        responseDto.setUserEmail(userEmail);
+    public ResponseEntity updateUser(@PathVariable("useremail") String userEmail, @RequestBody MemberDto memberDto){
+        MemberDto responseDto = new MemberDto();
+        responseDto.setMemberEmail(userEmail);
         log.info("updateUser in "+userEmail);
-        log.info("updateUser in "+userDto.toString());
+        log.info("updateUser in "+responseDto.toString());
         return new ResponseEntity(HttpStatus.OK);
     }
 
