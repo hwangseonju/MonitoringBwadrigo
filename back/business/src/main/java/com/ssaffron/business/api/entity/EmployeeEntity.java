@@ -15,8 +15,8 @@ public class EmployeeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "employee_idx")
-    private int employeeIdx;
+    @Column(name = "employee_index")
+    private int employeeIndex;
 
     @Column(name = "employee_name", nullable = false, length = 30)
     private String employeeName;
@@ -25,5 +25,5 @@ public class EmployeeEntity {
     private String employeePhone;
 
     @OneToMany(mappedBy = "employeeEntity", cascade = CascadeType.ALL)
-    private List<CollectionEntity> collectionEntities = new ArrayList<>();
+    private List<CollectForEntity> collectforEntities = new ArrayList<>();
 }
