@@ -13,10 +13,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @ToString
 @Builder
-class CollectionDto {
-    private long collectionIdx;
-    private String type;
-    private LocalDateTime requestedAt;
-    private EmployeeEntity employeeIdx;
-    private UserEntity userIdx;
+class CollectForDto {
+    private long collectForIndex;
+    private String collectFortype;
+    private LocalDateTime collectForRequestDate;
+    private EmployeeEntity employeeIndex;
+    private UserEntity memberIndex;
 }
