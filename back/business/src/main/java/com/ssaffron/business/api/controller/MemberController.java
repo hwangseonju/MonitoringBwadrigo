@@ -2,6 +2,7 @@ package com.ssaffron.business.api.controller;
 
 import com.ssaffron.business.api.dto.LoginRequestDto;
 import com.ssaffron.business.api.dto.MemberDto;
+import com.ssaffron.business.api.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -15,10 +16,12 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Slf4j
 public class MemberController {
+    private final MemberService memberService;
 
     @PostMapping("/signup")
-    public ResponseEntity registerUser(@RequestBody MemberDto memberDto){
+    public ResponseEntity registerMember(@RequestBody MemberDto memberDto){
         log.info("registerUser in "+memberDto.getMemberEmail());
+        memberService.registerMember(memberDto);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -33,32 +36,35 @@ public class MemberController {
     }
 
     @GetMapping("/{useremail}")
-    public ResponseEntity<MemberDto> getUser(@PathVariable("useremail") String userEmail){
+    public ResponseEntity<MemberDto> getMember(@PathVariable("useremail") String memberEmail){
         MemberDto memberDto = new MemberDto();
-        memberDto.setMemberEmail(userEmail);
-        log.info("getUser in "+userEmail);
+        memberDto.setMemberEmail(memberEmail);
+        log.info("getUser in "+memberEmail);
+        memberService.getMember(memberEmail);
         return new ResponseEntity<>(memberDto, HttpStatus.OK);
     }
 
     @PutMapping("{useremail}")
-    public ResponseEntity updateUser(@PathVariable("useremail") String userEmail, @RequestBody MemberDto memberDto){
+    public ResponseEntity updateMember(@PathVariable("useremail") String memberEmail, @RequestBody MemberDto memberDto){
         MemberDto responseDto = new MemberDto();
-        responseDto.setMemberEmail(userEmail);
-        log.info("updateUser in "+userEmail);
+        responseDto.setMemberEmail(memberEmail);
+        log.info("updateUser in "+memberEmail);
         log.info("updateUser in "+responseDto.toString());
+        memberService.updateMember(memberDto);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @DeleteMapping("/{useremail}")
-    public ResponseEntity deleteUser(@PathVariable("useremail") String userEmail){
-        log.info("deleteUser in "+userEmail);
+    public ResponseEntity deleteMember(@PathVariable("useremail") String memberEmail){
+        log.info("deleteUser in "+memberEmail);
+        memberService.deleteMember(memberEmail);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/refresh/{useremail}")
-    public ResponseEntity refreshToken(@PathVariable("useremail") String userEmail){
+    public ResponseEntity refreshToken(@PathVariable("useremail") String memberEmail){
         HttpHeaders headers = new HttpHeaders();
-        log.info("refreshToken in "+userEmail);
+        log.info("refreshToken in "+memberEmail);
         return new ResponseEntity(headers, HttpStatus.OK);
     }
 
