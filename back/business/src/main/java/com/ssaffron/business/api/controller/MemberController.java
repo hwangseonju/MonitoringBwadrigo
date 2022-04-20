@@ -1,14 +1,23 @@
 package com.ssaffron.business.api.controller;
 
+import com.ssaffron.business.api.config.JwtUtil;
 import com.ssaffron.business.api.dto.LoginRequestDto;
 import com.ssaffron.business.api.dto.MemberDto;
+import com.ssaffron.business.api.entity.MemberEntity;
+import com.ssaffron.business.api.service.CookieUtil;
 import com.ssaffron.business.api.service.MemberService;
+import com.ssaffron.business.api.service.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/api/user")
@@ -20,19 +29,23 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity registerMember(@RequestBody MemberDto memberDto){
-        log.info("registerUser in "+memberDto.getMemberEmail());
         memberService.registerMember(memberDto);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<MemberDto> login(@RequestBody LoginRequestDto loginRequestDto){
+    public ResponseEntity login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse res){
         //로그인 할 때, JWT를 헤더에 넣어서 반환
-        log.info("login in "+loginRequestDto.getUserEmail());
-        MemberDto memberDto = new MemberDto();
-        HttpHeaders headers = new HttpHeaders();
-//        headers.add(JWT에 관한 내용)
-        return new ResponseEntity<>(memberDto, headers, HttpStatus.OK);
+
+        Map<String, Object> result = memberService.login(loginRequestDto.getMemberEmail(), loginRequestDto.getMemberPassword());
+
+        res.addCookie((Cookie) result.get("accessToken"));
+        res.addCookie((Cookie) result.get("refreshToken"));
+        result.remove("accessToken");
+        result.remove("refreshToken");
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+
     }
 
     @GetMapping("/{useremail}")

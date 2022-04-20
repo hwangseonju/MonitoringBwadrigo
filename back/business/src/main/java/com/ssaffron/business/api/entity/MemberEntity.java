@@ -1,9 +1,13 @@
 package com.ssaffron.business.api.entity;
 
+import com.ssaffron.business.api.config.UserRole;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -11,7 +15,7 @@ import java.util.List;
 @Setter
 @RequiredArgsConstructor
 @Table(name = "member")
-public class MemberEntity {
+public class MemberEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,9 +46,14 @@ public class MemberEntity {
     @Column(name = "member_status")
     private MemberStatus memberStatus;
 
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
     @OneToMany(mappedBy = "memberEntity",cascade = CascadeType.ALL)
     private List<PayForEntity> chargeEntities = new ArrayList<>();
 
     @OneToMany(mappedBy = "memberEntity",cascade = CascadeType.ALL)
     private List<CollectForEntity> collectionEntities = new ArrayList<>();
+
 }
