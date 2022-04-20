@@ -9,19 +9,24 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final MemberService memberService;
-
     private final JwtRequestFilter jwtRequestFilter;
 
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -35,8 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().accessDeniedHandler(customAccessDeniedHandler)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/v1/api/user/signup").permitAll()
-                .antMatchers("/v1/api/user/login").permitAll()
+                .antMatchers("/v1/api/member/signup").permitAll()
+                .antMatchers("/v1/api/member/login").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
@@ -44,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override // ignore check swagger resource
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/v1/api/user/signup", "/v1/api/user/login");
+        web.ignoring().antMatchers("/v1/api/member/signup", "/v1/api/member/login");
     }
 
     @Bean

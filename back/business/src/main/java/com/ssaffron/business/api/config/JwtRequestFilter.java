@@ -28,8 +28,6 @@ import java.io.IOException;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    private final MemberService memberService;
-
     private final MemberDetailsService memberDetailsService;
 
     private final JwtUtil jwtUtil;

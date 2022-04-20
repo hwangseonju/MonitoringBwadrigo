@@ -10,6 +10,10 @@ import com.ssaffron.business.api.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
@@ -30,10 +34,12 @@ public class MemberService {
 
     private final RedisUtil redisUtil;
 
+    private final PasswordEncoder passwordEncoder;
+
     private void saveMember(MemberDto memberDto, MemberEntity memberEntity) {
         memberEntity.setMemberName(memberDto.getMemberName());
         memberEntity.setMemberEmail(memberDto.getMemberEmail());
-        memberEntity.setMemberPassword(memberDto.getMemberPassword());
+        memberEntity.setMemberPassword(passwordEncoder.encode(memberDto.getMemberPassword()));
         memberEntity.setMemberAddress(memberDto.getMemberAddress());
         memberEntity.setMemberAge(memberDto.getMemberAge());
         memberEntity.setMemberPhone(memberDto.getMemberPhone());
@@ -73,7 +79,7 @@ public class MemberService {
 
         if(memberEntity == null)
             return null;
-        if(!memberEntity.getMemberPassword().equals(memberPwd))
+        if(!passwordEncoder.matches(memberPwd ,memberEntity.getMemberPassword()))
             return null;
 
         String token = jwtUtil.generateToken(memberEntity);
