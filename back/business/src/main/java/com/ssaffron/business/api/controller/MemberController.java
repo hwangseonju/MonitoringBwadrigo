@@ -59,26 +59,30 @@ public class MemberController {
     }
 
     @GetMapping()
-    public ResponseEntity<MemberDto> getMember(@PathVariable("useremail") String memberEmail){
+    public ResponseEntity<MemberEntity> getMember(){
+        //토큰 까서 이메일 적용
+        String memberEmail = "";
         MemberDto memberDto = new MemberDto();
         memberDto.setMemberEmail(memberEmail);
         log.info("getUser in "+memberEmail);
-        memberService.getMember(memberEmail);
-        return new ResponseEntity<>(memberDto, HttpStatus.OK);
+        MemberEntity memberEntity = memberService.getMember(memberEmail);
+        return new ResponseEntity<>(memberEntity, HttpStatus.OK);
     }
 
     @PutMapping()
-    public ResponseEntity updateMember(@PathVariable("useremail") String memberEmail, @RequestBody MemberDto memberDto){
-        MemberDto responseDto = new MemberDto();
-        responseDto.setMemberEmail(memberEmail);
+    public ResponseEntity<MemberEntity> updateMember(@RequestBody MemberDto memberDto){
+        //토큰 까서 이메일 적용
+        String memberEmail = "";
         log.info("updateUser in "+memberEmail);
-        log.info("updateUser in "+responseDto.toString());
         memberService.updateMember(memberDto);
-        return new ResponseEntity(HttpStatus.OK);
+        MemberEntity response = memberService.getMember(memberEmail);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping()
-    public ResponseEntity deleteMember(@PathVariable("useremail") String memberEmail){
+    public ResponseEntity deleteMember(){
+        //토큰 까서 이메일 적용
+        String memberEmail = "";
         log.info("deleteUser in "+memberEmail);
         memberService.deleteMember(memberEmail);
         return new ResponseEntity(HttpStatus.OK);
