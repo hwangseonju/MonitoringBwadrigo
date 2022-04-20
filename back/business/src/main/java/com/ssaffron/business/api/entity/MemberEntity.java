@@ -44,6 +44,7 @@ public class MemberEntity{
     private int memberAge;
 
     @Column(name = "member_status")
+    @Enumerated(EnumType.STRING)
     private MemberStatus memberStatus;
 
     @Column(name = "role")
