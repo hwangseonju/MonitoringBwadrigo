@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/v1/api/user")
+@RequestMapping("/v1/api/member")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Slf4j
@@ -48,7 +48,13 @@ public class MemberController {
 
     }
 
-    @GetMapping("/{useremail}")
+    @GetMapping("/{email}/exists")
+    public boolean checkDuplication(@PathVariable("email") String email){
+        log.info("check duplication in "+email);
+        return memberService.checkEmailDuplicate(email);
+    }
+
+    @GetMapping()
     public ResponseEntity<MemberDto> getMember(@PathVariable("useremail") String memberEmail){
         MemberDto memberDto = new MemberDto();
         memberDto.setMemberEmail(memberEmail);
@@ -57,7 +63,7 @@ public class MemberController {
         return new ResponseEntity<>(memberDto, HttpStatus.OK);
     }
 
-    @PutMapping("{useremail}")
+    @PutMapping()
     public ResponseEntity updateMember(@PathVariable("useremail") String memberEmail, @RequestBody MemberDto memberDto){
         MemberDto responseDto = new MemberDto();
         responseDto.setMemberEmail(memberEmail);
@@ -67,14 +73,14 @@ public class MemberController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{useremail}")
+    @DeleteMapping()
     public ResponseEntity deleteMember(@PathVariable("useremail") String memberEmail){
         log.info("deleteUser in "+memberEmail);
         memberService.deleteMember(memberEmail);
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/refresh/{useremail}")
+    @GetMapping("/refresh")
     public ResponseEntity refreshToken(@PathVariable("useremail") String memberEmail){
         HttpHeaders headers = new HttpHeaders();
         log.info("refreshToken in "+memberEmail);
