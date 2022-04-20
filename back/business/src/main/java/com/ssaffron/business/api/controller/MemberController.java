@@ -61,7 +61,7 @@ public class MemberController {
     @GetMapping()
     public ResponseEntity<MemberEntity> getMember(){
         //토큰 까서 이메일 적용
-        String memberEmail = "";
+        String memberEmail = memberService.decodeJWT();
         MemberDto memberDto = new MemberDto();
         memberDto.setMemberEmail(memberEmail);
         log.info("getUser in "+memberEmail);
@@ -72,7 +72,7 @@ public class MemberController {
     @PutMapping()
     public ResponseEntity<MemberEntity> updateMember(@RequestBody MemberDto memberDto){
         //토큰 까서 이메일 적용
-        String memberEmail = "";
+        String memberEmail = memberService.decodeJWT();
         log.info("updateUser in "+memberEmail);
         memberService.updateMember(memberDto);
         MemberEntity response = memberService.getMember(memberEmail);
@@ -82,7 +82,7 @@ public class MemberController {
     @DeleteMapping()
     public ResponseEntity deleteMember(){
         //토큰 까서 이메일 적용
-        String memberEmail = "";
+        String memberEmail = memberService.decodeJWT();
         log.info("deleteUser in "+memberEmail);
         memberService.deleteMember(memberEmail);
         return new ResponseEntity(HttpStatus.OK);
