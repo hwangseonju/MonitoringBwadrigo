@@ -43,6 +43,11 @@ public class MemberService {
         memberRepository.save(memberEntity);
     }
 
+    public boolean checkEmailDuplicate(String email){
+        return memberRepository.existsByMemberEmail(email);
+    }
+
+
     public void registerMember(MemberDto memberDto){
         MemberEntity memberEntity = new MemberEntity();
         saveMember(memberDto, memberEntity);

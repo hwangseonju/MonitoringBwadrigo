@@ -22,7 +22,7 @@ public class MemberEntity{
     @Column(name = "member_index")
     private int memberIndex;
 
-    @Column(name = "member_email", nullable = false, length = 30)
+    @Column(name = "member_email", nullable = false, length = 30, unique = true)
     private String memberEmail;
 
     @Column(name = "member_password", nullable = false, length = 20)
@@ -31,7 +31,7 @@ public class MemberEntity{
     @Column(name = "member_name", nullable = false, length = 30)
     private String memberName;
 
-    @Column(name = "member_phone", nullable = false, length = 30)
+    @Column(name = "member_phone", nullable = false, length = 30, unique = true)
     private String memberPhone;
 
     @Column(name = "member_address", length = 100)
