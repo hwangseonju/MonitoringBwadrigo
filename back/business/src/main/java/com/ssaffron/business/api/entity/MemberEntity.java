@@ -1,9 +1,13 @@
 package com.ssaffron.business.api.entity;
 
+import com.ssaffron.business.api.config.UserRole;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -11,7 +15,7 @@ import java.util.List;
 @Setter
 @RequiredArgsConstructor
 @Table(name = "member")
-public class MemberEntity {
+public class MemberEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,9 +46,48 @@ public class MemberEntity {
     @Column(name = "member_status")
     private MemberStatus memberStatus;
 
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
     @OneToMany(mappedBy = "memberEntity",cascade = CascadeType.ALL)
     private List<PayForEntity> chargeEntities = new ArrayList<>();
 
     @OneToMany(mappedBy = "memberEntity",cascade = CascadeType.ALL)
     private List<CollectForEntity> collectionEntities = new ArrayList<>();
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
 }

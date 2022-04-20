@@ -1,5 +1,6 @@
 package com.ssaffron.business.api.dto;
 
+import com.ssaffron.business.api.config.UserRole;
 import com.ssaffron.business.api.entity.MemberStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,4 +21,5 @@ public class MemberDto {
     private boolean memberGender;
     private int memberAge;
     private MemberStatus memberStatus;
+    private UserRole userRole;
 }

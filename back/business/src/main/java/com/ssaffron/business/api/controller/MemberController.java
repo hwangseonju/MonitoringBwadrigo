@@ -1,14 +1,23 @@
 package com.ssaffron.business.api.controller;
 
+import com.ssaffron.business.api.config.JwtUtil;
 import com.ssaffron.business.api.dto.LoginRequestDto;
 import com.ssaffron.business.api.dto.MemberDto;
+import com.ssaffron.business.api.entity.MemberEntity;
+import com.ssaffron.business.api.service.CookieUtil;
 import com.ssaffron.business.api.service.MemberService;
+import com.ssaffron.business.api.service.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/api/user")
@@ -17,22 +26,31 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class MemberController {
     private final MemberService memberService;
+    private final JwtUtil jwtUtil;
+    private final CookieUtil cookieUtil;
+    private final RedisUtil redisUtil;
 
     @PostMapping("/signup")
     public ResponseEntity registerMember(@RequestBody MemberDto memberDto){
-        log.info("registerUser in "+memberDto.getMemberEmail());
         memberService.registerMember(memberDto);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<MemberDto> login(@RequestBody LoginRequestDto loginRequestDto){
+    public ResponseEntity login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse res){
         //로그인 할 때, JWT를 헤더에 넣어서 반환
-        log.info("login in "+loginRequestDto.getUserEmail());
-        MemberDto memberDto = new MemberDto();
-        HttpHeaders headers = new HttpHeaders();
-//        headers.add(JWT에 관한 내용)
-        return new ResponseEntity<>(memberDto, headers, HttpStatus.OK);
+
+        MemberEntity memberEntity = memberService.login(loginRequestDto.getMemberEmail(), loginRequestDto.getMemberPassword());
+        String token = jwtUtil.generateToken(memberEntity);
+        String refreshJwt = jwtUtil.generateRefreshToken(memberEntity);
+        Cookie accessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME, token);
+        Cookie refreshToken = cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, refreshJwt);
+        redisUtil.setDataExpire(refreshJwt, memberEntity.getMemberEmail(), JwtUtil.REFRESH_TOKEN_VALIDATION_SECOND);
+        res.addCookie(accessToken);
+        res.addCookie(refreshToken);
+
+        return new ResponseEntity<>(token, HttpStatus.OK);
+
     }
 
     @GetMapping("/{useremail}")
