@@ -28,15 +28,19 @@ public class TokenProvider implements InitializingBean {
 
     private final String secret;
     private final long tokenValidityInMilliseconds;
+    private final long refreshValidityInMilliseconds;
 
     private Key key;
 
 
     public TokenProvider(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds) {
+            @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds,
+            @Value("${jwt.refresh-validity-in-seconds}") long refreshValidityInMilliseconds) {
         this.secret = secret;
         this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
+        this.refreshValidityInMilliseconds = refreshValidityInMilliseconds * 1000;
+
     }
 
     @Override
@@ -57,6 +61,18 @@ public class TokenProvider implements InitializingBean {
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .setExpiration(validity)
+                .compact();
+    }
+
+    // create refresh token
+    public String createRefreshToken(Authentication authentication) {
+        long now = (new Date()).getTime();
+        Date validity = new Date(now + this.refreshValidityInMilliseconds);
+
+        return Jwts.builder()
+                .setSubject(authentication.getName())
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
