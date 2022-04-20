@@ -75,7 +75,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             if(refreshJwt != null){
                 refreshUname = redisUtil.getData(refreshJwt);
 
-                if(refreshUname.equals(jwtUtil.getUsername(refreshJwt))){
+                if(refreshUname != null && refreshUname.equals(jwtUtil.getUsername(refreshJwt))){
                     UserDetails userDetails = memberDetailsService.loadUserByUsername(refreshUname);
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
                     usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));

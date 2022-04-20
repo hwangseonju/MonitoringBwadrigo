@@ -26,9 +26,6 @@ import java.util.Map;
 @Slf4j
 public class MemberController {
     private final MemberService memberService;
-    private final JwtUtil jwtUtil;
-    private final CookieUtil cookieUtil;
-    private final RedisUtil redisUtil;
 
     @PostMapping("/signup")
     public ResponseEntity registerMember(@RequestBody MemberDto memberDto){
@@ -40,16 +37,14 @@ public class MemberController {
     public ResponseEntity login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse res){
         //로그인 할 때, JWT를 헤더에 넣어서 반환
 
-        MemberEntity memberEntity = memberService.login(loginRequestDto.getMemberEmail(), loginRequestDto.getMemberPassword());
-        String token = jwtUtil.generateToken(memberEntity);
-        String refreshJwt = jwtUtil.generateRefreshToken(memberEntity);
-        Cookie accessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME, token);
-        Cookie refreshToken = cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, refreshJwt);
-        redisUtil.setDataExpire(refreshJwt, memberEntity.getMemberEmail(), JwtUtil.REFRESH_TOKEN_VALIDATION_SECOND);
-        res.addCookie(accessToken);
-        res.addCookie(refreshToken);
+        Map<String, Object> result = memberService.login(loginRequestDto.getMemberEmail(), loginRequestDto.getMemberPassword());
 
-        return new ResponseEntity<>(token, HttpStatus.OK);
+        res.addCookie((Cookie) result.get("accessToken"));
+        res.addCookie((Cookie) result.get("refreshToken"));
+        result.remove("accessToken");
+        result.remove("refreshToken");
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
 
     }
 

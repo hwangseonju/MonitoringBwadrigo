@@ -1,5 +1,6 @@
 package com.ssaffron.business.api.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -18,17 +19,18 @@ public class RedisUtil {
         return valueOperations.get(key);
     }
 
-    public void setData(String key, String value){
-        ValueOperations<String,String> valueOperations = stringRedisTemplate.opsForValue();
-        valueOperations.set(key,value);
-    }
+//    public void setData(String value, String key){
+//        ValueOperations<String,String> valueOperations = stringRedisTemplate.opsForValue();
+//        valueOperations.set(key,value);
+//    }
 
     public void setDataExpire(String key,String value,long duration){
         ValueOperations<String,String> valueOperations = stringRedisTemplate.opsForValue();
         Duration expireDuration = Duration.ofSeconds(duration);
-        valueOperations.set(key,value,expireDuration);
+        valueOperations.set(key,value, expireDuration);
     }
 
+    // 로그아웃
     public void deleteData(String key){
         stringRedisTemplate.delete(key);
     }

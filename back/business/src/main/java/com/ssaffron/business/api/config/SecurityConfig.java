@@ -42,11 +42,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
-//    @Override // ignore check swagger resource
-//    public void configure(WebSecurity web) {
-//        web.ignoring().antMatchers("/v2/api-docs", "/swagger-resources/**",
-//                "/swagger-ui.html", "/webjars/**", "/swagger/**");
-//    }
+    @Override // ignore check swagger resource
+    public void configure(WebSecurity web) {
+        web.ignoring().antMatchers("/v1/api/user/signup", "/v1/api/user/login");
+    }
 
     @Bean
     @Override
