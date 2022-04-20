@@ -100,4 +100,13 @@ public class MemberService {
 
         return result;
     }
+
+    public String decodeJWT() {
+        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String memberEmail = principal.getUsername();
+//        String memberPassword = principal.getPassword();
+
+        return memberEmail;
+    }
+
 }
