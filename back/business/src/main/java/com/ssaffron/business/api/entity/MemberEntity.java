@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -21,7 +22,7 @@ public class MemberEntity {
     @Column(name = "member_email", nullable = false, length = 30)
     private String memberEmail;
 
-    @Column(name = "member_password", nullable = false, length = 20)
+    @Column(name = "member_password", nullable = false, length = 100)
     private String memberPassword;
 
     @Column(name = "member_name", nullable = false, length = 30)
@@ -47,4 +48,11 @@ public class MemberEntity {
 
     @OneToMany(mappedBy = "memberEntity",cascade = CascadeType.ALL)
     private List<CollectForEntity> collectionEntities = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "member_authority",
+            joinColumns = {@JoinColumn(name = "member_index", referencedColumnName = "member_index")},
+            inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
+    private Set<Authority> authorities;
 }

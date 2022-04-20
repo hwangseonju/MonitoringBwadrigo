@@ -5,22 +5,24 @@ import com.ssaffron.business.api.entity.MemberEntity;
 import com.ssaffron.business.api.entity.MemberStatus;
 import com.ssaffron.business.api.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     private void saveMember(MemberDto memberDto, MemberEntity memberEntity) {
         memberEntity.setMemberName(memberDto.getMemberName());
         memberEntity.setMemberEmail(memberDto.getMemberEmail());
-        memberEntity.setMemberPassword(memberDto.getMemberPassword());
+        memberEntity.setMemberPassword(passwordEncoder.encode(memberDto.getMemberPassword()));
         memberEntity.setMemberAddress(memberDto.getMemberAddress());
         memberEntity.setMemberAge(memberDto.getMemberAge());
         memberEntity.setMemberPhone(memberDto.getMemberPhone());
         memberEntity.setMemberGender(memberDto.isMemberGender());
-        memberEntity.setMemberStatus(memberDto.getMemberStatus());
+        memberEntity.setMemberStatus(MemberStatus.ACTIVATE);
         memberRepository.save(memberEntity);
     }
 
