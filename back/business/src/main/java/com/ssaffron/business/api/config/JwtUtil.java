@@ -32,6 +32,7 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    // 토큰이 유효한 토큰인지 검사한 후, 토큰에 담긴 payload 값을 가져온다
     public Claims extractAllClaims(String token) throws ExpiredJwtException {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey(SECRET_KEY))
@@ -40,23 +41,28 @@ public class JwtUtil {
                 .getBody();
     }
 
+    // 추출한 payload로 부터 memberEmail을 가져온다
     public String getUsername(String token) {
         return extractAllClaims(token).get("memberEmail", String.class);
     }
 
+    // 토큰이 만료되었는지 확인
     public Boolean isTokenExpired(String token) {
         final Date expiration = extractAllClaims(token).getExpiration();
         return expiration.before(new Date());
     }
 
+    // Access 토큰을 형성
     public String generateToken(MemberEntity memberEntity) {
         return doGenerateToken(memberEntity.getMemberEmail(), TOKEN_VALIDATION_SECOND);
     }
 
+    // Refresh 토큰을 형성
     public String generateRefreshToken(MemberEntity memberEntity) {
         return doGenerateToken(memberEntity.getMemberEmail(), REFRESH_TOKEN_VALIDATION_SECOND);
     }
 
+    // 토큰 생성, payload에 담길 값은 memberEmail
     public String doGenerateToken(String memberEmail, long expireTime) {
 
         Claims claims = Jwts.claims();

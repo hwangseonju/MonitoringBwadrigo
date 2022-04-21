@@ -1,23 +1,17 @@
 package com.ssaffron.business.api.controller;
 
-import com.ssaffron.business.api.config.JwtUtil;
 import com.ssaffron.business.api.dto.LoginRequestDto;
 import com.ssaffron.business.api.dto.MemberDto;
 import com.ssaffron.business.api.entity.MemberEntity;
-import com.ssaffron.business.api.service.CookieUtil;
 import com.ssaffron.business.api.service.MemberService;
-import com.ssaffron.business.api.service.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
@@ -27,8 +21,8 @@ import java.util.Map;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Slf4j
 public class MemberController {
-    private final MemberService memberService;
 
+    private final MemberService memberService;
 
     @PostMapping("/signup")
     public ResponseEntity registerMember(@RequestBody MemberDto memberDto){
