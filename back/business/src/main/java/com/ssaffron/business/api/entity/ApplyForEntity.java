@@ -3,11 +3,13 @@ package com.ssaffron.business.api.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "apply_for")
 @RequiredArgsConstructor
 public class ApplyForEntity {
@@ -38,32 +40,18 @@ public class ApplyForEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "month_plan_index")
-    private MonthPlanEntity monthPlanIndex;
+    private MonthPlanEntity monthPlanEntity;
 
-    @Builder
-    public ApplyForEntity(int applyForIndex, int applyForWashCount, int applyForBeddingCount, int applyForDeliveryCount, int applyForCleaningCount, int applyForShirtCount/*, MemberEntity memberIndex, MonthPlanEntity monthPlanIndex*/) {
-        this.applyForIndex = applyForIndex;
+    public ApplyForEntity(int applyForWashCount, int applyForBeddingCount,
+                          int applyForDeliveryCount, int applyForCleaningCount,
+                          int applyForShirtCount, MemberEntity memberEntity, MonthPlanEntity monthPlanEntity) {
         this.applyForWashCount = applyForWashCount;
         this.applyForBeddingCount = applyForBeddingCount;
         this.applyForDeliveryCount = applyForDeliveryCount;
         this.applyForCleaningCount = applyForCleaningCount;
         this.applyForShirtCount = applyForShirtCount;
-//        this.memberEntity = memberIndex;
-//        this.monthPlanIndex = monthPlanIndex;
+        this.memberEntity = memberEntity;
+        this.monthPlanEntity = monthPlanEntity;
     }
 
-
-    public void update(int applyForWashCount
-            , int applyForBeddingCount, int applyForDeliveryCount
-            , int applyForCleaningCount, int applyForShirtCount//, MonthPlanEntity monthPlanIndex
-    )
-    {
-        this.applyForIndex = applyForIndex;
-        this.applyForWashCount = applyForWashCount;
-        this.applyForBeddingCount = applyForBeddingCount;
-        this.applyForDeliveryCount = applyForDeliveryCount;
-        this.applyForCleaningCount = applyForCleaningCount;
-        this.applyForShirtCount = applyForShirtCount;
-        //this.monthPlanIndex = monthPlanIndex;
-    }
 }

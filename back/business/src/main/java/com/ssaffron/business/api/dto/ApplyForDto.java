@@ -1,8 +1,6 @@
 package com.ssaffron.business.api.dto;
 
 import com.ssaffron.business.api.entity.ApplyForEntity;
-import com.ssaffron.business.api.entity.MemberEntity;
-import com.ssaffron.business.api.entity.MonthPlanEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,10 +18,9 @@ public class ApplyForDto {
     private int applyForDeliveryCount;
     private int applyForCleaningCount;
     private int applyForShirtCount;
+
     private int memberIndex;
     private int monthPlanIndex;
-
-
 
     // response : entity to dto
     public ApplyForDto(ApplyForEntity entity){
@@ -34,6 +31,7 @@ public class ApplyForDto {
         this.applyForCleaningCount = entity.getApplyForCleaningCount();
         this.applyForShirtCount = entity.getApplyForShirtCount();
         this.memberIndex = entity.getMemberEntity().getMemberIndex();
-        this.monthPlanIndex =entity.getMonthPlanIndex().getMonthPlanIndex();
+        this.monthPlanIndex =entity.getMonthPlanEntity().getMonthPlanIndex();
     }
+
 }
