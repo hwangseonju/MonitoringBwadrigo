@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -18,6 +21,7 @@ public class ApplyForDto {
     private int applyForDeliveryCount;
     private int applyForCleaningCount;
     private int applyForShirtCount;
+    private LocalDateTime applyForDate;
 
     private int memberIndex;
     private int monthPlanIndex;

@@ -59,6 +59,7 @@ public class PlanService {
                 applyForDto.getApplyForDeliveryCount(),
                 applyForDto.getApplyForCleaningCount(),
                 applyForDto.getApplyForShirtCount(),
+                applyForDto.getApplyForDate().now(),
                 memberEntity,
                 monthPlanEntity
         );
