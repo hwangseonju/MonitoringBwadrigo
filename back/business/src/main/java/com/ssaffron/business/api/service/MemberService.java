@@ -45,7 +45,7 @@ public class MemberService {
         memberEntity.setMemberPhone(memberDto.getMemberPhone());
         memberEntity.setMemberGender(memberDto.isMemberGender());
         memberEntity.setMemberStatus(MemberStatus.ACTIVATE);
-        memberEntity.setRole(UserRole.ROLE_USER);
+        memberEntity.setRole(UserRole.ROLE_ADMIN);
         memberRepository.save(memberEntity);
     }
 

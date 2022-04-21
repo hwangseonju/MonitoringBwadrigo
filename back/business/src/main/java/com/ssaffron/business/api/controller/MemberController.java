@@ -1,9 +1,11 @@
 package com.ssaffron.business.api.controller;
 
 import com.ssaffron.business.api.config.JwtUtil;
+import com.ssaffron.business.api.config.UserRole;
 import com.ssaffron.business.api.dto.LoginRequestDto;
 import com.ssaffron.business.api.dto.MemberDto;
 import com.ssaffron.business.api.entity.MemberEntity;
+import com.ssaffron.business.api.entity.MemberStatus;
 import com.ssaffron.business.api.service.CookieUtil;
 import com.ssaffron.business.api.service.MemberService;
 import com.ssaffron.business.api.service.RedisUtil;
@@ -12,6 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -32,10 +37,10 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity registerMember(@RequestBody MemberDto memberDto){
-
         memberService.registerMember(memberDto);
         return new ResponseEntity(HttpStatus.OK);
     }
+
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse res){
@@ -58,6 +63,7 @@ public class MemberController {
         return memberService.checkEmailDuplicate(email);
     }
 
+    @Secured("ROLE_ADMIN")
     @GetMapping()
     public ResponseEntity<MemberEntity> getMember(){
         //토큰 까서 이메일 적용
