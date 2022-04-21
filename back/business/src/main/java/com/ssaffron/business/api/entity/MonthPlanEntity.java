@@ -1,5 +1,6 @@
 package com.ssaffron.business.api.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -7,7 +8,6 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@RequiredArgsConstructor
 @Table(name = "month_plan")
 public class MonthPlanEntity {
 
@@ -29,4 +29,5 @@ public class MonthPlanEntity {
     int monthPlanBeddingCount;
     @Column(name = "month_plan_delivery_count")
     int monthPlanDeliveryCount;
+
 }

@@ -2,6 +2,7 @@ package com.ssaffron.business.api.controller;
 
 import com.ssaffron.business.api.dto.LoginRequestDto;
 import com.ssaffron.business.api.dto.MemberDto;
+import com.ssaffron.business.api.entity.MemberEntity;
 import com.ssaffron.business.api.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,58 +11,85 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
+
 @RestController
-@RequestMapping("/v1/api/user")
+@RequestMapping("/v1/api/member")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Slf4j
 public class MemberController {
+
     private final MemberService memberService;
 
     @PostMapping("/signup")
     public ResponseEntity registerMember(@RequestBody MemberDto memberDto){
-        log.info("registerUser in "+memberDto.getMemberEmail());
+
         memberService.registerMember(memberDto);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<MemberDto> login(@RequestBody LoginRequestDto loginRequestDto){
+    public ResponseEntity login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse res){
         //로그인 할 때, JWT를 헤더에 넣어서 반환
-        log.info("login in "+loginRequestDto.getUserEmail());
-        MemberDto memberDto = new MemberDto();
-        HttpHeaders headers = new HttpHeaders();
-//        headers.add(JWT에 관한 내용)
-        return new ResponseEntity<>(memberDto, headers, HttpStatus.OK);
+
+        Map<String, Object> result = memberService.login(loginRequestDto.getMemberEmail(), loginRequestDto.getMemberPassword());
+
+        res.addCookie((Cookie) result.get("accessToken"));
+        res.addCookie((Cookie) result.get("refreshToken"));
+        result.remove("accessToken");
+        result.remove("refreshToken");
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+
     }
 
-    @GetMapping("/{useremail}")
-    public ResponseEntity<MemberDto> getMember(@PathVariable("useremail") String memberEmail){
-        MemberDto memberDto = new MemberDto();
-        memberDto.setMemberEmail(memberEmail);
+    @GetMapping("/{email}/exists")
+    public boolean checkDuplication(@PathVariable("email") String email){
+        log.info("check duplication in "+email);
+        return memberService.checkEmailDuplicate(email);
+    }
+
+    @GetMapping()
+    public ResponseEntity<MemberDto> getMember(){
+        //토큰 까서 이메일 적용
+        String memberEmail = memberService.decodeJWT();
         log.info("getUser in "+memberEmail);
-        memberService.getMember(memberEmail);
+        MemberEntity memberEntity = memberService.getMember(memberEmail);
+        MemberDto memberDto = new MemberDto();
+        memberDto.setMemberEmail(memberEntity.getMemberEmail());
+        memberDto.setMemberAge(memberEntity.getMemberAge());
+        memberDto.setMemberAddress(memberEntity.getMemberAddress());
+        memberDto.setMemberName(memberEntity.getMemberName());
+        memberDto.setMemberGender(memberEntity.isMemberGender());
+        memberDto.setMemberPhone(memberEntity.getMemberPhone());
+        memberDto.setMemberStatus(memberEntity.getMemberStatus());
+        memberDto.setUserRole(memberEntity.getRole());
         return new ResponseEntity<>(memberDto, HttpStatus.OK);
     }
 
-    @PutMapping("{useremail}")
-    public ResponseEntity updateMember(@PathVariable("useremail") String memberEmail, @RequestBody MemberDto memberDto){
-        MemberDto responseDto = new MemberDto();
-        responseDto.setMemberEmail(memberEmail);
+    @PutMapping()
+    public ResponseEntity<String> updateMember(@RequestBody MemberDto memberDto){
+        //토큰 까서 이메일 적용
+        String memberEmail = memberService.decodeJWT();
         log.info("updateUser in "+memberEmail);
-        log.info("updateUser in "+responseDto.toString());
         memberService.updateMember(memberDto);
-        return new ResponseEntity(HttpStatus.OK);
+        MemberEntity response = memberService.getMember(memberEmail);
+        return new ResponseEntity<>("수정 완료", HttpStatus.OK);
     }
 
-    @DeleteMapping("/{useremail}")
-    public ResponseEntity deleteMember(@PathVariable("useremail") String memberEmail){
+    @DeleteMapping()
+    public ResponseEntity<String> deleteMember(){
+        //토큰 까서 이메일 적용
+        String memberEmail = memberService.decodeJWT();
         log.info("deleteUser in "+memberEmail);
         memberService.deleteMember(memberEmail);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>("삭제 완료" ,HttpStatus.OK);
     }
 
-    @GetMapping("/refresh/{useremail}")
+    @GetMapping("/refresh")
     public ResponseEntity refreshToken(@PathVariable("useremail") String memberEmail){
         HttpHeaders headers = new HttpHeaders();
         log.info("refreshToken in "+memberEmail);
