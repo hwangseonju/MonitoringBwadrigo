@@ -1,5 +1,7 @@
 package com.ssaffron.business.api.dto;
 
+import com.ssaffron.business.api.entity.MemberEntity;
+import com.ssaffron.business.api.entity.MonthPlanEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,4 +22,16 @@ public class MonthPlanDto {
     private int monthPlanBeddingCount;
     private int monthPlanDeliveryCount;
 
+
+    //entity -> dto
+    public MonthPlanDto(MonthPlanEntity entity) {
+        this.monthPlanIndex = entity.getMonthPlanIndex();
+        this.monthPlanName = entity.getMonthPlanName();
+        this.monthPlanPrice = entity.getMonthPlanPrice();
+        this.monthPlanWashCount = entity.getMonthPlanWashCount();
+        this.monthPlanCleaningCount = entity.getMonthPlanCleaningCount();
+        this.monthPlanShirtCount = entity.getMonthPlanShirtCount();
+        this.monthPlanBeddingCount = entity.getMonthPlanBeddingCount();
+        this.monthPlanDeliveryCount = entity.getMonthPlanDeliveryCount();
+    }
 }
