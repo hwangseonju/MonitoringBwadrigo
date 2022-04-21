@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -34,6 +35,9 @@ public class ApplyForEntity {
     @Column(name = "apply_for_shirt_count")
     private int applyForShirtCount;
 
+    @Column(name = "apply_for_date")
+    private LocalDateTime applyForDate;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_index")
     private MemberEntity memberEntity;
@@ -44,12 +48,13 @@ public class ApplyForEntity {
 
     public ApplyForEntity(int applyForWashCount, int applyForBeddingCount,
                           int applyForDeliveryCount, int applyForCleaningCount,
-                          int applyForShirtCount, MemberEntity memberEntity, MonthPlanEntity monthPlanEntity) {
+                          int applyForShirtCount, LocalDateTime applyForDate, MemberEntity memberEntity, MonthPlanEntity monthPlanEntity) {
         this.applyForWashCount = applyForWashCount;
         this.applyForBeddingCount = applyForBeddingCount;
         this.applyForDeliveryCount = applyForDeliveryCount;
         this.applyForCleaningCount = applyForCleaningCount;
         this.applyForShirtCount = applyForShirtCount;
+        this.applyForDate = applyForDate;
         this.memberEntity = memberEntity;
         this.monthPlanEntity = monthPlanEntity;
     }
