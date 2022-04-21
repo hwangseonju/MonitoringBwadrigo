@@ -59,33 +59,40 @@ public class MemberController {
     }
 
     @GetMapping()
-    public ResponseEntity<MemberEntity> getMember(){
+    public ResponseEntity<MemberDto> getMember(){
         //토큰 까서 이메일 적용
         String memberEmail = memberService.decodeJWT();
-        MemberDto memberDto = new MemberDto();
-        memberDto.setMemberEmail(memberEmail);
         log.info("getUser in "+memberEmail);
         MemberEntity memberEntity = memberService.getMember(memberEmail);
-        return new ResponseEntity<>(memberEntity, HttpStatus.OK);
+        MemberDto memberDto = new MemberDto();
+        memberDto.setMemberEmail(memberEntity.getMemberEmail());
+        memberDto.setMemberAge(memberEntity.getMemberAge());
+        memberDto.setMemberAddress(memberEntity.getMemberAddress());
+        memberDto.setMemberName(memberEntity.getMemberName());
+        memberDto.setMemberGender(memberEntity.isMemberGender());
+        memberDto.setMemberPhone(memberEntity.getMemberPhone());
+        memberDto.setMemberStatus(memberEntity.getMemberStatus());
+        memberDto.setUserRole(memberEntity.getRole());
+        return new ResponseEntity<>(memberDto, HttpStatus.OK);
     }
 
     @PutMapping()
-    public ResponseEntity<MemberEntity> updateMember(@RequestBody MemberDto memberDto){
+    public ResponseEntity<String> updateMember(@RequestBody MemberDto memberDto){
         //토큰 까서 이메일 적용
         String memberEmail = memberService.decodeJWT();
         log.info("updateUser in "+memberEmail);
         memberService.updateMember(memberDto);
         MemberEntity response = memberService.getMember(memberEmail);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>("수정 완료", HttpStatus.OK);
     }
 
     @DeleteMapping()
-    public ResponseEntity deleteMember(){
+    public ResponseEntity<String> deleteMember(){
         //토큰 까서 이메일 적용
         String memberEmail = memberService.decodeJWT();
         log.info("deleteUser in "+memberEmail);
         memberService.deleteMember(memberEmail);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>("삭제 완료" ,HttpStatus.OK);
     }
 
     @GetMapping("/refresh")
