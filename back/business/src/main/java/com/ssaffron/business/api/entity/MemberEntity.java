@@ -1,5 +1,6 @@
 package com.ssaffron.business.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssaffron.business.api.config.UserRole;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,6 +20,7 @@ public class MemberEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     @Column(name = "member_index")
     private int memberIndex;
 

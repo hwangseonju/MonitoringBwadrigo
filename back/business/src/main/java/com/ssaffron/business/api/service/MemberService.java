@@ -69,7 +69,6 @@ public class MemberService {
     }
 
     public void deleteMember(String memberEmail){
-        log.info("들어오니?");
         MemberEntity memberEntity = getMember(memberEmail);
         memberEntity.setMemberStatus(MemberStatus.DEACTIVATE);
         memberRepository.save(memberEntity);
