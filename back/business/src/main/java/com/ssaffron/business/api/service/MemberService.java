@@ -10,9 +10,6 @@ import com.ssaffron.business.api.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -78,11 +75,15 @@ public class MemberService {
         Map<String, Object> result = new HashMap<>();
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
 
+        // 존재하는 회원인가?
         if(memberEntity == null)
             return null;
+
+        // 비밀번호가 맞는지 비교
         if(!passwordEncoder.matches(memberPwd ,memberEntity.getMemberPassword()))
             return null;
 
+        // 사용자의 이메일과 비밀번호가 맞으면 Access 토큰과 Refresh토큰을 쿠키 값으로 준다.
         String token = jwtUtil.generateToken(memberEntity);
         String refreshJwt = jwtUtil.generateRefreshToken(memberEntity);
         Cookie accessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME, token);
