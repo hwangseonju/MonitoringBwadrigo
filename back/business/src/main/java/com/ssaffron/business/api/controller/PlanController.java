@@ -4,6 +4,7 @@ import com.ssaffron.business.api.dto.ApplyForDto;
 import com.ssaffron.business.api.dto.LaundryPlanDto;
 import com.ssaffron.business.api.dto.RequestApplyForDto;
 import com.ssaffron.business.api.dto.MonthPlanDto;
+import com.ssaffron.business.api.service.MemberService;
 import com.ssaffron.business.api.service.PlanService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import java.util.List;
 public class PlanController {
 
     private final PlanService planService;
+    private final MemberService memberService;
 
     // tt Laundry Plan 요금제 전체 조회
     @GetMapping("/laundry/list")
@@ -57,6 +59,17 @@ public class PlanController {
 //        result.put("monthPlanIndex", monthPlanIndex);
 //        result.put("memberEmail", memberEmail);
 //        result.put("applyForDto", applyForDto);
+    }
+
+    // 아직 완성 x
+    @PutMapping("")
+    public ResponseEntity updateApplyFor(@RequestBody RequestApplyForDto requestApplyForDto){
+//        String memberEmail = memberService.decodeJWT();
+        int monthPlanIndex = requestApplyForDto.getMonthPlanIndex();
+        String memberEmail = requestApplyForDto.getMemberEmail();
+        ApplyForDto applyForDto = requestApplyForDto.getApplyForDto();
+        planService.updateApplyFor(applyForDto, monthPlanIndex, memberEmail);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

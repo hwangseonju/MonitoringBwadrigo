@@ -22,8 +22,9 @@ public class ApplyForDto {
     private int applyForCleaningCount;
     private int applyForShirtCount;
     private LocalDateTime applyForDate;
+    private int applyForChange;
 
-    private int memberIndex;
+    private int memberEmail;
     private int monthPlanIndex;
 
     // response : entity to dto
@@ -34,7 +35,7 @@ public class ApplyForDto {
         this.applyForDeliveryCount = entity.getApplyForDeliveryCount();
         this.applyForCleaningCount = entity.getApplyForCleaningCount();
         this.applyForShirtCount = entity.getApplyForShirtCount();
-        this.memberIndex = entity.getMemberEntity().getMemberIndex();
+        this.memberEmail = entity.getMemberEntity().getMemberIndex();
         this.monthPlanIndex =entity.getMonthPlanEntity().getMonthPlanIndex();
     }
 
