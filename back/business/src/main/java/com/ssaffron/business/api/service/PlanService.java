@@ -60,6 +60,7 @@ public class PlanService {
                 applyForDto.getApplyForCleaningCount(),
                 applyForDto.getApplyForShirtCount(),
                 applyForDto.getApplyForDate().now(),
+                applyForDto.getApplyForChange(),
                 memberEntity,
                 monthPlanEntity
         );
@@ -68,6 +69,16 @@ public class PlanService {
         }else{
             throw new RuntimeException();
         }
+    }
+
+    // 요금제 수정 - 변경 요금제 신청하기
+    public void updateApplyFor(ApplyForDto applyForDto, int monthPlanIndex, String memberEmail){
+        MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
+        int memberIndex = memberEntity.getMemberIndex();
+        MonthPlanEntity monthPlanEntity = monthPlanRepository.findByMonthPlanIndex(monthPlanIndex);
+        ApplyForEntity applyForEntity = applyForRepository.findByMemberEntity_MemberIndex(memberIndex);
+        applyForEntity.setApplyForChange(applyForDto.getApplyForChange());
+        applyForRepository.save(applyForEntity);
     }
 
     // 요금제 삭제
@@ -97,6 +108,11 @@ public class PlanService {
         MemberEntity member = memberRepository.findByMemberEmail(memberEmail);
         int index = member.getMemberIndex();
         ApplyForEntity entity = applyForRepository.findByMemberEntity_MemberIndex(index);
+//        if(entity != null){
+//            return new ApplyForDto(entity);
+//        }else{
+//            throw new RuntimeException();
+//        }
         return new ApplyForDto(entity);
 
     }
