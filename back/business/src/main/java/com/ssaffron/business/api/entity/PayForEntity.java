@@ -18,7 +18,7 @@ public class PayForEntity {
     private long payForIndex;
 
     @Column(name = "pay_for_request_count", nullable = false)
-    private long payForRequestCount;
+    private int payForRequestCount;
 
     @Column(name = "pay_for_response_date")
     private LocalDateTime payForResponseDate;
@@ -42,4 +42,14 @@ public class PayForEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "laundry_plan_index")
     private LaundryPlanEntity laundryPlanEntity;
+
+    public PayForEntity(int payForRequestCount, LocalDateTime payForResponseDate, LocalDateTime payForPickDate,
+                        CollectForEntity collectForEntity, MemberEntity memberEntity, LaundryPlanEntity laundryPlanEntity) {
+        this.payForRequestCount = payForRequestCount;
+        this.payForResponseDate = payForResponseDate;
+        this.payForPickDate = payForPickDate;
+        this.collectForEntity = collectForEntity;
+        this.memberEntity = memberEntity;
+        this.laundryPlanEntity = laundryPlanEntity;
+    }
 }

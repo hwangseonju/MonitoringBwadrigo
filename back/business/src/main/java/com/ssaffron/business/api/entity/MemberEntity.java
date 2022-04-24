@@ -47,4 +47,7 @@ public class MemberEntity {
 
     @OneToMany(mappedBy = "memberEntity",cascade = CascadeType.ALL)
     private List<CollectForEntity> collectionEntities = new ArrayList<>();
+
+    @OneToOne(mappedBy = "memberEntity")
+    private ApplyForEntity applyForEntity;
 }
