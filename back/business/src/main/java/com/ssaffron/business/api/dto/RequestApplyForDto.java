@@ -7,12 +7,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class LoginRequestDto {
-
+@AllArgsConstructor
+public class RequestApplyForDto {
+    private int monthPlanIndex;
     private String memberEmail;
-
-    private String memberPassword;
-
+    private ApplyForDto applyForDto;
 }
