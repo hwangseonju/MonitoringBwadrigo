@@ -19,18 +19,23 @@ public class ApplyForEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int applyForIndex;
 
+    @Setter
     @Column(name = "apply_for_wash_count")
     private int applyForWashCount;
 
+    @Setter
     @Column(name = "apply_for_bedding_count")
     private int applyForBeddingCount;
 
+    @Setter
     @Column(name = "apply_for_delivery_count")
     private int applyForDeliveryCount;
 
+    @Setter
     @Column(name = "apply_for_cleaning_count")
     private int applyForCleaningCount;
 
+    @Setter
     @Column(name = "apply_for_shirt_count")
     private int applyForShirtCount;
 
