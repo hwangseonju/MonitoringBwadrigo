@@ -77,8 +77,12 @@ public class PlanService {
         int memberIndex = memberEntity.getMemberIndex();
         MonthPlanEntity monthPlanEntity = monthPlanRepository.findByMonthPlanIndex(monthPlanIndex);
         ApplyForEntity applyForEntity = applyForRepository.findByMemberEntity_MemberIndex(memberIndex);
-        applyForEntity.setApplyForChange(applyForDto.getApplyForChange());
-        applyForRepository.save(applyForEntity);
+        if(monthPlanIndex != applyForDto.getApplyForChange()) {
+            applyForEntity.setApplyForChange(applyForDto.getApplyForChange());
+            applyForRepository.save(applyForEntity);
+        }else {
+            throw new RuntimeException();
+        }
     }
 
     // 요금제 삭제

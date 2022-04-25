@@ -41,13 +41,9 @@ public class PlanController {
     // tt 요금제 신청 header로 불러오는 법 ->
     @PostMapping("")
     public ResponseEntity createApplyFor(@RequestBody RequestApplyForDto requestApplyForDto) {
-//        int monthPlanIndex = (int) map.get("monthPlanIndex");
-//        String memberEmail = (String) map.get("memberEmail");
-//        ApplyForDto applyForDto = (ApplyForDto) map.get("applyForDto");
-//        planService.insertApplyFor(applyForDto, monthPlanIndex, memberEmail);
-//        log.info(map.toString());
+        String memberEmail = memberService.decodeJWT();
         int monthPlanIndex = requestApplyForDto.getMonthPlanIndex();
-        String memberEmail = requestApplyForDto.getMemberEmail();
+//        String memberEmail = requestApplyForDto.getMemberEmail();
         ApplyForDto applyForDto = requestApplyForDto.getApplyForDto();
         try {
             planService.insertApplyFor(applyForDto, monthPlanIndex, memberEmail);
@@ -55,27 +51,27 @@ public class PlanController {
         }catch(RuntimeException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-//        Map<String, Object> result = new HashMap<>();
-//        result.put("monthPlanIndex", monthPlanIndex);
-//        result.put("memberEmail", memberEmail);
-//        result.put("applyForDto", applyForDto);
     }
 
-    // 아직 완성 x
+    // tt 요금제 수정
     @PutMapping("")
     public ResponseEntity updateApplyFor(@RequestBody RequestApplyForDto requestApplyForDto){
-//        String memberEmail = memberService.decodeJWT();
+        String memberEmail = memberService.decodeJWT();
         int monthPlanIndex = requestApplyForDto.getMonthPlanIndex();
-        String memberEmail = requestApplyForDto.getMemberEmail();
+//        String memberEmail = requestApplyForDto.getMemberEmail();
         ApplyForDto applyForDto = requestApplyForDto.getApplyForDto();
-        planService.updateApplyFor(applyForDto, monthPlanIndex, memberEmail);
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            planService.updateApplyFor(applyForDto, monthPlanIndex, memberEmail);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
-
     // tt 요금제 삭제
-    @DeleteMapping("/{memberemail}")
-    public ResponseEntity deleteApplyFor(@PathVariable("memberemail") String memberEmail) {
+    @DeleteMapping("")
+    public ResponseEntity deleteApplyFor() {
+        String memberEmail = memberService.decodeJWT();
         planService.deleteApplyFor(memberEmail);
         return new ResponseEntity<>(HttpStatus.OK);
     }
