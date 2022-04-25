@@ -24,7 +24,7 @@ public class OrderController {
 
     private final String memberEmail = "ssafy@ssafy.com";
 
-    @PostMapping("/request")
+    @PostMapping("")
     public ResponseEntity collectionRequest(@RequestBody List<CollectForDto> collectForDtoList){
         try {
             orderService.collectionRequest(memberEmail, collectForDtoList);
@@ -38,7 +38,7 @@ public class OrderController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/request")
+    @GetMapping("")
     public ResponseEntity collectionRequestInquiry(){
         List<CollectForDto> collectForDtoList = orderService.collectionRequestInquiry(memberEmail);
         if(collectForDtoList.size() == 0){
@@ -47,27 +47,27 @@ public class OrderController {
         return new ResponseEntity(collectForDtoList, HttpStatus.OK);
     }
 
-    @GetMapping("/fetch/request")
+    @GetMapping("/list")
     public ResponseEntity fetchAllCollectionRequest(){
         //직원만 접근 가능한 URI
         List<CollectForDtoEmployeeForm> collectForDtoEmployeeFormList = orderService.fetchAllCollectionRequest();
         return new ResponseEntity(collectForDtoEmployeeFormList, HttpStatus.OK);
     }
 
-    @GetMapping("/find/request")
+    @GetMapping("/find")
     public ResponseEntity fetchCollectionRequestByMember(@RequestBody String findMemberEmail){
         //직원만 접근 가능한 URI
         List<CollectForDtoEmployeeForm> collectForDtoEmployeeFormList = orderService.fetchCollectionRequestByMember(findMemberEmail);
         return new ResponseEntity(collectForDtoEmployeeFormList, HttpStatus.OK);
     }
 
-    @GetMapping("/find/request/employee")
+    @GetMapping("/find/employee")
     public ResponseEntity fetchCollectionRequestByEmployee(@RequestBody int employeeIndex){
         List<CollectForDtoEmployeeForm> collectForDtoEmployeeFormList = orderService.fetchCollectionRequestByEmployee(employeeIndex);
         return new ResponseEntity(collectForDtoEmployeeFormList, HttpStatus.OK);
     }
 
-    @PutMapping("/request")
+    @PutMapping("")
     public ResponseEntity collectionApproval(@RequestBody CollectionApprovalDto collectionApprovalDto){
         List<CollectForDto> collectForDtoList = collectionApprovalDto.getCollectForDtoList();
         EmployeeDto employeeDto = collectionApprovalDto.getEmployeeDto();
@@ -81,7 +81,7 @@ public class OrderController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @DeleteMapping("/request")
+    @DeleteMapping("")
     public ResponseEntity withdrawalOfCollection(@RequestBody long collectionForIndex){
         orderService.withdrawalOfCollection(collectionForIndex);
         return new ResponseEntity(HttpStatus.OK);
