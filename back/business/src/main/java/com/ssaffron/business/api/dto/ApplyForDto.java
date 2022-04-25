@@ -35,6 +35,7 @@ public class ApplyForDto {
         this.applyForDeliveryCount = entity.getApplyForDeliveryCount();
         this.applyForCleaningCount = entity.getApplyForCleaningCount();
         this.applyForShirtCount = entity.getApplyForShirtCount();
+        this.applyForChange = entity.getApplyForChange();
         this.memberEmail = entity.getMemberEntity().getMemberIndex();
         this.monthPlanIndex =entity.getMonthPlanEntity().getMonthPlanIndex();
     }
