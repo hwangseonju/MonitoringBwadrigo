@@ -24,7 +24,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping("/signup")
+    @PostMapping()
     public ResponseEntity registerMember(@RequestBody MemberDto memberDto){
 
         memberService.registerMember(memberDto);
@@ -32,7 +32,7 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse res){
+    public ResponseEntity doLogin(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse res){
         //로그인 할 때, JWT를 헤더에 넣어서 반환
 
         Map<String, Object> result = memberService.login(loginRequestDto.getMemberEmail(), loginRequestDto.getMemberPassword());
@@ -46,7 +46,7 @@ public class MemberController {
 
     }
 
-    @GetMapping("/{email}/exists")
+    @GetMapping("/check/{email}")
     public boolean checkDuplication(@PathVariable("email") String email){
         log.info("check duplication in "+email);
         return memberService.checkEmailDuplicate(email);
@@ -95,6 +95,5 @@ public class MemberController {
         log.info("refreshToken in "+memberEmail);
         return new ResponseEntity(headers, HttpStatus.OK);
     }
-
 
 }
