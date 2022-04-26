@@ -4,6 +4,7 @@ import com.ssaffron.business.api.dto.ApplyForDto;
 import com.ssaffron.business.api.dto.LaundryPlanDto;
 import com.ssaffron.business.api.dto.RequestApplyForDto;
 import com.ssaffron.business.api.dto.MonthPlanDto;
+import com.ssaffron.business.api.exception.*;
 import com.ssaffron.business.api.service.MemberService;
 import com.ssaffron.business.api.service.PlanService;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +49,7 @@ public class PlanController {
         try {
             planService.insertApplyFor(applyForDto, monthPlanIndex, memberEmail);
             return new ResponseEntity<>(HttpStatus.OK);
-        }catch(RuntimeException e){
+        }catch(DuplicatedApplyForException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -62,18 +63,24 @@ public class PlanController {
         ApplyForDto applyForDto = requestApplyForDto.getApplyForDto();
         try {
             planService.updateApplyFor(applyForDto, monthPlanIndex, memberEmail);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }catch (RuntimeException e){
+        }catch (NoSuchApplyForException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }catch (ExistedApplyForException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // tt 요금제 삭제
     @DeleteMapping("")
     public ResponseEntity deleteApplyFor() {
         String memberEmail = memberService.decodeJWT();
-        planService.deleteApplyFor(memberEmail);
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            planService.deleteApplyFor(memberEmail);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch (DeleteApplyForException e){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
     }
 
     // dd 한달 요금제 리스트 조회
