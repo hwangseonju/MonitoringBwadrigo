@@ -7,6 +7,7 @@ import com.ssaffron.business.api.entity.LaundryPlanEntity;
 import com.ssaffron.business.api.dto.MonthPlanDto;
 import com.ssaffron.business.api.entity.MemberEntity;
 import com.ssaffron.business.api.entity.MonthPlanEntity;
+import com.ssaffron.business.api.exception.*;
 import com.ssaffron.business.api.repository.ApplyForRepository;
 import com.ssaffron.business.api.repository.LaundryPlanRepository;
 import com.ssaffron.business.api.repository.MemberRepository;
@@ -67,7 +68,7 @@ public class PlanService {
         if(applyForRepository.findByMemberEntity(memberEntity).orElse(null) == null) {
             applyForRepository.save(applyForEntity);
         }else{
-            throw new RuntimeException();
+            throw new DuplicatedApplyForException(memberEntity.getMemberName());
         }
     }
 
@@ -77,19 +78,25 @@ public class PlanService {
         int memberIndex = memberEntity.getMemberIndex();
         MonthPlanEntity monthPlanEntity = monthPlanRepository.findByMonthPlanIndex(monthPlanIndex);
         ApplyForEntity applyForEntity = applyForRepository.findByMemberEntity_MemberIndex(memberIndex);
-        if(monthPlanIndex != applyForDto.getApplyForChange()) {
+        if(monthPlanIndex != applyForDto.getApplyForChange() && applyForEntity != null) {
             applyForEntity.setApplyForChange(applyForDto.getApplyForChange());
             applyForRepository.save(applyForEntity);
-        }else {
-            throw new RuntimeException();
+        }else if(monthPlanIndex == applyForDto.getApplyForChange()){
+            throw new ExistedApplyForException(memberEntity.getMemberName());
+        }else{
+            throw new NoSuchApplyForException(memberEntity.getMemberName());
         }
     }
 
     // 요금제 삭제
     public void deleteApplyFor(String memberEmail) {
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
-        ApplyForEntity applyForEntity = applyForRepository.findByMemberEntity(memberEntity).get();
-        applyForRepository.delete(applyForEntity);
+        ApplyForEntity applyForEntity = applyForRepository.findByMemberEntity(memberEntity).orElse(null);
+        if(applyForEntity != null) {
+            applyForRepository.delete(applyForEntity);
+        }else{
+            throw new DeleteApplyForException(memberEntity.getMemberName());
+        }
     }
 
     // Monthplan 리스트-> stream api 사용해보고싶어서..
