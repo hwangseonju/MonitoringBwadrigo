@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -14,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CollectionApprovalDto {
 
-    private List<CollectForDto> collectForDtoList;
+    private List<CollectDto> collectDtoList;
 
     private EmployeeDto employeeDto;
 

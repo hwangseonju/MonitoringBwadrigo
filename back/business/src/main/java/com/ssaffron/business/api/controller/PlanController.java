@@ -1,8 +1,8 @@
 package com.ssaffron.business.api.controller;
 
-import com.ssaffron.business.api.dto.ApplyForDto;
+import com.ssaffron.business.api.dto.ApplyDto;
 import com.ssaffron.business.api.dto.LaundryPlanDto;
-import com.ssaffron.business.api.dto.RequestApplyForDto;
+import com.ssaffron.business.api.dto.RequestApplyDto;
 import com.ssaffron.business.api.dto.MonthPlanDto;
 import com.ssaffron.business.api.exception.*;
 import com.ssaffron.business.api.service.MemberService;
@@ -41,31 +41,31 @@ public class PlanController {
 
     // tt 요금제 신청 header로 불러오는 법 ->
     @PostMapping("")
-    public ResponseEntity createApplyFor(@RequestBody RequestApplyForDto requestApplyForDto) {
+    public ResponseEntity createApplyFor(@RequestBody RequestApplyDto requestApplyDto) {
         String memberEmail = memberService.decodeJWT();
-        int monthPlanIndex = requestApplyForDto.getMonthPlanIndex();
+        int monthPlanIndex = requestApplyDto.getMonthPlanIndex();
 //        String memberEmail = requestApplyForDto.getMemberEmail();
-        ApplyForDto applyForDto = requestApplyForDto.getApplyForDto();
+        ApplyDto applyDto = requestApplyDto.getApplyDto();
         try {
-            planService.insertApplyFor(applyForDto, monthPlanIndex, memberEmail);
+            planService.insertApply(applyDto, monthPlanIndex, memberEmail);
             return new ResponseEntity<>(HttpStatus.OK);
-        }catch(DuplicatedApplyForException e){
+        }catch(DuplicatedApplyException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     // tt 요금제 수정
     @PutMapping("")
-    public ResponseEntity updateApplyFor(@RequestBody RequestApplyForDto requestApplyForDto){
+    public ResponseEntity updateApplyFor(@RequestBody RequestApplyDto requestApplyDto){
         String memberEmail = memberService.decodeJWT();
-        int monthPlanIndex = requestApplyForDto.getMonthPlanIndex();
+        int monthPlanIndex = requestApplyDto.getMonthPlanIndex();
 //        String memberEmail = requestApplyForDto.getMemberEmail();
-        ApplyForDto applyForDto = requestApplyForDto.getApplyForDto();
+        ApplyDto applyDto = requestApplyDto.getApplyDto();
         try {
-            planService.updateApplyFor(applyForDto, monthPlanIndex, memberEmail);
-        }catch (NoSuchApplyForException e){
+            planService.updateApply(applyDto, monthPlanIndex, memberEmail);
+        }catch (NoSuchApplyException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }catch (ExistedApplyForException e){
+        }catch (ExistedApplyException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
@@ -76,9 +76,9 @@ public class PlanController {
     public ResponseEntity deleteApplyFor() {
         String memberEmail = memberService.decodeJWT();
         try {
-            planService.deleteApplyFor(memberEmail);
+            planService.deleteApply(memberEmail);
             return new ResponseEntity<>(HttpStatus.OK);
-        }catch (DeleteApplyForException e){
+        }catch (DeleteApplyException e){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
@@ -98,15 +98,15 @@ public class PlanController {
 
     //dd 사용중인 요금제 list 조회
     @GetMapping("/admin/using-plan")
-    public ResponseEntity<List<ApplyForDto>> allListApplyFor() {
-        List<ApplyForDto> applylist = planService.getApplyList();
+    public ResponseEntity<List<ApplyDto>> allListApplyFor() {
+        List<ApplyDto> applylist = planService.getApplyList();
         return new ResponseEntity<>(applylist,HttpStatus.OK);
     }
 
     //dd 사용중인 요금제 조회
     @GetMapping("/{memberemail}")
-    public ResponseEntity<ApplyForDto> getApplyFor(@PathVariable String memberemail) {
-        ApplyForDto applyone = planService.getApplyFor(memberemail);
+    public ResponseEntity<ApplyDto> getApplyFor(@PathVariable String memberemail) {
+        ApplyDto applyone = planService.getApply(memberemail);
         return new ResponseEntity(applyone,HttpStatus.OK);
     }
 

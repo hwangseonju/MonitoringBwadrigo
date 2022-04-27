@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestApplyForDto {
+public class RequestApplyDto {
     private int monthPlanIndex;
     private String memberEmail;
-    private ApplyForDto applyForDto;
+    private ApplyDto applyDto;
 }

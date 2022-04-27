@@ -1,10 +1,11 @@
 package com.ssaffron.business.api.entity;
 
-import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -12,9 +13,9 @@ import javax.persistence.*;
 public class MonthPlanEntity {
 
     @Id
-    @Column(name = "month_plan_index")
+    @Column(name = "month_plan_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int monthPlanIndex;
+    private int monthPlanId;
     @Column(name = "month_plan_name", nullable = false, length = 30)
     private String monthPlanName;
     @Column(name = "month_plan_price", nullable = false)
@@ -29,7 +30,14 @@ public class MonthPlanEntity {
     private int monthPlanBeddingCount;
     @Column(name = "month_plan_delivery_count")
     private int monthPlanDeliveryCount;
+    @Column(name = "month_plan_create_date")
+    @CreatedDate
+    private LocalDateTime monthPlanCreateDate;
+
+    @Column(name = "month_plan_update_date")
+    @LastModifiedDate
+    private LocalDateTime monthPlanUpdateDate;
     @OneToOne(mappedBy = "monthPlanEntity")
-    private ApplyForEntity applyForEntity;
+    private ApplyEntity applyEntity;
 
 }
