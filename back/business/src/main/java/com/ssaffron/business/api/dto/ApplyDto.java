@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ApplyDto {
 
-    private int applyIndex;
+    private int applyId;
     private int applyWashCount;
     private int applyBeddingCount;
     private int applyDeliveryCount;
@@ -24,19 +24,19 @@ public class ApplyDto {
     private int applyChange;
 
     private int memberEmail;
-    private int monthPlanIndex;
+    private int monthPlanId;
 
     // response : entity to dto
     public ApplyDto(ApplyEntity entity){
-        this.applyIndex = entity.getApplyIndex();
+        this.applyId = entity.getApplyId();
         this.applyWashCount = entity.getApplyWashCount();
         this.applyBeddingCount = entity.getApplyBeddingCount();
         this.applyDeliveryCount = entity.getApplyDeliveryCount();
         this.applyCleaningCount = entity.getApplyCleaningCount();
         this.applyShirtCount = entity.getApplyShirtCount();
         this.applyChange = entity.getApplyChange();
-        this.memberEmail = entity.getMemberEntity().getMemberIndex();
-        this.monthPlanIndex =entity.getMonthPlanEntity().getMonthPlanIndex();
+        this.memberEmail = entity.getMemberEntity().getMemberId();
+        this.monthPlanId =entity.getMonthPlanEntity().getMonthPlanId();
     }
 
 }

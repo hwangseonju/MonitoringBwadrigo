@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @ToString
 @Builder
 public class CollectDto {
-    private long collectIndex;
+    private long collectId;
     private String collecttype;
     private LocalDateTime collectRequestDate;
     private LocalDateTime collectWithdrawDate;

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PayDto {
 
-    private long payIndex;
+    private long payId;
 
     private int payRequestCount;
 

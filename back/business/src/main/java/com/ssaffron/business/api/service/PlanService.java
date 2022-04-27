@@ -32,17 +32,17 @@ public class PlanService {
     public List<LaundryPlanDto> findAllLaundryPlan(){
         return laundryPlanRepository.findAll()
                 .stream().map(laundryPlanEntity -> new LaundryPlanDto().builder()
-                        .laundryPlanIndex(laundryPlanEntity.getLaundryPlanIndex())
+                        .laundryPlanId(laundryPlanEntity.getLaundryPlanId())
                         .laundryPlanType(laundryPlanEntity.getLaundryPlanType())
                         .laundryPlanDetails(laundryPlanEntity.getLaundryPlanDetails())
                         .laundryPlanPrice(laundryPlanEntity.getLaundryPlanPrice())
                         .laundryPlanDescription(laundryPlanEntity.getLaundryPlanDescription()).build()).collect(Collectors.toList());
     }
 
-    public LaundryPlanDto findOneLaundryPlan(int laundryPlanIndex){
-        LaundryPlanEntity laundryPlanEntity =  laundryPlanRepository.findByLaundryPlanIndex(laundryPlanIndex);
+    public LaundryPlanDto findOneLaundryPlan(int laundryPlanId){
+        LaundryPlanEntity laundryPlanEntity =  laundryPlanRepository.findByLaundryPlanId(laundryPlanId);
         return new LaundryPlanDto().builder()
-                .laundryPlanIndex(laundryPlanEntity.getLaundryPlanIndex())
+                .laundryPlanId(laundryPlanEntity.getLaundryPlanId())
                 .laundryPlanType(laundryPlanEntity.getLaundryPlanType())
                 .laundryPlanDetails(laundryPlanEntity.getLaundryPlanDetails())
                 .laundryPlanPrice(laundryPlanEntity.getLaundryPlanPrice())
@@ -50,9 +50,9 @@ public class PlanService {
     }
 
     // 요금제 신청
-    public void insertApply(ApplyDto applyDto, int monthPlanIndex, String memberEmail){
+    public void insertApply(ApplyDto applyDto, int monthPlanId, String memberEmail){
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
-        MonthPlanEntity monthPlanEntity = monthPlanRepository.findByMonthPlanIndex(monthPlanIndex);
+        MonthPlanEntity monthPlanEntity = monthPlanRepository.findByMonthPlanId(monthPlanId);
 
         ApplyEntity applyEntity = new ApplyEntity(
                 applyDto.getApplyWashCount(),
@@ -73,15 +73,15 @@ public class PlanService {
     }
 
     // 요금제 수정 - 변경 요금제 신청하기
-    public void updateApply(ApplyDto applyDto, int monthPlanIndex, String memberEmail){
+    public void updateApply(ApplyDto applyDto, int monthPlanId, String memberEmail){
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
-        int memberIndex = memberEntity.getMemberIndex();
-        MonthPlanEntity monthPlanEntity = monthPlanRepository.findByMonthPlanIndex(monthPlanIndex);
-        ApplyEntity applyEntity = applyRepository.findByMemberEntity_MemberIndex(memberIndex);
-        if(monthPlanIndex != applyDto.getApplyChange() && applyEntity != null) {
+        int memberId = memberEntity.getMemberId();
+        MonthPlanEntity monthPlanEntity = monthPlanRepository.findByMonthPlanId(monthPlanId);
+        ApplyEntity applyEntity = applyRepository.findByMemberEntity_MemberId(memberId);
+        if(monthPlanId != applyDto.getApplyChange() && applyEntity != null) {
             applyEntity.setApplyChange(applyDto.getApplyChange());
             applyRepository.save(applyEntity);
-        }else if(monthPlanIndex == applyDto.getApplyChange()){
+        }else if(monthPlanId == applyDto.getApplyChange()){
             throw new ExistedApplyException(memberEntity.getMemberName());
         }else{
             throw new NoSuchApplyException(memberEntity.getMemberName());
@@ -105,8 +105,8 @@ public class PlanService {
         return entity.stream().map(MonthPlanDto::new).collect(Collectors.toList());
     }
     // dd 한달요금제 1개조회
-    public MonthPlanDto getMonthPlan(int monthPlanIndex){
-        MonthPlanEntity entity = monthPlanRepository.findByMonthPlanIndex(monthPlanIndex);
+    public MonthPlanDto getMonthPlan(int monthPlanId){
+        MonthPlanEntity entity = monthPlanRepository.findByMonthPlanId(monthPlanId);
         return new MonthPlanDto(entity);
     }
     //dd 사용중인 요금제 리스트 조회
@@ -117,8 +117,8 @@ public class PlanService {
     //dd 사용중인 요금제 조회
     public ApplyDto getApply(String memberEmail){
         MemberEntity member = memberRepository.findByMemberEmail(memberEmail);
-        int index = member.getMemberIndex();
-        ApplyEntity entity = applyRepository.findByMemberEntity_MemberIndex(index);
+        int Id = member.getMemberId();
+        ApplyEntity entity = applyRepository.findByMemberEntity_MemberId(Id);
 //        if(entity != null){
 //            return new ApplyDto(entity);
 //        }else{

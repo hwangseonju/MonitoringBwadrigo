@@ -59,8 +59,8 @@ public class OrderController {
     }
 
     @GetMapping("/find/employee")
-    public ResponseEntity fetchCollectionRequestByEmployee(@RequestBody int employeeIndex){
-        List<CollectDtoEmployeeForm> collectDtoEmployeeFormList = orderService.fetchCollectionRequestByEmployee(employeeIndex);
+    public ResponseEntity fetchCollectionRequestByEmployee(@RequestBody int employeeId){
+        List<CollectDtoEmployeeForm> collectDtoEmployeeFormList = orderService.fetchCollectionRequestByEmployee(employeeId);
         return new ResponseEntity(collectDtoEmployeeFormList, HttpStatus.OK);
     }
 
@@ -79,8 +79,8 @@ public class OrderController {
     }
 
     @DeleteMapping("")
-    public ResponseEntity withdrawalOfCollection(@RequestBody long collectionIndex){
-        orderService.withdrawalOfCollection(collectionIndex);
+    public ResponseEntity withdrawalOfCollection(@RequestBody long collectionId){
+        orderService.withdrawalOfCollection(collectionId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -90,7 +90,7 @@ public class OrderController {
         CollectDto collectDto = payDtoEmployeeForm.getCollectDto();
         LaundryPlanDto laundryPlanDto = payDtoEmployeeForm.getPayDto().getLaundryPlanDto();
         PayDto payDto = payDtoEmployeeForm.getPayDto();
-        orderService.registBill(memberDto.getMemberEmail(), collectDto.getCollectIndex(), laundryPlanDto.getLaundryPlanIndex(), payDto);
+        orderService.registBill(memberDto.getMemberEmail(), collectDto.getCollectId(), laundryPlanDto.getLaundryPlanId(), payDto);
 
         return new ResponseEntity(HttpStatus.OK);
     }

@@ -33,9 +33,9 @@ public class PlanController {
     }
 
     // tt Laundry Plan 요금제 단일 조회
-    @GetMapping("/laundry/{laundry-plan-index}")
-    public ResponseEntity<LaundryPlanDto> getListLaundry(@PathVariable("laundry-plan-index") int laundryplanindex) {
-        LaundryPlanDto laundryPlanDto = planService.findOneLaundryPlan(laundryplanindex);
+    @GetMapping("/laundry/{laundry-plan-Id}")
+    public ResponseEntity<LaundryPlanDto> getListLaundry(@PathVariable("laundry-plan-Id") int laundryplanId) {
+        LaundryPlanDto laundryPlanDto = planService.findOneLaundryPlan(laundryplanId);
         return new ResponseEntity<>(laundryPlanDto, HttpStatus.OK);
     }
 
@@ -43,11 +43,11 @@ public class PlanController {
     @PostMapping("")
     public ResponseEntity createApplyFor(@RequestBody RequestApplyDto requestApplyDto) {
         String memberEmail = memberService.decodeJWT();
-        int monthPlanIndex = requestApplyDto.getMonthPlanIndex();
+        int monthPlanId = requestApplyDto.getMonthPlanId();
 //        String memberEmail = requestApplyForDto.getMemberEmail();
         ApplyDto applyDto = requestApplyDto.getApplyDto();
         try {
-            planService.insertApply(applyDto, monthPlanIndex, memberEmail);
+            planService.insertApply(applyDto, monthPlanId, memberEmail);
             return new ResponseEntity<>(HttpStatus.OK);
         }catch(DuplicatedApplyException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -58,11 +58,11 @@ public class PlanController {
     @PutMapping("")
     public ResponseEntity updateApplyFor(@RequestBody RequestApplyDto requestApplyDto){
         String memberEmail = memberService.decodeJWT();
-        int monthPlanIndex = requestApplyDto.getMonthPlanIndex();
+        int monthPlanId = requestApplyDto.getMonthPlanId();
 //        String memberEmail = requestApplyForDto.getMemberEmail();
         ApplyDto applyDto = requestApplyDto.getApplyDto();
         try {
-            planService.updateApply(applyDto, monthPlanIndex, memberEmail);
+            planService.updateApply(applyDto, monthPlanId, memberEmail);
         }catch (NoSuchApplyException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }catch (ExistedApplyException e){
@@ -90,9 +90,9 @@ public class PlanController {
         return new ResponseEntity<>(monthlist,HttpStatus.OK);
     }
     // dd 한달요금제 1개조회
-    @GetMapping("/month/{month_plan_index}")
-    public ResponseEntity<MonthPlanDto> getListMonth(@PathVariable int month_plan_index) {
-        MonthPlanDto monthone = planService.getMonthPlan(month_plan_index);
+    @GetMapping("/month/{month_plan_Id}")
+    public ResponseEntity<MonthPlanDto> getListMonth(@PathVariable int month_plan_Id) {
+        MonthPlanDto monthone = planService.getMonthPlan(month_plan_Id);
         return new ResponseEntity<>(monthone,HttpStatus.OK);
     }
 
@@ -111,8 +111,8 @@ public class PlanController {
     }
 
     // dd Test : 다음달 요금제 변경------------
-    @GetMapping("/change/{memberindex}")
-    public ResponseEntity nextMonthPlan(@PathVariable("memberindex") int memberId, @RequestBody MonthPlanDto dto) { // 수정
+    @GetMapping("/change/{memberId}")
+    public ResponseEntity nextMonthPlan(@PathVariable("memberId") int memberId, @RequestBody MonthPlanDto dto) { // 수정
         return new ResponseEntity(HttpStatus.OK);
     }
 
