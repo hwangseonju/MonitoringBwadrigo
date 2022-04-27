@@ -1,8 +1,23 @@
-import { useState } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import {Form, Button} from 'react-bootstrap';
 
 function Application(){
     const [checkValue, setCheckValue] = useState([]);
+    const [addrress, setAddress] = useState();
+    const [isAddress, setIsAddress] = useState(false);
+
+    const checkAddress = () =>{
+        axios.get("http://k6s104.p.ssafy.io:8081/v1/api/member")
+        .then((res)=>{
+            console.log(res);
+            if(res.data.memberAddress){
+                setAddress(res.data.memberAddress);
+                setIsAddress(true);
+            }
+        })
+    }
+    
     const changeHandler = (checked, id) => {
         if(checked){
             setCheckValue([...checkValue, id]);
@@ -16,11 +31,22 @@ function Application(){
     const test = () =>{
         console.log(checkValue);
     }
+
     return(
         <div>
             <h1>오늘밤 당신의 세탁물을 가지러 가겠다.</h1>
             <h2>수거/배송 주소</h2>
-            <p>주소 ~~~</p>
+            {isAddress?
+            <div>
+                <h2>입력된 주소가 없습니다.</h2>
+                <Button>주소 입력하러 가기!</Button>
+            </div>
+            :
+            <div>
+                <h2>{addrress}</h2>
+                <Button>주소 수정하러 가기!</Button>
+            </div>  
+            }
             <p>요청사항</p>
 
             <h2>맡길 세탁물 선택하기</h2>
