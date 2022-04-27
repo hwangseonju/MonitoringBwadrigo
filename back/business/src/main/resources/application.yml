@@ -6,7 +6,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://k6s104.p.ssafy.io:3333/test?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: root
+    username: ssaffron
     password: ssafy123
 
   jpa:
