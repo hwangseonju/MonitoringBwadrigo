@@ -12,6 +12,9 @@ import ApplicationDetail from './components/collection/ApplicationDetail';
 import ApplicationInfo from './components/collection/ApplicationInfo';
 import ApplicationResult from './components/collection/ApplicationResult';
 
+import MyInfo from './components/MyInfo';
+import PaymentHistory from "./components/payment/PaymentHistory";
+import PaymentHistoryDetail from "./components/payment/PaymentHistoryDetail"
 function App() {
   return (
     <div className="App">
@@ -25,7 +28,11 @@ function App() {
         <Route path="/application" element={<Application/>} />
         <Route path="/applicationInfo" element={<ApplicationInfo/>} />
         <Route path="/applicationDetail" element={<ApplicationDetail/>} />
-        <Route path="/applicationResult" element={<ApplicationResult/>} />
+        <Route path="/applicationResult" element={<ApplicationResult />} />
+        
+        <Route path="/myInfo" element={<MyInfo/>} />
+        <Route path="/payHistory" element={<PaymentHistory />} />
+        <Route path="/payHistoryDetail" element={<PaymentHistoryDetail/>}/>
       </Routes>
     </div>
   );
