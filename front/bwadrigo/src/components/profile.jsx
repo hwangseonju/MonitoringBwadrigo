@@ -9,15 +9,19 @@ function Profile() {
     return(
         <>
             <div>
-                <h2> 런드리고와 함께 빨래없는 생활을 시작하세요.</h2>
+                
 
-                {isLogin?
+            {isLogin?
             <div>
                 
-                <Button>이름받기</Button>
+                <h2>?님 런드리고와 함께 빨래없는 생활을 시작하세요.</h2>
+                <Button variant="success" href="/">결제내역</Button>
+                <Button variant="success" href="/">내정보</Button>
+                <Button variant="success" href="/">이용중인 서비스</Button>
             </div>
             :
             <div>
+                <h2> 런드리고와 함께 빨래없는 생활을 시작하세요.</h2>
                  <Button variant="success" href="/login">로그인</Button>{' '}
             </div>  
             }
