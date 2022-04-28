@@ -1,4 +1,7 @@
 import React, {useState, useEffect} from 'react'
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { Form, Container, Row, Col, Button } from "react-bootstrap";
 
 function Signup() {
 
@@ -10,8 +13,6 @@ function Signup() {
     const [pwMsgColor, setPwMsgColor] = useState({ color: "black" });
     const [pwCheckMsg, setPwCheckMsg] = useState("");
     const [pwCheckMsgColor, setPwCheckMsgColor] = useState({ color: "black" });
-    const [nicknameMsg, setNicknameMsg] = useState("");
-    const [nicknameMsgColor, setNicknameMsgColor] = useState({ color: "black" });
 
 
     const [checkEmail, setCheckEmail] = useState(false);
@@ -19,14 +20,14 @@ function Signup() {
     
 
     const [inputs, setInputs] = useState({
-        memberemail: "",
+        memberEmail: "",
         memberPassword: "",
         passwordConfirmation: "",
         memberName: "",
         memberPhone: ""
     });
 
-    const {memberemail, memberPassword, passwordConfirmation, memberName, memberPhone} = inputs;
+    const {memberEmail, memberPassword, passwordConfirmation, memberName, memberPhone} = inputs;
 
     const onChange = (e) => {
         const {value, name} = e.target;
@@ -43,15 +44,15 @@ function Signup() {
     const emailRegex =
       /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
     const debounce = setTimeout(() => {
-      if (email.length >= 1) {
-        if (!emailRegex.test(email)) {
+      if (memberEmail.length >= 1) {
+        if (!emailRegex.test(memberEmail)) {
           setEmailMsg("올바른 이메일 형식이 아닙니다.");
           setEmailMsgColor({ color: "red" });
         } else {
           // 이메일 중복검사
           axios({
             method: "get",
-            url: "/v1/api/member/check/" + email,
+            url: "/v1/api/member/check/" + memberEmail,
           })
             .then((res) => {
               setEmailMsg("사용하셔도 좋습니다.");
@@ -66,7 +67,7 @@ function Signup() {
       }
     }, 700);
     return () => clearTimeout(debounce);
-  }, [email]);
+  }, [memberEmail]);
 
   useEffect(() => {
     setCheckPw(false);
@@ -87,20 +88,112 @@ function Signup() {
       setPwMsg("사용하셔도 좋습니다.");
       setPwMsgColor({color:"blue"});
     }
+    if (passwordConfirmation.length === 0) {
+      setPwCheckMsg("");
+    } else if (memberPassword === passwordConfirmation) {
+      setPwCheckMsg("비밀번호가 일치합니다.");
+      setPwCheckMsgColor({ color: "blue" });
+      setCheckPw(true); // 유효성, 일치여부 확인 후 true
+    } else {
+      setPwCheckMsg("비밀번호가 일치하지 않습니다.");
+      setPwCheckMsgColor({ color: "red" });
+    }
+  }, [memberPassword, passwordConfirmation]);
 
-  })
+    // 회원가입 버튼 누를 시 실행
+    const onSignup = () => {
+      if (checkEmail && checkPw) {
+        axios({
+          method: "post",
+          url: "/v1/api/member/signup/",
+          data: inputs,
+        })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        alert("다시 입력해주세요.");
+      }
+    };
+  
+    const onKeyPress = (e) => {
+      if (e.key === "Enter") {
+        onSignup();
+      }
+    };
+
+    
 
 
   return (
-    <div class="loginregister">
-      <form>
-      <div><input name="email" type="email" placeholder="이메일" value={memberEmail} onChange={onEmailHandler} class="loginregister__input"/></div>
-          <div><input name="password" type="password" placeholder="비밀번호" value={memberpassword} onChange={onPasswordHandler} class="loginregister__input"/></div>
-          <div><input name="confirmPassword" type="password" placeholder="비밀번호 확인" value={confirmPassword} onChange={onConfirmPasswordHandler} class="loginregister__input"/></div>
-          <div><input name="name" type="text" placeholder="이름" value={memberName} onChange={onNameHandler} class="loginregister__input"/></div>
-          <div><input name="phone" type="text" placeholder="전화번호" value={memberPhone} onChange={onPhoneHandler} class="loginregister__input"/></div>
-          <div><button type="submit" onSubmit={onSubmit} class="loginregister__button">계정 생성하기</button></div>
-      </form>
+    <div>
+      <Container fluid="sm" style={{ width: "90%", maxWidth: "500px" }}>
+      <br />
+      <br />
+      <br />
+      <Form>
+        <Form.Group as={Row} className="mt-5 justify-content-center">
+          <Col>
+            <Form.Control
+              className="mb-1"
+              type="email"
+              placeholder="이메일"
+              name="memberEmail"
+              onChange={onChange}
+              value={memberEmail}
+              maxLength={30}
+            ></Form.Control>
+            <span style={emailMsgColor}>{emailMsg}</span>
+            <Form.Control
+              className="mb-1"
+              type="password"
+              placeholder="비밀번호"
+              name="memberPassword"
+              onChange={onChange}
+              value={memberPassword}
+              maxLength={15}
+            ></Form.Control>
+            <span style={pwMsgColor}>{pwMsg}</span>
+            <Form.Control
+              className="mb-1"
+              type="password"
+              placeholder="비밀번호 확인"
+              name="passwordConfirmation"
+              onChange={onChange}
+              value={passwordConfirmation}
+              maxLength={15}
+            ></Form.Control>
+            <span style={pwCheckMsgColor}>{pwCheckMsg}</span>
+            <Form.Control
+              className="mb-1"
+              placeholder="이름"
+              name="memberName"
+              onChange={onChange}
+              value={memberName}
+              maxLength={15}
+            ></Form.Control>
+            <Form.Control
+              className="mb-1"
+              placeholder="전화번호"
+              name="memberPhone"
+              onChange={onChange}
+              value={memberPhone}
+              maxLength={15}
+              onKeyPress={onKeyPress}
+            ></Form.Control>
+            <div className="d-grid gap-2">
+              <Button onClick={onSignup} variant="secondary">
+                회원가입
+              </Button>
+            </div>
+          </Col>
+        </Form.Group>
+      </Form>
+    </Container>
+
     </div>
   );
 }

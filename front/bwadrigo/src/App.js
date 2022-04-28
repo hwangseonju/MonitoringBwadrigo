@@ -1,7 +1,8 @@
 import Login from "./components/login";
 import Signup from "./components/signup";
 import Profile from "./components/profile";
-// import Home from "./components/Home";
+import Signupsuccess from "./components/signupsuccess";
+import Home from "./components/Home";
 
 import { Route, Routes } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -23,10 +24,11 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<Profile />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/signupsuccess" element={<Signupsuccess />} />
+        <Route path="/" element={<Home />} />
         <Route path="/member-plan" element={<MemberPlan />} />
         <Route path="/start-termination" element={<StartTermination />} />
         <Route path="/survey-termination" element={<SurveyTermination />} />
