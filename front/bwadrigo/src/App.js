@@ -11,6 +11,7 @@ import MemberPlan from "./components/usePlan/MemberPlan";
 import StartTermination from "./components/usePlan/StartTermination";
 import SurveyTermination from "./components/usePlan/SurveyTermination";
 import FinishTermination from "./components/usePlan/FinishTermination";
+import PlanTypeHeader from "./components/usePlan/PlanTypeHeader";
 
 import Application from "./components/collection/Application";
 import ApplicationDetail from "./components/collection/ApplicationDetail";
@@ -33,6 +34,7 @@ function App() {
         <Route path="/start-termination" element={<StartTermination />} />
         <Route path="/survey-termination" element={<SurveyTermination />} />
         <Route path="/finish-termination" element={<FinishTermination />} />
+        <Route path="/plan-type-header" element={<PlanTypeHeader />} />
 
         <Route path="/application" element={<Application />} />
         <Route path="/applicationInfo" element={<ApplicationInfo />} />
