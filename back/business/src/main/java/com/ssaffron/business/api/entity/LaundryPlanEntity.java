@@ -19,8 +19,11 @@ public class LaundryPlanEntity {
     @Column(name = "laundry_plan_id")
     private int laundryPlanId;
 
-    @Column(name = "laundry_plan_type", nullable = false, length = 20)
-    private String laundryPlanType;
+    @Column(name = "laundry_plan_type_kor", nullable = false, length = 20)
+    private String laundryPlanTypeKor;
+
+    @Column(name = "laundry_plan_type_Eng", nullable = false, length = 20)
+    private String laundryPlanTypeEng;
 
     @Column(name = "laundry_plan_details", nullable = false, length = 20)
     private String laundryPlanDetails;
