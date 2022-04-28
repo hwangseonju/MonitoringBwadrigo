@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LaundryPlanDto {
 
-    private int laundryPlanIndex;
+    private int laundryPlanId;
 
     private String laundryPlanType;
 

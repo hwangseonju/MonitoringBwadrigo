@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MonthPlanDto {
 
-    private int monthPlanIndex;
+    private int monthPlanId;
     private String monthPlanName;
     private int monthPlanPrice;
     private int monthPlanWashCount;
@@ -25,7 +25,7 @@ public class MonthPlanDto {
 
     //entity -> dto
     public MonthPlanDto(MonthPlanEntity entity) {
-        this.monthPlanIndex = entity.getMonthPlanIndex();
+        this.monthPlanId = entity.getMonthPlanId();
         this.monthPlanName = entity.getMonthPlanName();
         this.monthPlanPrice = entity.getMonthPlanPrice();
         this.monthPlanWashCount = entity.getMonthPlanWashCount();

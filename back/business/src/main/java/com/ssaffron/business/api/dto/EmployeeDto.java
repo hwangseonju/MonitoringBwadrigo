@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EmployeeDto {
 
-    private int employeeIndex;
+    private int employeeId;
 
     private String employeeName;
 
