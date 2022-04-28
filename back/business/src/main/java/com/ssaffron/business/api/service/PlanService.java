@@ -33,7 +33,7 @@ public class PlanService {
         return laundryPlanRepository.findAll()
                 .stream().map(laundryPlanEntity -> new LaundryPlanDto().builder()
                         .laundryPlanId(laundryPlanEntity.getLaundryPlanId())
-                        .laundryPlanType(laundryPlanEntity.getLaundryPlanType())
+                        .laundryPlanTypeKor(laundryPlanEntity.getLaundryPlanTypeKor())
                         .laundryPlanDetails(laundryPlanEntity.getLaundryPlanDetails())
                         .laundryPlanPrice(laundryPlanEntity.getLaundryPlanPrice())
                         .laundryPlanDescription(laundryPlanEntity.getLaundryPlanDescription()).build()).collect(Collectors.toList());
@@ -43,7 +43,7 @@ public class PlanService {
         LaundryPlanEntity laundryPlanEntity =  laundryPlanRepository.findByLaundryPlanId(laundryPlanId);
         return new LaundryPlanDto().builder()
                 .laundryPlanId(laundryPlanEntity.getLaundryPlanId())
-                .laundryPlanType(laundryPlanEntity.getLaundryPlanType())
+                .laundryPlanTypeKor(laundryPlanEntity.getLaundryPlanTypeKor())
                 .laundryPlanDetails(laundryPlanEntity.getLaundryPlanDetails())
                 .laundryPlanPrice(laundryPlanEntity.getLaundryPlanPrice())
                 .build();
