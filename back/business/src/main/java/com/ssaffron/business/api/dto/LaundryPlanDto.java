@@ -13,7 +13,9 @@ public class LaundryPlanDto {
 
     private int laundryPlanId;
 
-    private String laundryPlanType;
+    private String laundryPlanTypeKor;
+
+    private String laundryPlanTypeEng;
 
     private String laundryPlanDetails;
 

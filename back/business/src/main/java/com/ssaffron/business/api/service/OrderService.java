@@ -153,7 +153,7 @@ public class OrderService {
                                             payDto.getPayRequestCount(),
                                             LocalDateTime.now(),
                                             collectEntity.getCollectRequestDate(),
-                collectEntity,
+                                            collectEntity,
                                             memberEntity,
                                             laundryPlanEntity
                                     );
@@ -166,7 +166,7 @@ public class OrderService {
 
         }
         int requestCount = payEntity.getPayRequestCount();
-        switch (laundryPlanEntity.getLaundryPlanType()) {
+        switch (laundryPlanEntity.getLaundryPlanTypeEng()) {
             case "wash": {
                 int count = Math.max(applyEntity.getApplyWashCount() - requestCount, 0);
                 applyEntity.setApplyWashCount(count);
@@ -207,7 +207,8 @@ public class OrderService {
                     payPickDate(payEntity.getPayPickDate()).
                     laundryPlanDto(LaundryPlanDto.builder()
                             .laundryPlanDescription(payEntity.getLaundryPlanEntity().getLaundryPlanDescription())
-                            .laundryPlanType(payEntity.getLaundryPlanEntity().getLaundryPlanType())
+                            .laundryPlanTypeKor(payEntity.getLaundryPlanEntity().getLaundryPlanTypeKor())
+                            .laundryPlanTypeEng(payEntity.getLaundryPlanEntity().getLaundryPlanTypeEng())
                             .laundryPlanDetails(payEntity.getLaundryPlanEntity().getLaundryPlanDetails())
                             .laundryPlanPrice(payEntity.getLaundryPlanEntity().getLaundryPlanPrice())
                             .build()
