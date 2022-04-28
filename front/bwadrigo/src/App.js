@@ -18,7 +18,9 @@ import ApplicationDetail from "./components/collection/ApplicationDetail";
 import ApplicationInfo from "./components/collection/ApplicationInfo";
 import ApplicationResult from "./components/collection/ApplicationResult";
 
-import MyInfo from "./components/MyInfo";
+import MyInfo from './components/MyInfo';
+import MyInfoModify from './components/MyInfoModify'
+
 import PaymentHistory from "./components/payment/PaymentHistory";
 import PaymentHistoryDetail from "./components/payment/PaymentHistoryDetail";
 function App() {
@@ -42,6 +44,8 @@ function App() {
         <Route path="/applicationResult" element={<ApplicationResult />} />
 
         <Route path="/myInfo" element={<MyInfo />} />
+        <Route path="/myinfomodify" element={<MyInfoModify/>}/>
+
         <Route path="/payHistory" element={<PaymentHistory />} />
         <Route path="/payHistoryDetail" element={<PaymentHistoryDetail />} />
       </Routes>
