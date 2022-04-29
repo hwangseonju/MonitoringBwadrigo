@@ -1,77 +1,313 @@
-import React from "react";
+import { useState } from "react";
+import { Button, Row, Col, Container } from "react-bootstrap";
 
 function MemberPlan() {
   //const title = "이용 중인 서비스";
   const goTermination = () => {
     window.location.href = "/start-termination";
   };
+
+  const goChange = () => {
+    window.location.href = "/plan-type-header";
+  };
+
+  // 회원이 사용중인 요금제
+  const [applyList, setApplyList] = useState({
+    applyId: 1,
+    applyWashCount: 0,
+    applyBeddingCount: 0,
+    applyDeliveryCount: 0,
+    applyCleaningCount: 0,
+    applyShirtCount: 0,
+    applyDate: "2022-04-22",
+    applyChange: 0,
+    monthPlanId: 2,
+  });
+
+  // 회원 이용 기간
+  const [applyStartDate, setApplyStartDate] = useState();
+  const [applyEndDate, setApplyEndDate] = useState();
+
+  // 회원 이용 기간 계산
+  const startDate = () => {
+    let startYY = parseInt(applyList.applyDate.substring(0, 4));
+    let startMM = parseInt(applyList.applyDate.substring(5, 7));
+    let startDD = parseInt(applyList.applyDate.substring(8, 10));
+    let start = startYY + "년 " + startMM + "월 " + startDD + "일";
+    setApplyStartDate(start);
+  };
+
+  const endDate = () => {
+    let startYY = parseInt(applyList.applyDate.substring(0, 4));
+    let startMM = parseInt(applyList.applyDate.substring(5, 7));
+    let startDD = parseInt(applyList.applyDate.substring(8, 10));
+
+    let month = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    startDD = startDD + 28;
+    if (startDD > month[startMM]) {
+      startDD = startDD - month[startMM];
+      startMM = startMM + 1;
+
+      if (startMM > 12) {
+        startMM = 1;
+        startYY = startYY + 1;
+      }
+    }
+    let end = startYY + "년 " + startMM + "월 " + startDD + "일";
+    setApplyEndDate(end);
+  };
+
+  // 요금제 종류 리스트
+  const [planList, setPlanList] = useState([
+    {
+      monthPlanId: 2,
+      monthPlanName: "테스트요금",
+      monthPlanPrice: 0,
+      monthPlanBeddingCount: 0,
+      monthPlanCleaningCount: 0,
+      monthPlanDeliveryCount: 0,
+      monthPlanWashCount: 0,
+      monthPlanShirtCount: 0,
+    },
+  ]);
+
+  // 회원 정보
+  const [memberList, setMemberList] = useState({
+    memberEmail: "test@test.com",
+    memberPhone: "000-000-000",
+    memberAddress: "광주 어디",
+  });
+
   return (
     <div>
       <div>
-        <h3>이용 중인 서비스</h3>
         <div>
-          <span>
-            <b>신청 서비스 : </b>
-          </span>
-          <span>1회이용서비스</span>
+          <h3 className="text-center">이용 중인 서비스</h3>
         </div>
+        <hr />
         <div>
-          <span>
-            <b>신청일 : </b>
-          </span>
-          <span>2022년 04월 26일(화)</span>
-        </div>
-        <div>
-          <span>
-            <b>이용상태 : </b>
-          </span>
-          <span>이용중</span>
-        </div>
-        <div>
-          <span>
-            <b>세탁요금 : </b>
-          </span>
-          <span>안심 정찰 가격표에 의해 요금 부과</span>
-        </div>
-        <div>
-          <a href="@">안심 정찰 가격표 보기</a>
+          <Container key={applyList.applyId}>
+            <Row>
+              <Col>
+                <b>신청 서비스</b>
+              </Col>
+              {applyList.monthPlanId > 1 ? (
+                <Col xs={8} style={{ textAlign: "right" }}>
+                  월정액서비스
+                </Col>
+              ) : (
+                <Col xs={8} style={{ textAlign: "right" }}>
+                  1회이용서비스
+                </Col>
+              )}
+            </Row>
+            <Row>
+              <Col>
+                <b>신청일</b>
+              </Col>
+              <Col xs={8} style={{ textAlign: "right" }}>
+                {applyStartDate}
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <b>이용상태</b>
+              </Col>
+              {applyList.length === 0 ? (
+                <Col xs={8} style={{ textAlign: "right" }}>
+                  -
+                </Col>
+              ) : (
+                <Col xs={8} style={{ textAlign: "right" }}>
+                  이용중
+                </Col>
+              )}
+            </Row>
+            {applyList.monthPlanId > 1 && (
+              <div>
+                <Row>
+                  <Col>
+                    <b>이용기간</b>
+                  </Col>
+                  <Col xs={9} style={{ textAlign: "right" }}>
+                    {applyStartDate} ~ {applyEndDate}
+                  </Col>
+                </Row>
+                <hr />
+                {planList.map((plan) => (
+                  <div key={plan.monthPlanId}>
+                    {plan.monthPlanId === applyList.monthPlanId && (
+                      <div>
+                        <Row>
+                          <Col>
+                            <b>요금제</b>
+                          </Col>
+                          <Col xs={8} style={{ textAlign: "right" }}>
+                            {plan.monthPlanName}
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col>
+                            <b>요금제 금액</b>
+                          </Col>
+                          <Col xs={8} style={{ textAlign: "right" }}>
+                            {plan.monthPlanPrice}
+                          </Col>
+                        </Row>
+                        <br />
+                        <Row style={{ fontSize: "13px" }}>
+                          <Col style={{ border: "1px solid #b5b1b1", padding: "10px" }}>
+                            {applyList.applyWashCount !== 0 ? (
+                              <Row>
+                                <Col>생활빨래</Col>
+                                <Col xs={5} style={{ textAlign: "right" }}>
+                                  {applyList.applyWashCount}개
+                                </Col>
+                              </Row>
+                            ) : (
+                              <Row style={{ color: "#cfcfcf" }}>
+                                <Col>생활빨래</Col>
+                                <Col xs={5} style={{ textAlign: "right" }}>
+                                  {applyList.applyWashCount}개
+                                </Col>
+                              </Row>
+                            )}
+                          </Col>
+                          <Col style={{ border: "1px solid #b5b1b1", padding: "10px" }}>
+                            {applyList.applyShirtCount !== 0 ? (
+                              <Row>
+                                <Col>와이셔츠</Col>
+                                <Col xs={5} style={{ textAlign: "right" }}>
+                                  {applyList.applyShirtCount}장
+                                </Col>
+                              </Row>
+                            ) : (
+                              <Row style={{ color: "#cfcfcf" }}>
+                                <Col>와이셔츠</Col>
+                                <Col xs={5} style={{ textAlign: "right" }}>
+                                  {applyList.applyShirtCount}장
+                                </Col>
+                              </Row>
+                            )}
+                          </Col>
+                          <Col style={{ border: "1px solid #b5b1b1", padding: "10px" }}>
+                            {applyList.applyCleaningCount !== 0 ? (
+                              <Row>
+                                <Col>개별클리닝</Col>
+                                <Col xs={4} style={{ textAlign: "right" }}>
+                                  {applyList.applyCleaningCount}장
+                                </Col>
+                              </Row>
+                            ) : (
+                              <Row style={{ color: "#cfcfcf" }}>
+                                <Col>개별클리닝</Col>
+                                <Col xs={4} style={{ textAlign: "right" }}>
+                                  {applyList.applyCleaningCount}장
+                                </Col>
+                              </Row>
+                            )}
+                          </Col>
+                        </Row>
+                        <Row style={{ fontSize: "13px" }}>
+                          <Col style={{ border: "1px solid #b5b1b1", padding: "10px" }}>
+                            {applyList.applyBeddingCount !== 0 ? (
+                              <Row>
+                                <Col>이불</Col>
+                                <Col xs={4} style={{ textAlign: "right" }}>
+                                  {applyList.applyBeddingCount}개
+                                </Col>
+                              </Row>
+                            ) : (
+                              <Row style={{ color: "#cfcfcf" }}>
+                                <Col>이불</Col>
+                                <Col xs={4} style={{ textAlign: "right" }}>
+                                  {applyList.applyBeddingCount}개
+                                </Col>
+                              </Row>
+                            )}
+                          </Col>
+                          <Col style={{ border: "1px solid #b5b1b1", padding: "10px", fontSize: "12px" }}>
+                            {applyList.applyDeliveryCount !== 0 ? (
+                              <Row>
+                                <Col>무료수거배송</Col>
+                                <Col xs={4} style={{ textAlign: "right", fontSize: "13px" }}>
+                                  {applyList.applyDeliveryCount}회
+                                </Col>
+                              </Row>
+                            ) : (
+                              <Row style={{ color: "#cfcfcf" }}>
+                                <Col>무료수거배송</Col>
+                                <Col xs={4} style={{ textAlign: "right", fontSize: "13px" }}>
+                                  {applyList.applyDeliveryCount}회
+                                </Col>
+                              </Row>
+                            )}
+                          </Col>
+                          <Col style={{ border: "1px solid #b5b1b1", padding: "10px" }}></Col>
+                        </Row>
+                        <Row>
+                          <Col style={{ textAlign: "right" }}>
+                            <a href="@">월정액 초과 이용 가격표 보기</a>
+                          </Col>
+                        </Row>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+            {applyList.monthPlanId === 1 && (
+              <div>
+                <Row>
+                  <Col>
+                    <b>세탁요금</b>
+                  </Col>
+                  <Col xs={8} style={{ textAlign: "right" }}>
+                    안심 정찰 가격표에 의해 요금 부과
+                  </Col>
+                </Row>
+                <Row>
+                  <Col style={{ textAlign: "right" }}>
+                    <a href="@">안심 정찰 가격표 보기</a>
+                  </Col>
+                </Row>
+              </div>
+            )}
+          </Container>
         </div>
       </div>
       <br />
-
       <div>
-        <button>변경</button>
-        <button onClick={goTermination}>해지</button>
+        <Container key={applyList.applyId}>
+          <Row className="text-center">
+            <Col style={{ border: "1px solid #b5b1b1", padding: "15px" }}>
+              <Button onClick={goChange}>변경</Button>
+            </Col>
+            <Col style={{ border: "1px solid #b5b1b1", padding: "15px" }}>
+              <Button onClick={goTermination}>해지</Button>
+            </Col>
+          </Row>
+        </Container>
       </div>
 
       <br />
 
       <div>
         <h3>신청 서비스</h3>
-        <div>
-          <span>
-            <b>배송지 : </b>
-          </span>
-          <span>서울특별시 강남구 어쩌구</span>
-        </div>
-        <div>
-          <span>
-            <b>연락처 : </b>
-          </span>
-          <span>010-1234-1234</span>
-        </div>
-        <div>
-          <span>
-            <b>결제정보 : </b>
-          </span>
-          <span>국민</span>
-        </div>
-        <div>
-          <span>
-            <b>공동현관 출입 방법 : </b>
-          </span>
-          <span>공동현관 비밀번호</span>
-        </div>
+        <Container key={memberList.memberEmail}>
+          <Row>
+            <Col>
+              <b>배송지</b>
+            </Col>
+            <Col xs={8}>{memberList.memberAddress}</Col>
+          </Row>
+          <Row>
+            <Col>
+              <b>연락처</b>
+            </Col>
+            <Col xs={8}>{memberList.memberPhone}</Col>
+          </Row>
+        </Container>
       </div>
     </div>
   );
