@@ -1,4 +1,4 @@
-import React from "react";
+import { Button } from "react-bootstrap";
 import surveyData from "../../surveyData.json";
 
 function SurveyTermination() {
@@ -22,14 +22,18 @@ function SurveyTermination() {
       <div>
         {surveyData.reasons.map((item) => (
           <div key={item.id}>
-            <input type="radio" name="survey" value={item.id} onChange={changeReason} />
+            <input type="radio" name="survey" value={item.content} onChange={changeReason} />
             <span> {item.content}</span>
           </div>
         ))}
       </div>
       <div>
-        <button onClick={goCancle}>해지 취소하기</button>
-        <button onClick={goFinish}>즉시 해지하기</button>
+        <Button variant="primary" onClick={goCancle}>
+          해지 취소하기
+        </Button>
+        <Button variant="light" onClick={goFinish}>
+          즉시 해지하기
+        </Button>
       </div>
     </div>
   );

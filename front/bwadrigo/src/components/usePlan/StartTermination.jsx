@@ -1,4 +1,4 @@
-import React from "react";
+import { Button } from "react-bootstrap";
 
 function StartTermination() {
   const goSurvey = () => {
@@ -20,8 +20,12 @@ function StartTermination() {
         <li>초과 사용 품목이 있는 경우, 해당 금액에 대한 결제가 진행됩니다.</li>
       </ul>
       <div>
-        <button onClick={goCancle}>서비스 유지하기</button>
-        <button onClick={goSurvey}>해지하기</button>
+        <Button variant="primary" onClick={goCancle}>
+          서비스 유지하기
+        </Button>
+        <Button variant="light" onClick={goSurvey}>
+          해지하기
+        </Button>
       </div>
     </div>
   );
