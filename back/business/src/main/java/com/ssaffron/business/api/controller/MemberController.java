@@ -3,6 +3,7 @@ package com.ssaffron.business.api.controller;
 import com.ssaffron.business.api.dto.LoginRequestDto;
 import com.ssaffron.business.api.dto.MemberDto;
 import com.ssaffron.business.api.entity.MemberEntity;
+import com.ssaffron.business.api.exception.DuplicatedEmailException;
 import com.ssaffron.business.api.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,9 +48,16 @@ public class MemberController {
     }
 
     @GetMapping("/check/{email}")
-    public boolean checkDuplication(@PathVariable("email") String email){
+    public ResponseEntity checkDuplication(@PathVariable("email") String email){
         log.info("check duplication in "+email);
-        return memberService.checkEmailDuplicate(email);
+        try{
+            memberService.checkEmailDuplicate(email);
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        catch (DuplicatedEmailException e){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @GetMapping()
