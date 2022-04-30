@@ -49,11 +49,9 @@ public class MemberService {
 
     public boolean checkEmailDuplicate(String email){
         if(memberRepository.existsByMemberEmail(email)) {
-            log.info("중복임");
             throw new DuplicatedEmailException(email);
         }
         else{
-            log.info("중복아님");
             return memberRepository.existsByMemberEmail(email);
         }
     }
