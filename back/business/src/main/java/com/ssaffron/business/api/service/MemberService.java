@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +45,7 @@ public class MemberService {
         memberEntity.setMemberGender(memberDto.isMemberGender());
         memberEntity.setMemberStatus(MemberStatus.ACTIVATE);
         memberEntity.setRole(UserRole.ROLE_USER);
+        memberEntity.setMemberUpdateDate(LocalDateTime.now());
         memberRepository.save(memberEntity);
     }
 
@@ -59,6 +61,7 @@ public class MemberService {
 
     public void registerMember(MemberDto memberDto){
         MemberEntity memberEntity = new MemberEntity();
+        memberEntity.setMemberCreateDate(LocalDateTime.now());
         saveMember(memberDto, memberEntity);
     }
 
