@@ -24,10 +24,11 @@ function Signup() {
         memberPassword: "",
         passwordConfirmation: "",
         memberName: "",
-        memberPhone: ""
+        memberPhone: "",
+        memberAddress: ""
     });
 
-    const {memberEmail, memberPassword, passwordConfirmation, memberName, memberPhone} = inputs;
+    const {memberEmail, memberPassword, passwordConfirmation, memberName, memberPhone, memberAddress} = inputs;
 
     const onChange = (e) => {
         const {value, name} = e.target;
@@ -182,6 +183,15 @@ function Signup() {
               onChange={onChange}
               value={memberPhone}
               maxLength={15}
+              onKeyPress={onKeyPress}
+            ></Form.Control>
+            <Form.Control
+              className="mb-1"
+              placeholder="주소"
+              name="memberAddress"
+              onChange={onChange}
+              value={memberAddress}
+              maxLength={100}
               onKeyPress={onKeyPress}
             ></Form.Control>
             <div className="d-grid gap-2">
