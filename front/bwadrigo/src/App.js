@@ -1,11 +1,15 @@
+import { Route, Routes } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+import ApplyPlan from './components/plans/ApplyPlan';
+import LandryPlan from './components/plans/LaundryPlan'
+import ApplyPlanDetail from './components/plans/ApplyPlanDetail';
+
 import Login from "./components/login";
 import Signup from "./components/signup";
 import Profile from "./components/profile";
 import Signupsuccess from "./components/signupsuccess";
 import Home from "./components/Home";
-
-import { Route, Routes } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 import MemberPlan from "./components/usePlan/MemberPlan";
 import StartTermination from "./components/usePlan/StartTermination";
@@ -23,10 +27,15 @@ import MyInfoModify from './components/MyInfoModify'
 
 import PaymentHistory from "./components/payment/PaymentHistory";
 import PaymentHistoryDetail from "./components/payment/PaymentHistoryDetail";
+
 function App() {
   return (
     <div className="App">
       <Routes>
+
+        <Route path="/applyplan" element={<ApplyPlan/>}/>
+        <Route path="/laundryplan" element={<LandryPlan/>}/>
+        <Route path="/applydetail/:applyid" element={<ApplyPlanDetail/>}/>
         <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
@@ -48,6 +57,7 @@ function App() {
 
         <Route path="/payHistory" element={<PaymentHistory />} />
         <Route path="/payHistoryDetail" element={<PaymentHistoryDetail />} />
+
       </Routes>
     </div>
   );
