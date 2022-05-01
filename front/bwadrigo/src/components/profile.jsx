@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import {Button} from "react-bootstrap";
+import Footer from "./Footer.jsx";
 
 function Profile() {
 
     const [isLogin, setIsLogin] = useState(false);
-
+    localStorage.setItem("tab","/profile")
 
     return(
         <>
@@ -22,7 +23,8 @@ function Profile() {
             </div>  
             }
             </div>
-
+            
+            <Footer/>
         </>
         
     )

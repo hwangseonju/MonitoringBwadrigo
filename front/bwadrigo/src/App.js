@@ -23,6 +23,8 @@ import MyInfoModify from './components/MyInfoModify'
 
 import PaymentHistory from "./components/payment/PaymentHistory";
 import PaymentHistoryDetail from "./components/payment/PaymentHistoryDetail";
+
+import PleaseLogin from "./components/exception/PleaseLogin";
 function App() {
   return (
     <div className="App">
@@ -48,6 +50,8 @@ function App() {
 
         <Route path="/payHistory" element={<PaymentHistory />} />
         <Route path="/payHistoryDetail" element={<PaymentHistoryDetail />} />
+
+        <Route path="/pleaseLogin" element={<PleaseLogin/>} />
       </Routes>
     </div>
   );
