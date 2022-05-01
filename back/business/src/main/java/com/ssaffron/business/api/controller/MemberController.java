@@ -37,6 +37,7 @@ public class MemberController {
 
         Map<String, Object> result = memberService.login(loginRequestDto.getMemberEmail(), loginRequestDto.getMemberPassword());
 
+        //로그인, 이름
         res.addCookie((Cookie) result.get("accessToken"));
         res.addCookie((Cookie) result.get("refreshToken"));
         result.remove("accessToken");
