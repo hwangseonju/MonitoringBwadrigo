@@ -7,11 +7,13 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -44,9 +46,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-
+        log.info("거침?");
         final Cookie jwtToken = cookieUtil.getCookie(httpServletRequest,JwtUtil.ACCESS_TOKEN_NAME);
-
+        log.info(String.valueOf(jwtToken));
         String memberEmail = null;
         String jwt = null;
         String refreshJwt = null;
@@ -54,16 +56,25 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         try{
             if(jwtToken != null){
+                log.info("거침?2");
                 jwt = jwtToken.getValue();
+                log.info("jwt: {}",jwt);
+                log.info("거침?2");
+                log.info("memberEmail: {}",jwtUtil.getUsername(jwt));
                 memberEmail = jwtUtil.getUsername(jwt);
+
+
             }
             if(memberEmail!=null){
+                log.info("거침?3");
                 UserDetails userDetails = memberDetailsService.loadUserByUsername(memberEmail);
+                log.info("거침?33");
 
 //                SecurityMember userDetails = new SecurityMember(memberDto);
 
 
                 if(jwtUtil.validateToken(jwt,userDetails)){
+                    log.info("거침?4");
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
                     usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
 //                    JwtAuthenticationToken authenticationToken = new JwtAuthenticationToken(new JwtAuthenticationToken(jwt, memberEmail), null);
@@ -73,12 +84,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 }
             }
         }catch (ExpiredJwtException e){
+            log.info("거침?5");
             Cookie refreshToken = cookieUtil.getCookie(httpServletRequest,JwtUtil.REFRESH_TOKEN_NAME);
             if(refreshToken!=null){
+                log.info("거침?6");
                 refreshJwt = refreshToken.getValue();
             }
-        }catch(Exception e){
-
+        }catch(NullPointerException e){
+            log.info("왔니?");
         }
 
         try{
@@ -108,7 +121,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 }
             }
         }catch(ExpiredJwtException e){
-
         }
 
         filterChain.doFilter(httpServletRequest,httpServletResponse);

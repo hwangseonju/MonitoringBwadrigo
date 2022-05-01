@@ -7,6 +7,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -16,8 +17,11 @@ import java.security.Key;
 import java.util.Date;
 
 @Component
+@Slf4j
 public class JwtUtil {
 
+//    @Value("${spring.jwt.token-validity-in-seconds}")
+//    public static long TOKEN_VALIDATION_SECOND;
     public final static long TOKEN_VALIDATION_SECOND = 1000L * 10;
     public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 24 * 2;
 
@@ -54,19 +58,20 @@ public class JwtUtil {
 
     // Access 토큰을 형성
     public String generateToken(MemberDto memberDto) {
-        return doGenerateToken(memberDto.getMemberEmail(), TOKEN_VALIDATION_SECOND);
+        return doGenerateToken(memberDto, TOKEN_VALIDATION_SECOND);
     }
 
     // Refresh 토큰을 형성
     public String generateRefreshToken(MemberDto memberDto) {
-        return doGenerateToken(memberDto.getMemberEmail(), REFRESH_TOKEN_VALIDATION_SECOND);
+        return doGenerateToken(memberDto, REFRESH_TOKEN_VALIDATION_SECOND);
     }
 
     // 토큰 생성, payload에 담길 값은 memberEmail
-    public String doGenerateToken(String memberEmail, long expireTime) {
+    public String doGenerateToken(MemberDto memberDto, long expireTime) {
 
         Claims claims = Jwts.claims();
-        claims.put("memberEmail", memberEmail);
+        claims.put("memberEmail", memberDto.getMemberEmail());
+        claims.put("memberRole", memberDto.getMemberRole());
 
         String jwt = Jwts.builder()
                 .setClaims(claims)
@@ -79,6 +84,7 @@ public class JwtUtil {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
+        log.info("validate token");
         final String username = getUsername(token);
 
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
