@@ -49,12 +49,9 @@ public class MemberService {
         memberRepository.save(memberEntity);
     }
 
-    public boolean checkEmailDuplicate(String email){
+    public void checkEmailDuplicate(String email){
         if(memberRepository.existsByMemberEmail(email)) {
             throw new DuplicatedEmailException(email);
-        }
-        else{
-            return memberRepository.existsByMemberEmail(email);
         }
     }
 
