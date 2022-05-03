@@ -30,7 +30,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         httpServletResponse.setStatus(200);
         httpServletResponse.setContentType("application/json;charset=utf-8");
         Response response = new Response("error","접근가능한 권한을 가지고 있지 않습니다.",null);
-        log.info("handler");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityMember member = (SecurityMember)authentication.getPrincipal();

@@ -30,7 +30,6 @@ public class MemberController {
 
     @PostMapping()
     public ResponseEntity doLogin(@RequestBody MemberDto memberDto, HttpServletResponse res){
-        log.info("여기는?");
         //로그인 할 때, JWT를 헤더에 넣어서 반환
         Map<String, Object> result = new HashMap<>();
         String token = jwtUtil.generateToken(memberDto);
@@ -38,9 +37,7 @@ public class MemberController {
         Cookie accessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME, token);
         Cookie refreshToken = cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, refreshJwt);
         String role = String.valueOf(memberDto.getMemberRole());
-        log.info("중간은?");
-        redisUtil.setDataExpire(refreshJwt, memberDto, JwtUtil.REFRESH_TOKEN_VALIDATION_SECOND);
-        log.info("여기는?");
+        redisUtil.setDataExpire(refreshJwt, memberDto.getMemberEmail(), role ,JwtUtil.REFRESH_TOKEN_VALIDATION_SECOND);
         result.put("memberName", memberDto.getMemberName());
         result.put("accessToken", accessToken);
         result.put("refreshToken", refreshToken);
@@ -57,7 +54,6 @@ public class MemberController {
     @GetMapping("/refresh")
     public ResponseEntity refreshToken(@PathVariable("useremail") String memberEmail){
         HttpHeaders headers = new HttpHeaders();
-        log.info("refreshToken in "+memberEmail);
         return new ResponseEntity(headers, HttpStatus.OK);
     }
 

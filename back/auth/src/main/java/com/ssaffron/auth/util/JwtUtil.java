@@ -74,9 +74,7 @@ public class JwtUtil {
 
         Claims claims = Jwts.claims();
         claims.put("memberEmail", memberDto.getMemberEmail());
-        log.info("이메일오나?: {}", claims);
         claims.put("memberRole", memberDto.getMemberRole());
-        log.info("권한은??: {}", claims);
 
         String jwt = Jwts.builder()
                 .setClaims(claims)
@@ -90,7 +88,6 @@ public class JwtUtil {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
-        log.info("validate token");
         final String username = getUsername(token);
 
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
