@@ -20,13 +20,14 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class MemberDetailsService implements UserDetailsService{
 
-//    public UserDetails loadUserByUsername(MemberDto memberDto) throws UsernameNotFoundException {
-//
-//        return new SecurityMember(memberDto);
-//    }
+    public UserDetails loadUserByUsername(String memberEmail) throws UsernameNotFoundException {
 
 
-    private PasswordEncoder encoder;
+        return new SecurityMember(memberEmail, "", AuthorityUtils.createAuthorityList("ROLE_USER"));
+    }
+
+
+//    private PasswordEncoder encoder;
 
 //    @Bean
 //    public PasswordEncoder passwordEncoder(){
@@ -34,12 +35,8 @@ public class MemberDetailsService implements UserDetailsService{
 //    }
 
 
-    public UserDetails loadUserByUsername(String memberEmail) throws UsernameNotFoundException {
-        log.info("들어오니?");
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserDetails userDetails = (UserDetails)principal;
-        String password = userDetails.getPassword();
-        log.info("pw: {}",password);
-        return new User(memberEmail, encoder.encode(password), AuthorityUtils.createAuthorityList());
-    }
+//    public UserDetails loadUserByUsername(String memberEmail) throws UsernameNotFoundException {
+//
+//        return new User(memberEmail, "", AuthorityUtils.createAuthorityList());
+//    }
 }

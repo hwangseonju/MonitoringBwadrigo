@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests() // 다음 리퀘스트에 대한 사용권한 체크
                 .antMatchers("/v1/api/auth").permitAll()
-                .antMatchers("/v1/api/auth/test").permitAll()
+                .antMatchers("/v1/api/auth/test").hasRole("USER")
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class); // jwt 토큰 필터를 id / password 인증 필터 전에 넣어라

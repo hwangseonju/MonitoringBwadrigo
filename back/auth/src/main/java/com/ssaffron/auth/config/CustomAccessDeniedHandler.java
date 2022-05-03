@@ -1,6 +1,9 @@
 package com.ssaffron.auth.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssaffron.auth.dto.Response;
+import com.ssaffron.auth.util.MemberDetailsService;
+import com.ssaffron.auth.util.SecurityMember;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -26,7 +29,21 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
         httpServletResponse.setStatus(200);
         httpServletResponse.setContentType("application/json;charset=utf-8");
+        Response response = new Response("error","접근가능한 권한을 가지고 있지 않습니다.",null);
         log.info("handler");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        SecurityMember member = (SecurityMember)authentication.getPrincipal();
+        Collection<GrantedAuthority> authorities = member.getAuthorities();
+
+
+        if(hasRole(authorities,UserRole.ROLE_NOT_PERMITTED.name())){
+            response.setMessage("로그인후 이용 가능합니다.");
+        }
+
+        PrintWriter out = httpServletResponse.getWriter();
+        String jsonResponse = objectMapper.writeValueAsString(response);
+        out.print(jsonResponse);
 
     }
 

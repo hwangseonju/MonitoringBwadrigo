@@ -39,7 +39,7 @@ public class MemberController {
         Cookie refreshToken = cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, refreshJwt);
         String role = String.valueOf(memberDto.getMemberRole());
         log.info("중간은?");
-        redisUtil.setDataExpire(refreshJwt, memberDto.getMemberEmail(), JwtUtil.REFRESH_TOKEN_VALIDATION_SECOND);
+        redisUtil.setDataExpire(refreshJwt, memberDto, JwtUtil.REFRESH_TOKEN_VALIDATION_SECOND);
         log.info("여기는?");
         result.put("memberName", memberDto.getMemberName());
         result.put("accessToken", accessToken);
@@ -60,6 +60,7 @@ public class MemberController {
         log.info("refreshToken in "+memberEmail);
         return new ResponseEntity(headers, HttpStatus.OK);
     }
+
 
     @GetMapping("/test")
     public void test(){
