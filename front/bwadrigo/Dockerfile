@@ -20,3 +20,5 @@ EXPOSE 80
 
 # nginx 백그라운드 실행
 CMD ["nginx", "-g","daemon off;"]
+
+#test
