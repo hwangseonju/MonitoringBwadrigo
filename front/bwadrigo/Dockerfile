@@ -15,7 +15,7 @@ RUN npm run build
 #nginx 위에 만듬
 FROM nginx:stable-alpine as production-stage
 # 만들어진파일 디렉토리로 복사
-COPY --from=build-stage /build /usr/share/nginx/html
+COPY --from=build-stage /usr/src/app/build /usr/share/nginx/html
 EXPOSE 80
 
 # nginx 백그라운드 실행
