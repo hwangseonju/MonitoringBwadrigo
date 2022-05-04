@@ -40,7 +40,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signupsuccess" element={<Signupsuccess />} />
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<ApplyPlan />} />
         <Route path="/member-plan" element={<MemberPlan />} />
         <Route path="/start-termination" element={<StartTermination />} />
         <Route path="/survey-termination" element={<SurveyTermination />} />
