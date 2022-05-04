@@ -1,8 +1,7 @@
 package com.ssaffron.business.api.controller;
 
 import com.ssaffron.business.api.dto.*;
-import com.ssaffron.business.api.exception.NullAddressException;
-import com.ssaffron.business.api.exception.NullApplyException;
+import com.ssaffron.business.api.service.MemberService;
 import com.ssaffron.business.api.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,20 +17,21 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+    private final MemberService memberService;
 
     private final String memberEmail = "ssafy@ssafy.com";
 
     @PostMapping("")
     public ResponseEntity collectionRequest(@RequestBody List<CollectDto> collectDtoList){
-        try {
-            orderService.collectionRequest(memberEmail, collectDtoList);
-
-        }catch (NullAddressException e){
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }catch (NullApplyException e){
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-            //NullAddressException과 NullApplyException이 다른 Status를 가지면 좋을 것 같다.
-        }
+        String memberEmaill = memberService.decodeJWT();
+//        try {
+            orderService.collectionRequest(memberEmaill, collectDtoList);
+//        }catch (NotFoundAddressException e){
+//            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+//        }catch (NullApplyException e){
+//            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+//            //NullAddressException과 NullApplyException이 다른 Status를 가지면 좋을 것 같다.
+//        }
         return new ResponseEntity(HttpStatus.OK);
     }
 

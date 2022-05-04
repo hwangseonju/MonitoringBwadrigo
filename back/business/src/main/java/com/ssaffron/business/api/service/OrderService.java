@@ -2,14 +2,13 @@ package com.ssaffron.business.api.service;
 
 import com.ssaffron.business.api.dto.*;
 import com.ssaffron.business.api.entity.*;
-import com.ssaffron.business.api.exception.NullAddressException;
-import com.ssaffron.business.api.exception.NullApplyException;
+import com.ssaffron.business.api.exception.NotFoundAddressException;
+import com.ssaffron.business.api.exception.NotFoundApplyException;
 import com.ssaffron.business.api.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,14 +27,14 @@ public class OrderService {
         //수거 신청 성공/실패
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
         if(memberEntity.getMemberAddress() == null)
-            throw new NullAddressException();
+            throw new NotFoundAddressException();
         ApplyEntity applyEntity = applyRepository.findByMemberEntityAndApplyDeliveryCountIsNotNull(memberEntity).orElse(null);
         if(applyEntity == null){
-            throw new NullApplyException(memberEntity.getMemberName());
+            throw new NotFoundApplyException(memberEntity.getMemberName());
         }
         List<CollectEntity> collectEntityList = collectDtoList.
                 stream().map(collectDto -> new CollectEntity(
-                        collectDto.getCollecttype(), memberEntity)).collect(Collectors.toList());
+                        collectDto.getCollecttype(), LocalDateTime.now(), memberEntity)).collect(Collectors.toList());
         collectRepository.saveAll(collectEntityList);
         return true;
     }

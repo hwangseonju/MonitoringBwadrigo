@@ -54,8 +54,9 @@ public class CollectEntity {
     @OneToMany(mappedBy = "collectEntity")
     private List<PayEntity> payEntities = new ArrayList<>();
 
-    public CollectEntity(String collectType, MemberEntity memberEntity){
+    public CollectEntity(String collectType, LocalDateTime collectRequestDate, MemberEntity memberEntity){
         this.collectType = collectType;
+        this.collectRequestDate = collectRequestDate;
         this.memberEntity = memberEntity;
 
     }

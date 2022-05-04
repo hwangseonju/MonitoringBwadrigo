@@ -21,9 +21,9 @@ public class ApplyDto {
     private int applyCleaningCount;
     private int applyShirtCount;
     private LocalDateTime applyDate;
-    private int applyChange;
+    private Integer applyChange;
 
-    private int memberEmail;
+    private String memberEmail;
     private int monthPlanId;
 
     // response : entity to dto
@@ -35,7 +35,7 @@ public class ApplyDto {
         this.applyCleaningCount = entity.getApplyCleaningCount();
         this.applyShirtCount = entity.getApplyShirtCount();
         this.applyChange = entity.getApplyChange();
-        this.memberEmail = entity.getMemberEntity().getMemberId();
+        this.memberEmail = entity.getMemberEntity().getMemberEmail();
         this.monthPlanId =entity.getMonthPlanEntity().getMonthPlanId();
     }
 
