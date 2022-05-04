@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import {Button} from 'react-bootstrap';
-import getAxios from '../../Api';
+import axios from 'axios';
 
 function ApplicationDetail(){
     const [address, setAddress] = useState("test");
-    const axios = getAxios();
+
     useEffect(()=>{
         axios.get("/v1/api/member")
         .then((res)=>{
