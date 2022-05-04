@@ -27,7 +27,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException, ServletException, IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        httpServletResponse.setStatus(200);
+        httpServletResponse.setStatus(401);
         httpServletResponse.setContentType("application/json;charset=utf-8");
         Response response = new Response("error","접근가능한 권한을 가지고 있지 않습니다.",null);
 
