@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
@@ -35,14 +34,10 @@ public class MemberController {
     @PostMapping("/login")
     public ResponseEntity doLogin(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse res){
         //로그인 할 때, JWT를 헤더에 넣어서 반환
-
+        log.info("aaass");
         Map<String, Object> result = memberService.login(loginRequestDto.getMemberEmail(), loginRequestDto.getMemberPassword());
-
+        log.info("3333");
         //로그인, 이름
-        res.addCookie((Cookie) result.get("accessToken"));
-        res.addCookie((Cookie) result.get("refreshToken"));
-        result.remove("accessToken");
-        result.remove("refreshToken");
 
         return new ResponseEntity<>(result, HttpStatus.OK);
 
@@ -64,7 +59,7 @@ public class MemberController {
     @GetMapping()
     public ResponseEntity<MemberDto> getMember(){
         //토큰 까서 이메일 적용
-        String memberEmail = memberService.decodeJWT();
+        String memberEmail = "";
         log.info("getUser in "+memberEmail);
         MemberEntity memberEntity = memberService.getMember(memberEmail);
         MemberDto memberDto = new MemberDto();
@@ -82,7 +77,7 @@ public class MemberController {
     @PutMapping()
     public ResponseEntity<String> updateMember(@RequestBody MemberDto memberDto){
         //토큰 까서 이메일 적용
-        String memberEmail = memberService.decodeJWT();
+        String memberEmail = "";
         log.info("updateUser in "+memberEmail);
         memberService.updateMember(memberDto);
         MemberEntity response = memberService.getMember(memberEmail);
@@ -92,7 +87,7 @@ public class MemberController {
     @DeleteMapping()
     public ResponseEntity<String> deleteMember(){
         //토큰 까서 이메일 적용
-        String memberEmail = memberService.decodeJWT();
+        String memberEmail = "";
         log.info("deleteUser in "+memberEmail);
         memberService.deleteMember(memberEmail);
         return new ResponseEntity<>("삭제 완료" ,HttpStatus.OK);

@@ -42,7 +42,7 @@ public class PlanController {
     // tt 요금제 신청 header로 불러오는 법 ->
     @PostMapping("")
     public ResponseEntity createApplyFor(@RequestBody RequestApplyDto requestApplyDto) {
-        String memberEmail = memberService.decodeJWT();
+        String memberEmail = "";
         int monthPlanId = requestApplyDto.getMonthPlanId();
 //        String memberEmail = requestApplyForDto.getMemberEmail();
         ApplyDto applyDto = requestApplyDto.getApplyDto();
@@ -57,7 +57,7 @@ public class PlanController {
     // tt 요금제 수정
     @PutMapping("")
     public ResponseEntity updateApplyFor(@RequestBody RequestApplyDto requestApplyDto){
-        String memberEmail = memberService.decodeJWT();
+        String memberEmail = "";
         int monthPlanId = requestApplyDto.getMonthPlanId();
 //        String memberEmail = requestApplyForDto.getMemberEmail();
         ApplyDto applyDto = requestApplyDto.getApplyDto();
@@ -74,7 +74,7 @@ public class PlanController {
     // tt 요금제 삭제
     @DeleteMapping("")
     public ResponseEntity deleteApplyFor() {
-        String memberEmail = memberService.decodeJWT();
+        String memberEmail = "";
         try {
             planService.deleteApply(memberEmail);
             return new ResponseEntity<>(HttpStatus.OK);

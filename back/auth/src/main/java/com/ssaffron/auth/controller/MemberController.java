@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,5 +62,13 @@ public class MemberController {
     @GetMapping("/test")
     public void test(){
         log.info("test");
+    }
+
+    @GetMapping("/token")
+    public String memberRoletoken(@RequestBody String key) {
+        log.info("???: {}", key);
+
+        log.info("잘 넘어옴?: {}", jwtUtil.getUserRole(key));
+        return jwtUtil.getUserRole(key);
     }
 }

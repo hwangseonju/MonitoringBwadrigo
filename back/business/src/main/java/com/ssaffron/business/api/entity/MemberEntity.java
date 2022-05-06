@@ -3,8 +3,10 @@ package com.ssaffron.business.api.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssaffron.business.api.config.UserRole;
 import lombok.*;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -69,4 +71,5 @@ public class MemberEntity{
 
     @OneToOne(mappedBy = "memberEntity")
     private ApplyEntity applyForEntity;
+
 }

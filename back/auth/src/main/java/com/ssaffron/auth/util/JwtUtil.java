@@ -24,8 +24,8 @@ public class JwtUtil {
 
 //    @Value("${spring.jwt.token-validity-in-seconds}")
 //    public static long TOKEN_VALIDATION_SECOND;
-    public final static long TOKEN_VALIDATION_SECOND = 1000L * 10;
-    public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 10;
+    public final static long TOKEN_VALIDATION_SECOND = 1000L * 60 * 60 * 4;
+    public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 60 * 24;
 
     final static public String ACCESS_TOKEN_NAME = "accessToken";
     final static public String REFRESH_TOKEN_NAME = "refreshToken";
@@ -50,6 +50,10 @@ public class JwtUtil {
     // 추출한 payload로 부터 memberEmail을 가져온다
     public String getUsername(String token) {
         return extractAllClaims(token).get("memberEmail", String.class);
+    }
+
+    public String getUserRole(String token) {
+        return extractAllClaims(token).get("memberRole", String.class);
     }
 
     // 토큰이 만료되었는지 확인
