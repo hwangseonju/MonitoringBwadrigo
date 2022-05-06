@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.Map;
 
 
@@ -43,7 +44,19 @@ public class MemberService {
     }
 
     public void registerMember(MemberDto memberDto){
-        MemberEntity memberEntity = MemberEntity.builder(memberDto).build();
+        MemberEntity memberEntity = MemberEntity.builder()
+                .memberEmail(memberDto.getMemberEmail())
+                .memberPassword(passwordEncoder.encode(memberDto.getMemberPassword()))
+                .memberName(memberDto.getMemberName())
+                .memberPhone(memberDto.getMemberPhone())
+                .memberAddress(memberDto.getMemberAddress())
+                .memberGender(memberDto.isMemberGender())
+                .memberAge(memberDto.getMemberAge())
+                .memberStatus(MemberStatus.ACTIVATE)
+                .role(UserRole.ROLE_USER)
+                .memberCreateDate(LocalDateTime.now())
+                .memberUpdateDate(LocalDateTime.now())
+                .build();
         memberRepository.save(memberEntity);
     }
 
@@ -53,17 +66,26 @@ public class MemberService {
 
     public void updateMember(MemberModifyDto memberModifyDto){
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberModifyDto.getMemberEmail());
-        if(memberModifyDto.getMemberPassword().equals(memberModifyDto.getModifiedPassword())){
-            memberEntity.updateWithoutPassword(memberModifyDto);
+        if(!passwordEncoder.matches(memberModifyDto.getMemberPassword(), memberEntity.getMemberPassword())){
+            throw new NullPointerException();
         }
         else{
-            memberEntity.updateWithPassword(memberModifyDto);
+            if(memberModifyDto.getModifiedPassword()==null){
+                memberEntity.setMemberAddress(memberModifyDto.getMemberAddress());
+                memberRepository.save(memberEntity);
+            }
+            else{
+                memberEntity.setMemberPassword(passwordEncoder.encode(memberModifyDto.getModifiedPassword()));
+                memberEntity.setMemberAddress(memberModifyDto.getMemberAddress());
+                memberRepository.save(memberEntity);
+            }
         }
     }
 
     public void deleteMember(String memberEmail){
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
         memberEntity.setMemberStatus(MemberStatus.DEACTIVATE);
+        memberRepository.save(memberEntity);
     }
 
     public Map<String, Object> login(String memberEmail, String memberPwd) {

@@ -18,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @Table(name = "member")
 public class MemberEntity{
     @Id
@@ -63,41 +64,12 @@ public class MemberEntity{
     @LastModifiedDate
     private LocalDateTime memberUpdateDate;
 
-    @Builder.Default
     @OneToMany(mappedBy = "memberEntity",cascade = CascadeType.ALL)
     private List<PayEntity> chargeEntities = new ArrayList<>();
 
-    @Builder.Default
     @OneToMany(mappedBy = "memberEntity",cascade = CascadeType.ALL)
     private List<CollectEntity> collectionEntities = new ArrayList<>();
 
     @OneToOne(mappedBy = "memberEntity")
     private ApplyEntity applyForEntity;
-
-    @Builder(builderMethodName = "MemberEntityBuilder")
-    public static MemberEntityBuilder builder(MemberDto memberDto){
-        return MemberEntityBuilder()
-                .memberEmail(memberDto.getMemberEmail())
-                .memberPassword(memberDto.getMemberPassword())
-                .memberName(memberDto.getMemberName())
-                .memberPhone(memberDto.getMemberPhone())
-                .memberAddress(memberDto.getMemberAddress())
-                .memberGender(memberDto.isMemberGender())
-                .memberAge(memberDto.getMemberAge())
-                .memberStatus(memberDto.getMemberStatus())
-                .role(memberDto.getUserRole())
-                .memberCreateDate(LocalDateTime.now())
-                .memberUpdateDate(LocalDateTime.now());
-    }
-
-    public void updateWithPassword(MemberModifyDto memberModifyDto){
-        this.memberPassword = memberModifyDto.getMemberPassword();
-        this.memberAddress = memberModifyDto.getMemberAddress();
-    }
-
-    public void updateWithoutPassword(MemberModifyDto memberModifyDto){
-        this.memberAddress = memberModifyDto.getMemberAddress();
-    }
-
-
 }

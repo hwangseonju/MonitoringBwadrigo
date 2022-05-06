@@ -28,7 +28,6 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity registerMember(@RequestBody MemberDto memberDto){
-
         memberService.registerMember(memberDto);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -51,7 +50,6 @@ public class MemberController {
 
     @GetMapping("/check/{email}")
     public ResponseEntity checkDuplication(@PathVariable("email") String email){
-        log.info("check duplication in "+email);
         try{
             memberService.checkEmailDuplicate(email);
             return new ResponseEntity(HttpStatus.OK);
@@ -64,19 +62,24 @@ public class MemberController {
 
     @GetMapping()
     public ResponseEntity<MemberDto> getMember(){
-        //토큰 까서 이메일 적용
         String memberEmail = memberService.decodeJWT();
-        log.info("getUser in "+memberEmail);
         MemberEntity memberEntity = memberService.getMember(memberEmail);
-        MemberDto memberDto = MemberDto.builder(memberEntity).build();
+        MemberDto memberDto = MemberDto.builder()
+                .memberEmail(memberEntity.getMemberEmail())
+                .memberName(memberEntity.getMemberName())
+                .memberPhone(memberEntity.getMemberPhone())
+                .memberAddress(memberEntity.getMemberAddress())
+                .memberGender(memberEntity.isMemberGender())
+                .memberAge(memberEntity.getMemberAge())
+                .memberStatus(memberEntity.getMemberStatus())
+                .userRole(memberEntity.getRole())
+                .build();
         return new ResponseEntity<>(memberDto, HttpStatus.OK);
     }
 
     @PutMapping()
     public ResponseEntity<String> updateMember(@RequestBody MemberModifyDto memberModifyDto){
-        //토큰 까서 이메일 적용
         String memberEmail = memberService.decodeJWT();
-        log.info("updateUser in "+memberEmail);
         memberService.updateMember(memberModifyDto);
         MemberEntity response = memberService.getMember(memberEmail);
         return new ResponseEntity<>("수정 완료", HttpStatus.OK);
@@ -84,9 +87,7 @@ public class MemberController {
 
     @DeleteMapping()
     public ResponseEntity<String> deleteMember(){
-        //토큰 까서 이메일 적용
         String memberEmail = memberService.decodeJWT();
-        log.info("deleteUser in "+memberEmail);
         memberService.deleteMember(memberEmail);
         return new ResponseEntity<>("삭제 완료" ,HttpStatus.OK);
     }
