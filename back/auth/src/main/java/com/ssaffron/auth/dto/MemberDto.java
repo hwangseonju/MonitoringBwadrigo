@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 public class MemberDto {
 
     private String memberEmail;
-    private String memberName;
     private UserRole memberRole;
 
 }
