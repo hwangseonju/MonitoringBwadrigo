@@ -1,0 +1,76 @@
+server:
+  port: 8000
+
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: http://localhost:8081
+            allow-credentials: true
+            allowedHeaders:
+              - x-requested-with
+              - authorization
+              - content-type
+              - credential
+              - X-AUTH-TOKEN
+              - X-CSRF-TOKEN
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+#      default-filters:
+#        - name: GlobalFilter
+#          args:
+#            baseMessage: Spring Cloud Gateway GlobalFilter
+#            preLogger: true
+#            postLogger: true
+
+      routes:
+        - id: auth
+          uri: http://localhost:8081
+          predicates:
+            - Path=/v1/api/member,/v1/api/member/refresh,/v1/api/plan/{memberemail},/v1/api/plan/month/{month-plan-index},/v1/api/plan/laundry/list,/v1/api/plan/laundry/list,/v1/api/plan/list,/v1/api/order/**
+            - Method=GET,PUT,DELETE,POST
+          filters:
+            - name: AuthFilter
+              args:
+                baseMessage: Spring Cloud Gateway AuthFilter
+                preLogger: true
+                postLogger: true
+        - id: manager
+          uri: http://localhost:8081
+          predicates:
+            - Path=/v1/api/manager/**,
+            - Method=GET,PUT,POST
+          filters:
+            - name: ManagerFilter
+              args:
+                baseMessage: Spring Cloud Gateway ManagerFilter
+                preLogger: true
+                postLogger: true
+            - JwtAuthentication: ROLE_MANAGER
+        - id: all
+          uri: http://localhost:8081
+          predicates:
+            - Path=/v1/api/**
+            - Method=GET,PUT,DELETE,POST
+          filters:
+            - name: AllFilter
+              args:
+                baseMessage: Spring Cloud Gateway AllFilter
+                preLogger: true
+                postLogger: true
+#        - id: order-user
+#          uri: https://k6s104.p.ssafy.io:8081
+#          predicates:
+#            - Path=/v1/api/order/**
+#            - Method=POST,GET,PUT,DELETE
+#          filters:
+#            - name: OrderUserFilter
+#              args:
+#                baseMessage: Spring Cloud Gateway OrderUserFilter
+#                preLogger: true
+#                postLogger: true
