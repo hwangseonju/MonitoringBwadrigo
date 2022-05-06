@@ -2,6 +2,8 @@ package com.ssaffron.business.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssaffron.business.api.config.UserRole;
+import com.ssaffron.business.api.dto.MemberDto;
+import com.ssaffron.business.api.dto.MemberModifyDto;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -12,12 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@RequiredArgsConstructor
 @Table(name = "member")
 public class MemberEntity{
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
@@ -61,12 +63,41 @@ public class MemberEntity{
     @LastModifiedDate
     private LocalDateTime memberUpdateDate;
 
+    @Builder.Default
     @OneToMany(mappedBy = "memberEntity",cascade = CascadeType.ALL)
     private List<PayEntity> chargeEntities = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "memberEntity",cascade = CascadeType.ALL)
     private List<CollectEntity> collectionEntities = new ArrayList<>();
 
     @OneToOne(mappedBy = "memberEntity")
     private ApplyEntity applyForEntity;
+
+    @Builder(builderMethodName = "MemberEntityBuilder")
+    public static MemberEntityBuilder builder(MemberDto memberDto){
+        return MemberEntityBuilder()
+                .memberEmail(memberDto.getMemberEmail())
+                .memberPassword(memberDto.getMemberPassword())
+                .memberName(memberDto.getMemberName())
+                .memberPhone(memberDto.getMemberPhone())
+                .memberAddress(memberDto.getMemberAddress())
+                .memberGender(memberDto.isMemberGender())
+                .memberAge(memberDto.getMemberAge())
+                .memberStatus(memberDto.getMemberStatus())
+                .role(memberDto.getUserRole())
+                .memberCreateDate(LocalDateTime.now())
+                .memberUpdateDate(LocalDateTime.now());
+    }
+
+    public void updateWithPassword(MemberModifyDto memberModifyDto){
+        this.memberPassword = memberModifyDto.getMemberPassword();
+        this.memberAddress = memberModifyDto.getMemberAddress();
+    }
+
+    public void updateWithoutPassword(MemberModifyDto memberModifyDto){
+        this.memberAddress = memberModifyDto.getMemberAddress();
+    }
+
+
 }

@@ -2,6 +2,7 @@ package com.ssaffron.business.api.controller;
 
 import com.ssaffron.business.api.dto.LoginRequestDto;
 import com.ssaffron.business.api.dto.MemberDto;
+import com.ssaffron.business.api.dto.MemberModifyDto;
 import com.ssaffron.business.api.entity.MemberEntity;
 import com.ssaffron.business.api.exception.DuplicatedEmailException;
 import com.ssaffron.business.api.service.MemberService;
@@ -67,24 +68,16 @@ public class MemberController {
         String memberEmail = memberService.decodeJWT();
         log.info("getUser in "+memberEmail);
         MemberEntity memberEntity = memberService.getMember(memberEmail);
-        MemberDto memberDto = new MemberDto();
-        memberDto.setMemberEmail(memberEntity.getMemberEmail());
-        memberDto.setMemberAge(memberEntity.getMemberAge());
-        memberDto.setMemberAddress(memberEntity.getMemberAddress());
-        memberDto.setMemberName(memberEntity.getMemberName());
-        memberDto.setMemberGender(memberEntity.isMemberGender());
-        memberDto.setMemberPhone(memberEntity.getMemberPhone());
-        memberDto.setMemberStatus(memberEntity.getMemberStatus());
-        memberDto.setUserRole(memberEntity.getRole());
+        MemberDto memberDto = MemberDto.builder(memberEntity).build();
         return new ResponseEntity<>(memberDto, HttpStatus.OK);
     }
 
     @PutMapping()
-    public ResponseEntity<String> updateMember(@RequestBody MemberDto memberDto){
+    public ResponseEntity<String> updateMember(@RequestBody MemberModifyDto memberModifyDto){
         //토큰 까서 이메일 적용
         String memberEmail = memberService.decodeJWT();
         log.info("updateUser in "+memberEmail);
-        memberService.updateMember(memberDto);
+        memberService.updateMember(memberModifyDto);
         MemberEntity response = memberService.getMember(memberEmail);
         return new ResponseEntity<>("수정 완료", HttpStatus.OK);
     }

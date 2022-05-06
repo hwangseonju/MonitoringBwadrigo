@@ -1,14 +1,13 @@
 package com.ssaffron.business.api.dto;
 
 import com.ssaffron.business.api.config.UserRole;
+import com.ssaffron.business.api.entity.MemberEntity;
 import com.ssaffron.business.api.entity.MemberStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class MemberDto {
@@ -22,4 +21,18 @@ public class MemberDto {
     private int memberAge;
     private MemberStatus memberStatus;
     private UserRole userRole;
+
+    @Builder(builderMethodName = "MemberDtoBuilder")
+    public static MemberDtoBuilder builder(MemberEntity memberEntity){
+        return MemberDtoBuilder()
+                .memberEmail(memberEntity.getMemberEmail())
+                .memberPassword(memberEntity.getMemberPassword())
+                .memberName(memberEntity.getMemberName())
+                .memberPhone(memberEntity.getMemberPhone())
+                .memberAddress(memberEntity.getMemberAddress())
+                .memberGender(memberEntity.isMemberGender())
+                .memberAge(memberEntity.getMemberAge())
+                .memberStatus(memberEntity.getMemberStatus())
+                .userRole(memberEntity.getRole());
+    }
 }

@@ -3,6 +3,7 @@ package com.ssaffron.business.api.service;
 import com.ssaffron.business.api.config.JwtUtil;
 import com.ssaffron.business.api.config.UserRole;
 import com.ssaffron.business.api.dto.MemberDto;
+import com.ssaffron.business.api.dto.MemberModifyDto;
 import com.ssaffron.business.api.entity.MemberEntity;
 import com.ssaffron.business.api.entity.MemberStatus;
 
@@ -35,46 +36,34 @@ public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private void saveMember(MemberDto memberDto, MemberEntity memberEntity) {
-        memberEntity.setMemberName(memberDto.getMemberName());
-        memberEntity.setMemberEmail(memberDto.getMemberEmail());
-        memberEntity.setMemberPassword(passwordEncoder.encode(memberDto.getMemberPassword()));
-        memberEntity.setMemberAddress(memberDto.getMemberAddress());
-        memberEntity.setMemberAge(memberDto.getMemberAge());
-        memberEntity.setMemberPhone(memberDto.getMemberPhone());
-        memberEntity.setMemberGender(memberDto.isMemberGender());
-        memberEntity.setMemberStatus(MemberStatus.ACTIVATE);
-        memberEntity.setRole(UserRole.ROLE_USER);
-        memberEntity.setMemberUpdateDate(LocalDateTime.now());
-        memberRepository.save(memberEntity);
-    }
-
     public void checkEmailDuplicate(String email){
         if(memberRepository.existsByMemberEmail(email)) {
             throw new DuplicatedEmailException(email);
         }
     }
 
-
     public void registerMember(MemberDto memberDto){
-        MemberEntity memberEntity = new MemberEntity();
-        memberEntity.setMemberCreateDate(LocalDateTime.now());
-        saveMember(memberDto, memberEntity);
+        MemberEntity memberEntity = MemberEntity.builder(memberDto).build();
+        memberRepository.save(memberEntity);
     }
 
     public MemberEntity getMember(String memberEmail){
         return memberRepository.findByMemberEmail(memberEmail);
     }
 
-    public void updateMember(MemberDto memberDto){
-        MemberEntity memberEntity = getMember(memberDto.getMemberEmail());
-        saveMember(memberDto, memberEntity);
+    public void updateMember(MemberModifyDto memberModifyDto){
+        MemberEntity memberEntity = memberRepository.findByMemberEmail(memberModifyDto.getMemberEmail());
+        if(memberModifyDto.getMemberPassword().equals(memberModifyDto.getModifiedPassword())){
+            memberEntity.updateWithoutPassword(memberModifyDto);
+        }
+        else{
+            memberEntity.updateWithPassword(memberModifyDto);
+        }
     }
 
     public void deleteMember(String memberEmail){
-        MemberEntity memberEntity = getMember(memberEmail);
+        MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
         memberEntity.setMemberStatus(MemberStatus.DEACTIVATE);
-        memberRepository.save(memberEntity);
     }
 
     public Map<String, Object> login(String memberEmail, String memberPwd) {
