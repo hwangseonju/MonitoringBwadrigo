@@ -51,7 +51,6 @@ spring:
                 baseMessage: Spring Cloud Gateway ManagerFilter
                 preLogger: true
                 postLogger: true
-            - JwtAuthentication: ROLE_MANAGER
         - id: all
           uri: http://localhost:8081
           predicates:
@@ -63,14 +62,3 @@ spring:
                 baseMessage: Spring Cloud Gateway AllFilter
                 preLogger: true
                 postLogger: true
-#        - id: order-user
-#          uri: https://k6s104.p.ssafy.io:8081
-#          predicates:
-#            - Path=/v1/api/order/**
-#            - Method=POST,GET,PUT,DELETE
-#          filters:
-#            - name: OrderUserFilter
-#              args:
-#                baseMessage: Spring Cloud Gateway OrderUserFilter
-#                preLogger: true
-#                postLogger: true
