@@ -41,13 +41,13 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                 // token 가져오기
                 List<String> token = exchange.getRequest().getHeaders().get("Cookie");
                 String tokenString = Objects.requireNonNull(token).get(0);
-                logger.info("token 확인>>>>"+tokenString);
+                logger.info("token 확인>>>>>>"+tokenString);
 
                 // 토큰 확인
                 //String url = "https://webhook.site/1840c760-d74f-4696-8fac-bfb7a185925c";
                 String url = "http://localhost:8082/v1/api/auth/test";
 
-                if(!httpConnection(url,tokenString)) {
+                if(!httpConnection(url,tokenString).equals("200")) {
                     return handleUnAuthorized(exchange);
                 }
             }
@@ -67,7 +67,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
         return response.setComplete();
     }
 
-    public static boolean httpConnection(String UrlData, String ParamData) {
+    public static String httpConnection(String UrlData, String ParamData) {
 
         //http 요청 시 필요한 url 주소를 변수 선언
         String totalUrl = "";
@@ -99,24 +99,21 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
             System.out.println("http 요청 데이터 : "+ParamData);
             System.out.println("");
 
-            //http 요청 후 응답 받은 데이터를 저장
+            //http 요청 후 응답
             result = conn.getResponseMessage();
-//            br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-//            sb = new StringBuffer();
-//            while ((responseData = br.readLine()) != null) {
-//                sb.append(responseData); //StringBuffer에 응답받은 데이터 순차적으로 저장 실시
-//            }
 
             //http 요청 응답 코드 확인 실시
             String responseCode = String.valueOf(conn.getResponseCode());
+            result = responseCode;
             System.out.println("http 응답 코드 : "+responseCode);
             System.out.println("http 응답 데이터 : "+result);
 
-        } catch (IOException e) {
+        } catch (IOException e) {   // 서버 연결 끊겼을 때
             e.printStackTrace();
+            logger.error("error>>>>" + e);
         }
 
-        return true;
+        return result;
     }
 
     @Data
