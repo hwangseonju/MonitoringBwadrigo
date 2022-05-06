@@ -1,5 +1,5 @@
 server:
-  port: 8000
+  port: 8083
 
 spring:
   cloud:
@@ -29,6 +29,17 @@ spring:
 #            postLogger: true
 
       routes:
+        - id: login
+          uri: http://localhost:8082
+          predicates:
+            - Path=/v1/api/auth
+            - Method=POST
+          filters:
+            - name: LoginFilter
+              args:
+                baseMessage: Spring Cloud Gateway LoginFilter
+                preLogger: true
+                postLogger: true
         - id: auth
           uri: http://localhost:8081
           predicates:

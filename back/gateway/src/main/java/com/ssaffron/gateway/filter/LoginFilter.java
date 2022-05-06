@@ -3,13 +3,19 @@ package com.ssaffron.gateway.filter;
 import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.simple.JSONObject;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.BufferedReader;
@@ -18,56 +24,64 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
-import java.util.Objects;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
-public class ManagerFilter extends AbstractGatewayFilterFactory<ManagerFilter.Config> {
-    private static final Logger logger = LogManager.getLogger(ManagerFilter.class);
-    public ManagerFilter() {
+public class LoginFilter extends AbstractGatewayFilterFactory<LoginFilter.Config> {
+    private static final Logger logger = LogManager.getLogger(LoginFilter.class);
+    public LoginFilter() {
         super(Config.class);
     }
 
     @Override
     public GatewayFilter apply(Config config) {
         return ((exchange, chain) -> {
-            logger.info("ManagerFilter baseMessage>>>>>>" + config.getBaseMessage());
+            logger.info("LoginFilter baseMessage>>>>>>" + config.getBaseMessage());
             if (config.isPreLogger()) {
                 ServerHttpRequest request = exchange.getRequest();
-                logger.info("ManagerFilter Start>>>>>>" + exchange.getRequest());
+                logger.info("LoginFilter Start>>>>>>" + exchange.getRequest());
+
+                //logger.info("확인용>>>" + serverRequest.bodyToMono(JSONObject.class));
 
                 // token이 있는지 없는 여부 확인
-                if(!request.getHeaders().containsKey("Cookie")) {
-                    return handleUnAuthorized(exchange);
-                }
+//                if(!request.getBody().) {
+//                    return handleUnAuthorized(exchange);
+//                }
+
 
                 // token 가져오기
-                List<String> token = exchange.getRequest().getHeaders().get("Cookie");
-                String tokenString = Objects.requireNonNull(token).get(0);
+//                List<String> token = exchange.getRequest().getHeaders().get("Cookie");
+//                String tokenString = Objects.requireNonNull(token).get(0);
 
-                StringTokenizer st = new StringTokenizer(tokenString, "=,;");
-                st.nextToken();
-                String accessToken = st.nextToken();
+//                StringTokenizer st = new StringTokenizer(tokenString, "=,;");
+//                st.nextToken();
+//                String accessToken = st.nextToken();
 
-                //String data = "{ \"accessToken\" : \"" + accessToken + "\" }";
-                logger.info("token 확인>>>>>>"+accessToken);
+                String data = "{ \"accessToken\" : \"test\" }";
+//                logger.info("token 확인>>>>>>"+data);
 
                 // 토큰 확인
                 //String url = "https://webhook.site/1840c760-d74f-4696-8fac-bfb7a185925c";
-                String url = "http://localhost:8082/v1/api/auth/token";
+                String url = "http://localhost:8081/v1/api/member/login";
 
-                if(!httpConnection(url,accessToken).equals("ROLE_MANAGER")) {
-                    return handleUnAuthorized(exchange);
-                }
+//                if(!httpConnection(url,data)) {
+//                    return handleUnAuthorized(exchange);
+//                }
             }
 
             return chain.filter(exchange).then(Mono.fromRunnable(()->{
                 if (config.isPostLogger()) {
-                    logger.info("ManagerFilter End>>>>>>" + exchange.getResponse());
+                    logger.info("LoginFilter End>>>>>>" + exchange.getResponse());
                 }
             }));
         });
+    }
+
+    private Map<String, Object> decodeBody(String body) {
+        return Arrays.stream(body.split("&"))
+                .map(s -> s.split("="))
+                .collect(Collectors.toMap(arr -> arr[0], arr -> arr[1]));
     }
 
     private Mono<Void> handleUnAuthorized(ServerWebExchange exchange) {
