@@ -1,31 +1,38 @@
 package com.ssaffron.gateway.filter;
 
+import io.netty.buffer.ByteBufAllocator;
 import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.core.io.buffer.NettyDataBufferFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Calendar;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 @Component
 public class LoginFilter extends AbstractGatewayFilterFactory<LoginFilter.Config> {
@@ -38,39 +45,31 @@ public class LoginFilter extends AbstractGatewayFilterFactory<LoginFilter.Config
     public GatewayFilter apply(Config config) {
         return ((exchange, chain) -> {
             logger.info("LoginFilter baseMessage>>>>>>" + config.getBaseMessage());
+
+            ServerWebExchange newExchange = null;
             if (config.isPreLogger()) {
                 ServerHttpRequest request = exchange.getRequest();
                 logger.info("LoginFilter Start>>>>>>" + exchange.getRequest());
 
-                //logger.info("확인용>>>" + serverRequest.bodyToMono(JSONObject.class));
+                String bodyString = getRequestBody(request);
+                DataBuffer bodyDataBuffer = stringBuffer(bodyString);
 
-                // token이 있는지 없는 여부 확인
-//                if(!request.getBody().) {
-//                    return handleUnAuthorized(exchange);
-//                }
+                URI requestUri = request.getURI();
+                URI ex = UriComponentsBuilder.fromUri(requestUri).build(true).toUri();
+                ServerHttpRequest newRequest = request.mutate().uri(ex).build();
 
+                Flux<DataBuffer> bodyFlux = Flux.just(bodyDataBuffer);
+                newRequest = new ServerHttpRequestDecorator(newRequest) {
+                    @Override
+                    public Flux<DataBuffer> getBody() {
+                        return bodyFlux;
+                    }
+                };
 
-                // token 가져오기
-//                List<String> token = exchange.getRequest().getHeaders().get("Cookie");
-//                String tokenString = Objects.requireNonNull(token).get(0);
-
-//                StringTokenizer st = new StringTokenizer(tokenString, "=,;");
-//                st.nextToken();
-//                String accessToken = st.nextToken();
-
-                String data = "{ \"accessToken\" : \"test\" }";
-//                logger.info("token 확인>>>>>>"+data);
-
-                // 토큰 확인
-                //String url = "https://webhook.site/1840c760-d74f-4696-8fac-bfb7a185925c";
-                String url = "http://localhost:8081/v1/api/member/login";
-
-//                if(!httpConnection(url,data)) {
-//                    return handleUnAuthorized(exchange);
-//                }
+                newExchange = exchange.mutate().request(newRequest).build();
             }
 
-            return chain.filter(exchange).then(Mono.fromRunnable(()->{
+            return chain.filter(newExchange).then(Mono.fromRunnable(()->{
                 if (config.isPostLogger()) {
                     logger.info("LoginFilter End>>>>>>" + exchange.getResponse());
                 }
@@ -78,10 +77,49 @@ public class LoginFilter extends AbstractGatewayFilterFactory<LoginFilter.Config
         });
     }
 
-    private Map<String, Object> decodeBody(String body) {
-        return Arrays.stream(body.split("&"))
-                .map(s -> s.split("="))
-                .collect(Collectors.toMap(arr -> arr[0], arr -> arr[1]));
+    private DataBuffer stringBuffer(String value){
+        byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
+        NettyDataBufferFactory nettyDataBufferFactory = new
+                NettyDataBufferFactory(ByteBufAllocator.DEFAULT);
+        DataBuffer buffer = nettyDataBufferFactory.allocateBuffer(bytes.length);
+        buffer.write(bytes);
+        return buffer;
+    }
+
+    private String getRequestBody(ServerHttpRequest request) {
+        Flux<DataBuffer> body = request.getBody();
+        StringBuilder sb = new StringBuilder();
+
+        String memberEmail = "hi@hi.com";
+        String memberRole = "ROLE_USER";
+        body.subscribe(buffer -> {
+            byte[] bytes = new byte[buffer.readableByteCount()];
+            buffer.read(bytes);
+            DataBufferUtils.release(buffer);
+            String bodyString = new String(bytes, StandardCharsets.UTF_8);
+            String result = httpConnection("http://localhost:8081/v1/api/member/login", bodyString);
+            System.out.println("result>>>>>" + result);
+        });
+//        StringTokenizer st = new StringTokenizer(str, "{,},:");
+//        st.nextToken();
+//        String memberEmail = st.nextToken();
+//        String memberRole = st.nextToken();
+//        String memberEmail = "hi@hi.com";
+//        String memberRole = "ROLE_USER";
+        System.out.println("제발1>>>>" + memberEmail);
+        System.out.println("제발2>>>>" + memberRole);
+        String str = "test";
+        if (str != null) {
+            try {
+                JSONObject obj = new JSONObject();
+                obj.put("memberEmail", memberEmail);
+                obj.put("memberRole", memberRole);
+                str = obj.toString();
+            }catch(Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return str;
     }
 
     private Mono<Void> handleUnAuthorized(ServerWebExchange exchange) {
@@ -115,7 +153,7 @@ public class LoginFilter extends AbstractGatewayFilterFactory<LoginFilter.Config
             conn = (HttpURLConnection) url.openConnection();
 
             //http 요청에 필요한 타입 정의 실시
-            conn.setRequestMethod("GET");
+            conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json; utf-8");
             conn.setRequestProperty("Accept", "application/json");
             conn.setDoOutput(true); //OutputStream을 사용해서 post body 데이터 전송
@@ -130,7 +168,7 @@ public class LoginFilter extends AbstractGatewayFilterFactory<LoginFilter.Config
 
             //http 요청 실시
             conn.connect();
-            System.out.println("http 요청 방식 : "+"GET");
+            System.out.println("http 요청 방식 : "+"POST");
             System.out.println("http 요청 타입 : "+"application/json");
             System.out.println("http 요청 주소 : "+UrlData);
             System.out.println("http 요청 데이터 : "+ParamData);
