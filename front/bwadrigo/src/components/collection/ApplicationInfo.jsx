@@ -1,6 +1,17 @@
+import axios from 'axios';
+import { async } from 'q';
+import { useCallback, useState } from 'react';
 import {Button, Row, Col, Container} from 'react-bootstrap';
 
 function ApplicationInfo(){
+    const memberName = useState(localStorage.getItem("memberName"))
+
+    
+    if(!localStorage.getItem("memberName")){
+    
+        window.location.href = "/pleaseLogin"
+
+    }
     return(
         <Container>
             <Row><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></Row>
@@ -13,6 +24,7 @@ function ApplicationInfo(){
             </Row>
         </Container>
     )
+    
 }
 
 export default ApplicationInfo;

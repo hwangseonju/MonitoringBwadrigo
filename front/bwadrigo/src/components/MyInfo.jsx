@@ -1,25 +1,32 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {Button} from 'react-bootstrap';
+import axios from 'axios';
 
 function MyInfo() {
-    const [member, setMember] = useState({
-    "memberId":"1",
-    "memberEmail":"test@test.com",
-    "memberPassword":"",
-    "memberName":"test",
-    "memberPhone":"010-1233-1223",
-    "memberAddress":"강남구 역삼동 2",
-    "memberGender":"",
-    "memberAge":"",
-    "memberStatus":"",
-    "userRole":"",
-});
+    const [member,setMember] = useState({
+    memberEmail:"",
+    memberName:"",
+    memberPhone:"",
+    memberAddress:""
+})
+    useEffect(()=>{
+        axios.get(
+        "/v1/api/member"
+        )
+        .then((res) =>{
+        
+            let memberDto = res.data
+            setMember(memberDto);
+        })
+
+    },[])
+    
     return (
         <div>
             <h3><Button href='/' variant="light">-</Button>내 정보</h3>
             <hr></hr>
-            <h4>기본정보<Button href='/' variant="light">정보수정</Button></h4>
+            <h4>기본정보<Button href='/myinfomodify' variant="light">정보수정</Button></h4>
             이메일 {member.memberEmail }<br/>
             이름 {member.memberName}<br/>
             휴대전화{ member.memberPhone}<br />

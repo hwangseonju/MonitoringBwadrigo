@@ -1,59 +1,66 @@
 import {Nav, Image} from 'react-bootstrap';
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 
 function Footer(){
 
     const [selectTab, setSelectTab] = useState(localStorage.getItem("tab") ? localStorage.getItem("tab") : "/");
     const [tabStatus, setTab] = useState({
         "homeTab" : selectTab == "/" ? true : false,
-        "collectTab" : selectTab == "/collect" ? true : false,
-        "documentTab" : selectTab == "/document" ? true : false,
+        "collectTab" : selectTab == "/applicationResult" ? true : false,
+        "documentTab" : selectTab == "/usePlan" ? true : false,
         "myTab" : selectTab == "/profile" ? true : false
     });
 
 
-    const onChange = (e) => {
-        const {name} = e.target
-        setSelectTab(name);
+    const [accessToken, setAccessToken] = useState()
+    useEffect(()=>{
         let cookieList = document.cookie.split("; ");
-        let accessToken;
         for(let str of cookieList){
             let kv = str.split("=");
             let key = kv[0];
             if(key == "accessToken"){
-                accessToken = kv[1];        
+                setAccessToken(kv[1]);
+                break;        
             }
-        }
+    }
+    },[])
+    
+
+    const onChange = async (e) => {
+        const {name} = e.target
+        setSelectTab(name);
+        
+        // accessToken = "asdkafgpjhqj9o-qjoiqepoje";
+        // document.cookie = "accessToken="+accessToken; 
+        console.log(accessToken)
         switch(name){
             case "/":
                 // localStorage.removeItem("tab");
                 console.log(name);
                 window.location.replace("/");
+                localStorage.setItem("tab", "/")
+
                 break;
-            case "/collect":
-                localStorage.setItem("tab", "/collect")
+            case "/applicationResult":
+                localStorage.setItem("tab", "/applicationResult")
                 if(accessToken){
-                    window.location.href = "/collect";
+                    window.location.href = "/applicationResult";
                 }
                 else{
                     window.location.href = "/pleaseLogin";
                 }
+                    
+                window.location.href = "/applicationResult";
                 break;
-            case "/document":
-                localStorage.setItem("tab", "/document")
-                if(accessToken){
-                    window.location.href = "/document";
-                }
-                else{
-                    window.location.href = "/pleaseLogin";
-                }
+            case "/usePlan":
+                localStorage.setItem("tab", "/usePlan")
+                window.location.href = "/usePlan";
                 break;
             case "/profile":
+                localStorage.setItem("tab", "/profile")
                 window.location.href = "/profile"
                 break;
         }
-        // let accessToken = "asdkafgpjhqj9o-qjoiqepoje";
-        // document.cookie = "refreshToken="+accessToken; 
         console.log(document.cookie);
     }
 
@@ -68,13 +75,13 @@ function Footer(){
                     </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                    <Nav.Link eventKey="/collect" name="/collect" onClick={onChange}>
-                        <img src={require(tabStatus.collectTab ? "../img/nav/collect-select.png" : "../img/nav/collect.png")} name="/collect" onClick={onChange}/>
+                    <Nav.Link eventKey="/applicationResult" name="/applicationResult" onClick={onChange}>
+                        <img src={require(tabStatus.collectTab ? "../img/nav/collect-select.png" : "../img/nav/collect.png")} name="/applicationResult" onClick={onChange}/>
                         </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                    <Nav.Link eventKey="/document" name="/document" onClick={onChange}>
-                        <img src={require(tabStatus.documentTab ? "../img/nav/document-select.png" : "../img/nav/document.png")} name="/document" onClick={onChange}/>
+                    <Nav.Link eventKey="/usePlan" name="/usePlan" onClick={onChange}>
+                        <img src={require(tabStatus.documentTab ? "../img/nav/document-select.png" : "../img/nav/document.png")} name="/usePlan" onClick={onChange}/>
                     </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>

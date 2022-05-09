@@ -106,11 +106,13 @@ function Signup() {
       if (checkEmail && checkPw) {
         axios({
           method: "post",
-          url: "/v1/api/member/signup/",
+          url: "/v1/api/member/signup",
           data: inputs,
         })
           .then((res) => {
-            console.log(res);
+            // console.log(res);
+            alert("회원가입을 환영합니다.")
+            window.location.href = "/login"
           })
           .catch((err) => {
             console.log(err);

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { Button, Row, Col, Container } from "react-bootstrap";
 
 function MemberPlan() {
@@ -29,18 +30,19 @@ function MemberPlan() {
   const [applyEndDate, setApplyEndDate] = useState();
 
   // 회원 이용 기간 계산
-  const startDate = () => {
-    let startYY = parseInt(applyList.applyDate.substring(0, 4));
-    let startMM = parseInt(applyList.applyDate.substring(5, 7));
-    let startDD = parseInt(applyList.applyDate.substring(8, 10));
+  const startDate = (applyDate) => {
+    let startYY = parseInt(applyDate.substring(0, 4));
+    let startMM = parseInt(applyDate.substring(5, 7));
+    let startDD = parseInt(applyDate.substring(8, 10));
     let start = startYY + "년 " + startMM + "월 " + startDD + "일";
-    setApplyStartDate(start);
+    // setApplyStartDate(start);
+    return start;
   };
 
-  const endDate = () => {
-    let startYY = parseInt(applyList.applyDate.substring(0, 4));
-    let startMM = parseInt(applyList.applyDate.substring(5, 7));
-    let startDD = parseInt(applyList.applyDate.substring(8, 10));
+  const endDate = (applyDate) => {
+    let startYY = parseInt(applyDate.substring(0, 4));
+    let startMM = parseInt(applyDate.substring(5, 7));
+    let startDD = parseInt(applyDate.substring(8, 10));
 
     let month = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     startDD = startDD + 28;
@@ -54,13 +56,14 @@ function MemberPlan() {
       }
     }
     let end = startYY + "년 " + startMM + "월 " + startDD + "일";
-    setApplyEndDate(end);
+    // setApplyEndDate(end);
+    return end;
   };
 
   // 요금제 종류 리스트
-  const [planList, setPlanList] = useState([
+  const [plan, setPlan] = useState([
     {
-      monthPlanId: 2,
+      monthPlanId: 3,
       monthPlanName: "테스트요금",
       monthPlanPrice: 0,
       monthPlanBeddingCount: 0,
@@ -77,6 +80,26 @@ function MemberPlan() {
     memberPhone: "000-000-000",
     memberAddress: "광주 어디",
   });
+  useEffect(()=>{
+    axios.get("/v1/api/member")
+    .then((res)=>{
+      setMemberList(res.data)
+    })
+  },[])
+  useEffect(()=>{
+    axios.get("/v1/api/plan")
+    .then((res)=>{
+      console.log(res)
+      setApplyList(res.data)
+      
+      axios.get(`/v1/api/plan/month/${res.data.monthPlanId}`).then((plan)=>{
+        // startDate()
+        // endDate()
+        console.log(plan)
+        setPlan(plan.data)
+      })
+    })
+  },[])
 
   return (
     <div>
@@ -89,7 +112,7 @@ function MemberPlan() {
           <Container key={applyList.applyId}>
             <Row>
               <Col>
-                <b>신청 서비스</b>
+                <h3 className="text-center"> 서비스</h3>
               </Col>
               {applyList.monthPlanId > 1 ? (
                 <Col xs={8} style={{ textAlign: "right" }}>
@@ -106,7 +129,7 @@ function MemberPlan() {
                 <b>신청일</b>
               </Col>
               <Col xs={8} style={{ textAlign: "right" }}>
-                {applyStartDate}
+                {startDate(applyList.applyDate)}
               </Col>
             </Row>
             <Row>
@@ -130,11 +153,11 @@ function MemberPlan() {
                     <b>이용기간</b>
                   </Col>
                   <Col xs={9} style={{ textAlign: "right" }}>
-                    {applyStartDate} ~ {applyEndDate}
+                    {startDate(applyList.applyDate)} ~ {endDate(applyList.applyDate)}
                   </Col>
                 </Row>
                 <hr />
-                {planList.map((plan) => (
+                {/* {plan.map((plan) => ( */}
                   <div key={plan.monthPlanId}>
                     {plan.monthPlanId === applyList.monthPlanId && (
                       <div>
@@ -247,13 +270,13 @@ function MemberPlan() {
                         </Row>
                         <Row>
                           <Col style={{ textAlign: "right" }}>
-                            <a href="@">월정액 초과 이용 가격표 보기</a>
+                            {/* <a href="@">월정액 초과 이용 가격표 보기</a> */}
                           </Col>
                         </Row>
                       </div>
                     )}
                   </div>
-                ))}
+                {/* ))} */}
               </div>
             )}
             {applyList.monthPlanId === 1 && (
