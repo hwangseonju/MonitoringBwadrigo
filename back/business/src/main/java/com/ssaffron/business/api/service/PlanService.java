@@ -13,8 +13,10 @@ import com.ssaffron.business.api.repository.LaundryPlanRepository;
 import com.ssaffron.business.api.repository.MemberRepository;
 import com.ssaffron.business.api.repository.MonthPlanRepository;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,6 +53,7 @@ public class PlanService {
     }
 
     // 요금제 신청
+    @Transactional
     public void insertApply(int monthPlanId, String memberEmail){
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
         MonthPlanEntity monthPlanEntity = monthPlanRepository.findByMonthPlanId(monthPlanId);
@@ -69,17 +72,18 @@ public class PlanService {
         if(applyRepository.findByMemberEntity(memberEntity).orElse(null) == null) {
             applyRepository.save(applyEntity);
         }else{
-            throw new DuplicatedApplyException(memberEntity.getMemberName());
+            throw new DuplicatedApplyException("Duplicated Apply");
         }
     }
 
     // 요금제 수정 - 변경 요금제 신청하기
+    @Transactional
     public void updateApply(int monthPlanId, String memberEmail)  {
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
         MonthPlanEntity monthPlanEntity = monthPlanRepository.findByMonthPlanId(monthPlanId);
         ApplyEntity applyEntity = applyRepository.findByMemberEntity(memberEntity).orElse(null);
         if(applyEntity == null){
-            throw  new NotFoundApplyException(memberEntity.getMemberName());
+            throw  new NotFoundApplyException("Not Found Apply");
         }
         applyEntity.setApplyChange(monthPlanId);
         applyRepository.save(applyEntity);
@@ -91,10 +95,11 @@ public class PlanService {
     }
 
     // 요금제 삭제
+    @Transactional
     public void deleteApply(String memberEmail) {
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
         ApplyEntity applyEntity = applyRepository.findByMemberEntity(memberEntity).orElseThrow(() ->
-            new DeleteApplyException(memberEntity.getMemberName()) );
+                new NotFoundApplyException("Not Found Apply"));
             applyRepository.delete(applyEntity);
 
     }
@@ -115,6 +120,7 @@ public class PlanService {
         return entity.stream().map(ApplyDto::new).collect(Collectors.toList());
     }
     //dd 사용중인 요금제 조회
+    @Transactional
     public ApplyDto getApply(String memberEmail){
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
         ApplyEntity applyEntity = memberEntity.getApplyForEntity();
@@ -122,7 +128,7 @@ public class PlanService {
         if(applyEntity != null){
             return new ApplyDto(applyEntity);
         }else{
-            throw new NotFoundApplyException(memberEntity.getMemberName());
+            throw new NotFoundApplyException("Not Found Apply");
         }
 //        return new ApplyDto(applyEntity);
 

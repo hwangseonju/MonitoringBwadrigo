@@ -2,12 +2,14 @@ package com.ssaffron.business.api.service;
 
 import com.ssaffron.business.api.dto.*;
 import com.ssaffron.business.api.entity.*;
+import com.ssaffron.business.api.exception.ErrorCode;
 import com.ssaffron.business.api.exception.NotFoundAddressException;
 import com.ssaffron.business.api.exception.NotFoundApplyException;
 import com.ssaffron.business.api.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,14 +25,15 @@ public class OrderService {
     private final LaundryPlanRepository laundryPlanRepository;
     private final ApplyRepository applyRepository;
 
+    @Transactional
     public boolean collectionRequest(String memberEmail, List<CollectDto> collectDtoList){
         //수거 신청 성공/실패
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
         if(memberEntity.getMemberAddress() == null)
-            throw new NotFoundAddressException();
+            throw new NotFoundAddressException("Not Found Address");
         ApplyEntity applyEntity = applyRepository.findByMemberEntityAndApplyDeliveryCountIsNotNull(memberEntity).orElse(null);
         if(applyEntity == null){
-            throw new NotFoundApplyException(memberEntity.getMemberName());
+            throw new NotFoundApplyException("Not Found Apply");
         }
         List<CollectEntity> collectEntityList = collectDtoList.
                 stream().map(collectDto -> new CollectEntity(
