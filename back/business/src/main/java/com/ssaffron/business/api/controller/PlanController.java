@@ -45,9 +45,8 @@ public class PlanController {
         String memberEmail = memberService.decodeJWT();
         int monthPlanId = requestApplyDto.getMonthPlanId();
 //        String memberEmail = requestApplyForDto.getMemberEmail();
-        ApplyDto applyDto = requestApplyDto.getApplyDto();
         try {
-            planService.insertApply(applyDto, monthPlanId, memberEmail);
+            planService.insertApply(monthPlanId, memberEmail);
             return new ResponseEntity<>(HttpStatus.OK);
         }catch(DuplicatedApplyException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -59,10 +58,10 @@ public class PlanController {
     public ResponseEntity updateApplyFor(@RequestBody RequestApplyDto requestApplyDto){
         String memberEmail = memberService.decodeJWT();
         int monthPlanId = requestApplyDto.getMonthPlanId();
+        //바뀔 요금제
 //        String memberEmail = requestApplyForDto.getMemberEmail();
-        ApplyDto applyDto = requestApplyDto.getApplyDto();
         try {
-            planService.updateApply(applyDto, monthPlanId, memberEmail);
+            planService.updateApply(monthPlanId, memberEmail);
         }catch (NoSuchApplyException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }catch (ExistedApplyException e){
@@ -73,8 +72,9 @@ public class PlanController {
 
     // tt 요금제 삭제
     @DeleteMapping("")
-    public ResponseEntity deleteApplyFor() {
+    public ResponseEntity deleteApplyFor(@RequestBody String reason) {
         String memberEmail = memberService.decodeJWT();
+        log.info("{}님이 해지하는 사유는 '{}' 입니다.",memberEmail,reason);
         try {
             planService.deleteApply(memberEmail);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -104,9 +104,11 @@ public class PlanController {
     }
 
     //dd 사용중인 요금제 조회
-    @GetMapping("/{memberemail}")
-    public ResponseEntity<ApplyDto> getApplyFor(@PathVariable String memberemail) {
-        ApplyDto applyone = planService.getApply(memberemail);
+    @GetMapping("")
+    public ResponseEntity<ApplyDto> getApplyFor() {
+        String memberEmail = memberService.decodeJWT();
+
+        ApplyDto applyone = planService.getApply(memberEmail);
         return new ResponseEntity(applyone,HttpStatus.OK);
     }
 

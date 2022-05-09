@@ -6,6 +6,7 @@ import com.ssaffron.business.api.exception.NullAddressException;
 import com.ssaffron.business.api.exception.NullApplyException;
 import com.ssaffron.business.api.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -35,7 +37,7 @@ public class OrderService {
         }
         List<CollectEntity> collectEntityList = collectDtoList.
                 stream().map(collectDto -> new CollectEntity(
-                        collectDto.getCollecttype(), memberEntity)).collect(Collectors.toList());
+                        collectDto.getCollecttype(),LocalDateTime.now(), memberEntity)).collect(Collectors.toList());
         collectRepository.saveAll(collectEntityList);
         return true;
     }
@@ -44,14 +46,30 @@ public class OrderService {
         //한 사용자의 수거 요청 목록을 조회 할 수 있다.
         //수거한 직원의 정보를 볼 수 없다. -> 사용자용
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
-        return collectRepository.findAllByMemberEntity(memberEntity).
-                stream().map(collectEntity -> CollectDto.builder().
+
+        return collectRepository.findAllByMemberEntityOrderByCollectRequestDateDesc(memberEntity)
+//        return memberEntity.getCollectionEntities()
+                .stream().map(collectEntity -> CollectDto.builder().
                     collectId(collectEntity.getCollectId()).
                     collectRequestDate(collectEntity.getCollectRequestDate()).
                     collectWithdrawDate(collectEntity.getCollectWithdrawDate()).
                     collecttype(collectEntity.getCollectType()).
                     build()).collect(Collectors.toList());
                     //collectId를 넣는 이유 -> 접수번호 확인
+    }
+    public List<CollectDto> isCollect(String memberEmail){
+        //한 사용자의 수거 요청 목록이 있는지 확인 할 수 있다.
+        log.info(memberEmail);
+        MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
+        return collectRepository.findAllByMemberEntityAndCollectWithdrawDateIsNullAndEmployeeEntityIsNull(memberEntity)
+//        return memberEntity.getCollectionEntities()
+                .stream().map(collectEntity -> CollectDto.builder().
+                        collectId(collectEntity.getCollectId()).
+                        collectRequestDate(collectEntity.getCollectRequestDate()).
+                        collectWithdrawDate(collectEntity.getCollectWithdrawDate()).
+                        collecttype(collectEntity.getCollectType()).
+                        build()).collect(Collectors.toList());
+
     }
 
     public List<CollectDtoEmployeeForm> fetchAllCollectionRequest(){
@@ -198,10 +216,13 @@ public class OrderService {
         return true;
     }
 
-    public List<PayDto> getBill(String memberEmail){
+    public List<PayDto> getBill(String memberEmail, int month){
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
-        return payRepository.findAllByMemberEntity(memberEntity).
+        LocalDateTime end = LocalDateTime.now();
+        LocalDateTime start = LocalDateTime.now().minusMonths(month);
+        return payRepository.findAllByMemberEntityAndPayResponseDateBetweenOrderByPayResponseDateDesc(memberEntity, start, end).
                 stream().map(payEntity -> PayDto.builder().
+                    payId(payEntity.getPayId()).
                     payRequestCount(payEntity.getPayRequestCount()).
                     payResponseDate(payEntity.getPayResponseDate()).
                     payPickDate(payEntity.getPayPickDate()).

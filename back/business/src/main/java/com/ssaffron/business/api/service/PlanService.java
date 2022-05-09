@@ -13,12 +13,14 @@ import com.ssaffron.business.api.repository.LaundryPlanRepository;
 import com.ssaffron.business.api.repository.MemberRepository;
 import com.ssaffron.business.api.repository.MonthPlanRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PlanService {
@@ -50,18 +52,18 @@ public class PlanService {
     }
 
     // 요금제 신청
-    public void insertApply(ApplyDto applyDto, int monthPlanId, String memberEmail){
+    public void insertApply(int monthPlanId, String memberEmail){
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
         MonthPlanEntity monthPlanEntity = monthPlanRepository.findByMonthPlanId(monthPlanId);
 
         ApplyEntity applyEntity = new ApplyEntity(
-                applyDto.getApplyWashCount(),
-                applyDto.getApplyBeddingCount(),
-                applyDto.getApplyDeliveryCount(),
-                applyDto.getApplyCleaningCount(),
-                applyDto.getApplyShirtCount(),
-                applyDto.getApplyDate().now(),
-                applyDto.getApplyChange(),
+                monthPlanEntity.getMonthPlanWashCount(),
+                monthPlanEntity.getMonthPlanBeddingCount(),
+                monthPlanEntity.getMonthPlanDeliveryCount(),
+                monthPlanEntity.getMonthPlanCleaningCount(),
+                monthPlanEntity.getMonthPlanShirtCount(),
+                LocalDateTime.now(),
+                null,
                 memberEntity,
                 monthPlanEntity
         );
@@ -73,19 +75,24 @@ public class PlanService {
     }
 
     // 요금제 수정 - 변경 요금제 신청하기
-    public void updateApply(ApplyDto applyDto, int monthPlanId, String memberEmail){
+    public void updateApply(int monthPlanId, String memberEmail){
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
-        int memberId = memberEntity.getMemberId();
         MonthPlanEntity monthPlanEntity = monthPlanRepository.findByMonthPlanId(monthPlanId);
-        ApplyEntity applyEntity = applyRepository.findByMemberEntity_MemberId(memberId);
-        if(monthPlanId != applyDto.getApplyChange() && applyEntity != null) {
-            applyEntity.setApplyChange(applyDto.getApplyChange());
-            applyRepository.save(applyEntity);
-        }else if(monthPlanId == applyDto.getApplyChange()){
-            throw new ExistedApplyException(memberEntity.getMemberName());
-        }else{
-            throw new NoSuchApplyException(memberEntity.getMemberName());
+        ApplyEntity applyEntity = applyRepository.findByMemberEntity(memberEntity).orElse(null);
+        if(applyEntity == null){
+            throw  new NoSuchApplyException(memberEntity.getMemberName());
         }
+        applyEntity.setApplyChange(monthPlanId);
+        applyRepository.save(applyEntity);
+//        if(monthPlanId != applyEntity.getApplyChange() && applyEntity != null) {
+//            applyEntity.setApplyChange(applyDto.getApplyChange());
+//            applyRepository.save(applyEntity);
+//        }else if(monthPlanId == applyDto.getApplyChange()){
+//            throw new ExistedApplyException(memberEntity.getMemberName());
+//            이미 바꿀 내용이 있는 건 문제가 안 된다.
+//        }else{
+//            throw new NoSuchApplyException(memberEntity.getMemberName());
+//        }
     }
 
     // 요금제 삭제
@@ -106,8 +113,8 @@ public class PlanService {
     }
     // dd 한달요금제 1개조회
     public MonthPlanDto getMonthPlan(int monthPlanId){
-        MonthPlanEntity entity = monthPlanRepository.findByMonthPlanId(monthPlanId);
-        return new MonthPlanDto(entity);
+        MonthPlanEntity monthPlanEntity = monthPlanRepository.findByMonthPlanId(monthPlanId);
+        return new MonthPlanDto(monthPlanEntity);
     }
     //dd 사용중인 요금제 리스트 조회
     public List<ApplyDto> getApplyList(){
@@ -116,15 +123,18 @@ public class PlanService {
     }
     //dd 사용중인 요금제 조회
     public ApplyDto getApply(String memberEmail){
-        MemberEntity member = memberRepository.findByMemberEmail(memberEmail);
-        int Id = member.getMemberId();
-        ApplyEntity entity = applyRepository.findByMemberEntity_MemberId(Id);
+        MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
+//        int Id = member.getMemberId();
+//        ApplyEntity entity = applyRepository.findByMemberEntity_MemberId(Id);
 //        if(entity != null){
 //            return new ApplyDto(entity);
 //        }else{
 //            throw new RuntimeException();
 //        }
-        return new ApplyDto(entity);
+        if(memberEntity.getApplyForEntity() == null){
+            return null;
+        }
+        return new ApplyDto(memberEntity.getApplyForEntity());
 
     }
 

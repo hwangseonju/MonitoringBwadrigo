@@ -3,6 +3,7 @@ package com.ssaffron.business.api.controller;
 import com.ssaffron.business.api.dto.*;
 import com.ssaffron.business.api.exception.NullAddressException;
 import com.ssaffron.business.api.exception.NullApplyException;
+import com.ssaffron.business.api.service.MemberService;
 import com.ssaffron.business.api.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,11 +19,12 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
-
-    private final String memberEmail = "ssafy@ssafy.com";
+    private final MemberService memberService;
+//    private final String memberEmail = "ssafy@ssafy.com";
 
     @PostMapping("")
     public ResponseEntity collectionRequest(@RequestBody List<CollectDto> collectDtoList){
+        String memberEmail = memberService.decodeJWT();
         try {
             orderService.collectionRequest(memberEmail, collectDtoList);
 
@@ -37,7 +39,20 @@ public class OrderController {
 
     @GetMapping("")
     public ResponseEntity collectionRequestInquiry(){
+        String memberEmail = memberService.decodeJWT();
+
         List<CollectDto> collectDtoList = orderService.collectionRequestInquiry(memberEmail);
+        if(collectDtoList.size() == 0){
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity(collectDtoList, HttpStatus.OK);
+    }
+
+    @GetMapping("/collect/check")
+    public ResponseEntity isCollect(){
+        String memberEmail = memberService.decodeJWT();
+
+        List<CollectDto> collectDtoList = orderService.isCollect(memberEmail);
         if(collectDtoList.size() == 0){
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
@@ -78,9 +93,9 @@ public class OrderController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @DeleteMapping("")
-    public ResponseEntity withdrawalOfCollection(@RequestBody long collectionId){
-        orderService.withdrawalOfCollection(collectionId);
+    @DeleteMapping("/{collectId}")
+    public ResponseEntity withdrawalOfCollection(@PathVariable("collectId") long collectId){
+        orderService.withdrawalOfCollection(collectId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -95,9 +110,11 @@ public class OrderController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/bill")
-    public ResponseEntity getBill(){
-        List<PayDto> payDtoList = orderService.getBill(memberEmail);
+    @GetMapping("/bill/{month}")
+    public ResponseEntity getBill(@PathVariable("month") int month){
+        String memberEmail = memberService.decodeJWT();
+
+        List<PayDto> payDtoList = orderService.getBill(memberEmail, month);
         return new ResponseEntity(payDtoList, HttpStatus.OK);
     }
 }

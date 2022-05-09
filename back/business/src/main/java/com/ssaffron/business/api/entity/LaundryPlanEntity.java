@@ -22,23 +22,23 @@ public class LaundryPlanEntity {
     @Column(name = "laundry_plan_type_kor", nullable = false, length = 20)
     private String laundryPlanTypeKor;
 
-    @Column(name = "laundry_plan_type_Eng", nullable = false, length = 20)
+    @Column(name = "laundry_plan_type_eng", nullable = false, length = 20)
     private String laundryPlanTypeEng;
 
-    @Column(name = "laundry_plan_details", nullable = false, length = 20)
+    @Column(name = "laundry_plan_details", nullable = false, length = 50)
     private String laundryPlanDetails;
 
     @Column(name = "laundry_plan_price", nullable = false)
     private int laundryPlanPrice;
 
-    @Column(name = "laundry_plan_description", nullable = false, length = 20)
+    @Column(name = "laundry_plan_description", nullable = false, length = 1000)
     private String laundryPlanDescription;
 
-    @Column(name = "laundry_create_date")
+    @Column(name = "laundry_plan_create_date")
     @CreatedDate
     private LocalDateTime laundryCreateDate;
 
-    @Column(name = "laundry_update_date")
+    @Column(name = "laundry_plan_update_date")
     @LastModifiedDate
     private LocalDateTime laundryUpdateDate;
 

@@ -11,5 +11,7 @@ import java.util.List;
 @Repository
 public interface CollectRepository extends JpaRepository<CollectEntity, Long> {
     List<CollectEntity> findAllByMemberEntity(MemberEntity memberEntity);
+    List<CollectEntity> findAllByMemberEntityOrderByCollectRequestDateDesc(MemberEntity memberEntity);
+    List<CollectEntity> findAllByMemberEntityAndCollectWithdrawDateIsNullAndEmployeeEntityIsNull(MemberEntity memberEntity);
     List<CollectEntity> findAllByEmployeeEntity(EmployeeEntity employeeEntity);
 }

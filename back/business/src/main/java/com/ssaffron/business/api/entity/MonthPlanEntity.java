@@ -37,7 +37,5 @@ public class MonthPlanEntity {
     @Column(name = "month_plan_update_date")
     @LastModifiedDate
     private LocalDateTime monthPlanUpdateDate;
-    @OneToOne(mappedBy = "monthPlanEntity")
-    private ApplyEntity applyEntity;
 
 }
