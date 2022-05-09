@@ -3,6 +3,7 @@ package com.ssaffron.business.api.service;
 import com.ssaffron.business.api.config.JwtUtil;
 import com.ssaffron.business.api.config.UserRole;
 import com.ssaffron.business.api.dto.MemberDto;
+import com.ssaffron.business.api.dto.MemberModifyDto;
 import com.ssaffron.business.api.entity.MemberEntity;
 import com.ssaffron.business.api.entity.MemberStatus;
 
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.Map;
 
 
@@ -36,44 +38,53 @@ public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private void saveMember(MemberDto memberDto, MemberEntity memberEntity) {
-        memberEntity.setMemberName(memberDto.getMemberName());
-        memberEntity.setMemberEmail(memberDto.getMemberEmail());
-        memberEntity.setMemberPassword(passwordEncoder.encode(memberDto.getMemberPassword()));
-        memberEntity.setMemberAddress(memberDto.getMemberAddress());
-        memberEntity.setMemberAge(memberDto.getMemberAge());
-        memberEntity.setMemberPhone(memberDto.getMemberPhone());
-        memberEntity.setMemberGender(memberDto.isMemberGender());
-        memberEntity.setMemberStatus(MemberStatus.ACTIVATE);
-        memberEntity.setRole(UserRole.ROLE_USER);
-        memberEntity.setMemberUpdateDate(LocalDateTime.now());
-        memberRepository.save(memberEntity);
-    }
-
     public void checkEmailDuplicate(String email){
         if(memberRepository.existsByMemberEmail(email)) {
             throw new DuplicatedEmailException("Duplicated Email");
         }
     }
 
-
     public void registerMember(MemberDto memberDto){
-        MemberEntity memberEntity = new MemberEntity();
-        memberEntity.setMemberCreateDate(LocalDateTime.now());
-        saveMember(memberDto, memberEntity);
+        MemberEntity memberEntity = MemberEntity.builder()
+                .memberEmail(memberDto.getMemberEmail())
+                .memberPassword(passwordEncoder.encode(memberDto.getMemberPassword()))
+                .memberName(memberDto.getMemberName())
+                .memberPhone(memberDto.getMemberPhone())
+                .memberAddress(memberDto.getMemberAddress())
+                .memberGender(memberDto.isMemberGender())
+                .memberAge(memberDto.getMemberAge())
+                .memberStatus(MemberStatus.ACTIVATE)
+                .role(UserRole.ROLE_USER)
+                .memberCreateDate(LocalDateTime.now())
+                .memberUpdateDate(LocalDateTime.now())
+                .build();
+        memberRepository.save(memberEntity);
     }
 
     public MemberEntity getMember(String memberEmail){
         return memberRepository.findByMemberEmail(memberEmail);
     }
 
-    public void updateMember(MemberDto memberDto){
-        MemberEntity memberEntity = getMember(memberDto.getMemberEmail());
-        saveMember(memberDto, memberEntity);
+    public void updateMember(MemberModifyDto memberModifyDto){
+        MemberEntity memberEntity = memberRepository.findByMemberEmail(memberModifyDto.getMemberEmail());
+        if(!passwordEncoder.matches(memberModifyDto.getMemberPassword(), memberEntity.getMemberPassword())){
+            throw new NullPointerException();
+        }
+        else{
+            if(memberModifyDto.getModifiedPassword()==null){
+                memberEntity.setMemberAddress(memberModifyDto.getMemberAddress());
+                memberRepository.save(memberEntity);
+            }
+            else{
+                memberEntity.setMemberPassword(passwordEncoder.encode(memberModifyDto.getModifiedPassword()));
+                memberEntity.setMemberAddress(memberModifyDto.getMemberAddress());
+                memberRepository.save(memberEntity);
+            }
+        }
     }
 
     public void deleteMember(String memberEmail){
-        MemberEntity memberEntity = getMember(memberEmail);
+        MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
         memberEntity.setMemberStatus(MemberStatus.DEACTIVATE);
         memberRepository.save(memberEntity);
     }
