@@ -5,9 +5,6 @@ function Home(){
     localStorage.setItem("tab", "/")
     return(
         <div>홈홈
-            <Footer>
-
-            </Footer>
         </div>
     )
 }

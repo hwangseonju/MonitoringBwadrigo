@@ -29,6 +29,9 @@ import PaymentHistory from "./components/payment/PaymentHistory";
 import PaymentHistoryDetail from "./components/payment/PaymentHistoryDetail";
 
 import PleaseLogin from "./components/exception/PleaseLogin";
+import PleaseService from "./components/exception/PleaseService";
+import UsePlan from "./components/UsePlan";
+
 
 function App() {
   return (
@@ -42,7 +45,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signupsuccess" element={<Signupsuccess />} />
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<ApplyPlan />} />
         <Route path="/member-plan" element={<MemberPlan />} />
         <Route path="/start-termination" element={<StartTermination />} />
         <Route path="/survey-termination" element={<SurveyTermination />} />
@@ -61,6 +64,9 @@ function App() {
         <Route path="/payHistoryDetail" element={<PaymentHistoryDetail />} />
 
         <Route path="/pleaseLogin" element={<PleaseLogin/>} />
+        <Route path="/pleaseService" element={<PleaseService/>} />
+        <Route path="/usePlan" element={<UsePlan/>} />
+
       </Routes>
     </div>
   );

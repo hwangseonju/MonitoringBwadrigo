@@ -1,8 +1,12 @@
 import Footer from "../Footer";
 import {Card, Button} from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 function PleaseLogin(){
 
-    localStorage.setItem("tab","/profile")
+    const navigate = useNavigate();
+    const applyService = () => {
+        navigate("/")
+    }
 
     return(
 
@@ -14,10 +18,9 @@ function PleaseLogin(){
                 <Card.Text>
                 빨래없는 생활을 시작해보세요.
                 </Card.Text>
-                <Button variant="primary">서비스 둘러보기</Button>
+                <Button variant="primary" onClick={applyService}>서비스 둘러보기</Button>
             </Card.Body>
             {/* <Card.Footer className="text-muted">2 days ago</Card.Footer> */}
-            <Footer/>
         </Card>
         </>
 

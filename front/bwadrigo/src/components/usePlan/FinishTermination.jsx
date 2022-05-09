@@ -10,7 +10,7 @@ function FinishTermination() {
       <div>언제든지 다시 서비스를 이용하실 수 있도록</div>
       <div>고객 경험 향상을 위해 노력하겠습니다.</div>
       <div>
-        <Button variant="primary">확인</Button>
+        <Button variant="primary" href="/">확인</Button>
       </div>
     </div>
   );
