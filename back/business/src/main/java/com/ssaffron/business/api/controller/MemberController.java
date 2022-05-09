@@ -49,15 +49,10 @@ public class MemberController {
     }
 
     @GetMapping("/check/{email}")
-    public ResponseEntity checkDuplication(@PathVariable("email") String email){
-        try{
-            memberService.checkEmailDuplicate(email);
-            return new ResponseEntity(HttpStatus.OK);
-        }
-        catch (DuplicatedEmailException e){
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity checkDuplication(@PathVariable("email") String email) throws DuplicatedEmailException{
+        log.info("check duplication in "+email);
+        memberService.checkEmailDuplicate(email);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping()

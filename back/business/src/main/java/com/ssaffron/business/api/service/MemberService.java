@@ -8,6 +8,7 @@ import com.ssaffron.business.api.entity.MemberEntity;
 import com.ssaffron.business.api.entity.MemberStatus;
 
 import com.ssaffron.business.api.exception.DuplicatedEmailException;
+import com.ssaffron.business.api.exception.ErrorCode;
 import com.ssaffron.business.api.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -39,7 +40,7 @@ public class MemberService {
 
     public void checkEmailDuplicate(String email){
         if(memberRepository.existsByMemberEmail(email)) {
-            throw new DuplicatedEmailException(email);
+            throw new DuplicatedEmailException("Duplicated Email");
         }
     }
 

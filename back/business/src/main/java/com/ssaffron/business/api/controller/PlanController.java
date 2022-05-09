@@ -41,46 +41,30 @@ public class PlanController {
 
     // tt 요금제 신청 header로 불러오는 법 ->
     @PostMapping("")
-    public ResponseEntity createApplyFor(@RequestBody RequestApplyDto requestApplyDto) {
+    public ResponseEntity createApplyFor(@RequestBody RequestApplyDto requestApplyDto) throws DuplicatedApplyException{
         String memberEmail = memberService.decodeJWT();
         int monthPlanId = requestApplyDto.getMonthPlanId();
-//        String memberEmail = requestApplyForDto.getMemberEmail();
-        ApplyDto applyDto = requestApplyDto.getApplyDto();
-        try {
-            planService.insertApply(applyDto, monthPlanId, memberEmail);
+
+            planService.insertApply(monthPlanId, memberEmail);
             return new ResponseEntity<>(HttpStatus.OK);
-        }catch(DuplicatedApplyException e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
     }
 
     // tt 요금제 수정
     @PutMapping("")
-    public ResponseEntity updateApplyFor(@RequestBody RequestApplyDto requestApplyDto){
+    public ResponseEntity updateApplyFor(@RequestBody RequestApplyDto requestApplyDto) throws NotFoundApplyException{
         String memberEmail = memberService.decodeJWT();
         int monthPlanId = requestApplyDto.getMonthPlanId();
-//        String memberEmail = requestApplyForDto.getMemberEmail();
-        ApplyDto applyDto = requestApplyDto.getApplyDto();
-        try {
-            planService.updateApply(applyDto, monthPlanId, memberEmail);
-        }catch (NoSuchApplyException e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }catch (ExistedApplyException e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        planService.updateApply(monthPlanId, memberEmail);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // tt 요금제 삭제
     @DeleteMapping("")
-    public ResponseEntity deleteApplyFor() {
+    public ResponseEntity deleteApplyFor() throws DeleteApplyException{
         String memberEmail = memberService.decodeJWT();
-        try {
-            planService.deleteApply(memberEmail);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }catch (DeleteApplyException e){
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
+        planService.deleteApply(memberEmail);
+        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
     // dd 한달 요금제 리스트 조회
@@ -104,10 +88,15 @@ public class PlanController {
     }
 
     //dd 사용중인 요금제 조회
-    @GetMapping("/{memberemail}")
-    public ResponseEntity<ApplyDto> getApplyFor(@PathVariable String memberemail) {
-        ApplyDto applyone = planService.getApply(memberemail);
-        return new ResponseEntity(applyone,HttpStatus.OK);
+    @GetMapping("")
+    public ResponseEntity<ApplyDto> getApplyFor() throws NotFoundApplyException{
+        String memberEmail = memberService.decodeJWT();
+//        try {
+            ApplyDto applyone = planService.getApply(memberEmail);
+            return new ResponseEntity(applyone,HttpStatus.OK);
+//        }catch (NotFoundApplyException e){
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
     }
 
     // dd Test : 다음달 요금제 변경------------

@@ -45,7 +45,7 @@ public class ApplyEntity {
 
     @Setter
     @Column(name = "apply_change")
-    private int applyChange;
+    private Integer applyChange;
 
     @Column(name = "apply_create_date")
     @CreatedDate
@@ -66,7 +66,7 @@ public class ApplyEntity {
 
     public ApplyEntity(int applyWashCount, int applyBeddingCount,
                        int applyDeliveryCount, int applyCleaningCount,
-                       int applyShirtCount, LocalDateTime applyDate, int applyChange, MemberEntity memberEntity, MonthPlanEntity monthPlanEntity) {
+                       int applyShirtCount, LocalDateTime applyDate, Integer applyChange, MemberEntity memberEntity, MonthPlanEntity monthPlanEntity) {
         this.applyWashCount = applyWashCount;
         this.applyBeddingCount = applyBeddingCount;
         this.applyDeliveryCount = applyDeliveryCount;
