@@ -1,18 +1,16 @@
 package com.ssaffron.business.api.controller;
 
 import com.ssaffron.business.api.dto.*;
-import com.ssaffron.business.api.entity.PayForEntity;
 import com.ssaffron.business.api.exception.NullAddressException;
-import com.ssaffron.business.api.exception.NullApplyForException;
+import com.ssaffron.business.api.exception.NullApplyException;
+import com.ssaffron.business.api.service.MemberService;
 import com.ssaffron.business.api.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,86 +19,102 @@ import java.util.Map;
 public class OrderController {
 
     private final OrderService orderService;
-
-    private final String memberEmail = "ssafy@ssafy.com";
+    private final MemberService memberService;
+//    private final String memberEmail = "ssafy@ssafy.com";
 
     @PostMapping("")
-    public ResponseEntity collectionRequest(@RequestBody List<CollectForDto> collectForDtoList){
+    public ResponseEntity collectionRequest(@RequestBody List<CollectDto> collectDtoList){
+        String memberEmail = memberService.decodeJWT();
         try {
-            orderService.collectionRequest(memberEmail, collectForDtoList);
+            orderService.collectionRequest(memberEmail, collectDtoList);
 
         }catch (NullAddressException e){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }catch (NullApplyForException e){
+        }catch (NullApplyException e){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
-            //NullAddressException과 NullApplyForException이 다른 Status를 가지면 좋을 것 같다.
+            //NullAddressException과 NullApplyException이 다른 Status를 가지면 좋을 것 같다.
         }
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("")
     public ResponseEntity collectionRequestInquiry(){
-        List<CollectForDto> collectForDtoList = orderService.collectionRequestInquiry(memberEmail);
-        if(collectForDtoList.size() == 0){
+        String memberEmail = memberService.decodeJWT();
+
+        List<CollectDto> collectDtoList = orderService.collectionRequestInquiry(memberEmail);
+        if(collectDtoList.size() == 0){
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity(collectForDtoList, HttpStatus.OK);
+        return new ResponseEntity(collectDtoList, HttpStatus.OK);
+    }
+
+    @GetMapping("/collect/check")
+    public ResponseEntity isCollect(){
+        String memberEmail = memberService.decodeJWT();
+
+        List<CollectDto> collectDtoList = orderService.isCollect(memberEmail);
+        if(collectDtoList.size() == 0){
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity(collectDtoList, HttpStatus.OK);
     }
 
     @GetMapping("/list")
     public ResponseEntity fetchAllCollectionRequest(){
         //직원만 접근 가능한 URI
-        List<CollectForDtoEmployeeForm> collectForDtoEmployeeFormList = orderService.fetchAllCollectionRequest();
-        return new ResponseEntity(collectForDtoEmployeeFormList, HttpStatus.OK);
+        List<CollectDtoEmployeeForm> collectDtoEmployeeFormList = orderService.fetchAllCollectionRequest();
+        return new ResponseEntity(collectDtoEmployeeFormList, HttpStatus.OK);
     }
 
     @GetMapping("/find")
     public ResponseEntity fetchCollectionRequestByMember(@RequestBody String findMemberEmail){
         //직원만 접근 가능한 URI
-        List<CollectForDtoEmployeeForm> collectForDtoEmployeeFormList = orderService.fetchCollectionRequestByMember(findMemberEmail);
-        return new ResponseEntity(collectForDtoEmployeeFormList, HttpStatus.OK);
+        List<CollectDtoEmployeeForm> collectDtoEmployeeFormList = orderService.fetchCollectionRequestByMember(findMemberEmail);
+        return new ResponseEntity(collectDtoEmployeeFormList, HttpStatus.OK);
     }
 
     @GetMapping("/find/employee")
-    public ResponseEntity fetchCollectionRequestByEmployee(@RequestBody int employeeIndex){
-        List<CollectForDtoEmployeeForm> collectForDtoEmployeeFormList = orderService.fetchCollectionRequestByEmployee(employeeIndex);
-        return new ResponseEntity(collectForDtoEmployeeFormList, HttpStatus.OK);
+    public ResponseEntity fetchCollectionRequestByEmployee(@RequestBody int employeeId){
+        List<CollectDtoEmployeeForm> collectDtoEmployeeFormList = orderService.fetchCollectionRequestByEmployee(employeeId);
+        return new ResponseEntity(collectDtoEmployeeFormList, HttpStatus.OK);
     }
 
     @PutMapping("")
     public ResponseEntity collectionApproval(@RequestBody CollectionApprovalDto collectionApprovalDto){
-        List<CollectForDto> collectForDtoList = collectionApprovalDto.getCollectForDtoList();
+        List<CollectDto> collectDtoList = collectionApprovalDto.getCollectDtoList();
         EmployeeDto employeeDto = collectionApprovalDto.getEmployeeDto();
-        if(collectForDtoList.size() == 0){
+        if(collectDtoList.size() == 0){
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
         if(employeeDto.getEmployeeName() == null){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        orderService.collectionApproval(collectForDtoList, employeeDto);
+        orderService.collectionApproval(collectDtoList, employeeDto);
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @DeleteMapping("")
-    public ResponseEntity withdrawalOfCollection(@RequestBody long collectionForIndex){
-        orderService.withdrawalOfCollection(collectionForIndex);
+    @DeleteMapping("/{collectId}")
+    public ResponseEntity withdrawalOfCollection(@PathVariable("collectId") long collectId){
+        orderService.withdrawalOfCollection(collectId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/bill")
-    public ResponseEntity registBill(@RequestBody PayForDtoEmployeeForm payForDtoEmployeeForm){
-        MemberDto memberDto = payForDtoEmployeeForm.getMemberDto();
-        CollectForDto collectForDto = payForDtoEmployeeForm.getCollectForDto();
-        LaundryPlanDto laundryPlanDto = payForDtoEmployeeForm.getPayForDto().getLaundryPlanDto();
-        PayForDto payForDto = payForDtoEmployeeForm.getPayForDto();
-        orderService.registBill(memberDto.getMemberEmail(), collectForDto.getCollectForIndex(), laundryPlanDto.getLaundryPlanIndex(), payForDto);
+    public ResponseEntity registBill(@RequestBody PayDtoEmployeeForm payDtoEmployeeForm){
+        MemberDto memberDto = payDtoEmployeeForm.getMemberDto();
+        CollectDto collectDto = payDtoEmployeeForm.getCollectDto();
+        LaundryPlanDto laundryPlanDto = payDtoEmployeeForm.getPayDto().getLaundryPlanDto();
+        PayDto payDto = payDtoEmployeeForm.getPayDto();
+        orderService.registBill(memberDto.getMemberEmail(), collectDto.getCollectId(), laundryPlanDto.getLaundryPlanId(), payDto);
 
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/bill")
-    public ResponseEntity getBill(){
-        List<PayForDto> payForDtoList = orderService.getBill(memberEmail);
-        return new ResponseEntity(payForDtoList, HttpStatus.OK);
+    @GetMapping("/bill/{month}")
+    public ResponseEntity getBill(@PathVariable("month") int month){
+        String memberEmail = memberService.decodeJWT();
+
+        List<PayDto> payDtoList = orderService.getBill(memberEmail, month);
+        return new ResponseEntity(payDtoList, HttpStatus.OK);
     }
 }

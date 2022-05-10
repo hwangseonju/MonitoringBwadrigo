@@ -12,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsUtils;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -42,6 +43,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests() // 다음 리퀘스트에 대한 사용권한 체크
                 .antMatchers("/v1/api/member/signup").permitAll()
                 .antMatchers("/v1/api/member/login").permitAll()
+                .antMatchers("/v1/api/member/logout").permitAll()
+                .antMatchers("/v1/api/member/check/**").permitAll()
+                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class); // jwt 토큰 필터를 id / password 인증 필터 전에 넣어라
@@ -49,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override // ignore check swagger resource
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/v1/api/member/signup", "/v1/api/member/login");
+        web.ignoring().antMatchers("/v1/api/member/signup", "/v1/api/member/login","/v1/api/member/logout" , "/v1/api/member/check/**");
     }
 
     @Bean

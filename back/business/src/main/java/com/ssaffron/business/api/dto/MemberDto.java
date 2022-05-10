@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MemberDto {
-    private int memberIndex;
+    private int memberId;
     private String memberEmail;
     private String memberPassword;
     private String memberName;

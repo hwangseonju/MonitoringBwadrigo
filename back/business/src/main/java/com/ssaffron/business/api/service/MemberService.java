@@ -6,6 +6,8 @@ import com.ssaffron.business.api.dto.MemberDto;
 import com.ssaffron.business.api.entity.MemberEntity;
 import com.ssaffron.business.api.entity.MemberStatus;
 
+import com.ssaffron.business.api.exception.BadRequestException;
+import com.ssaffron.business.api.exception.NullMemberException;
 import com.ssaffron.business.api.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -77,12 +79,12 @@ public class MemberService {
 
         // 존재하는 회원인가?
         if(memberEntity == null)
-            return null;
+            throw new NullMemberException();
 
         // 비밀번호가 맞는지 비교
         if(!passwordEncoder.matches(memberPwd ,memberEntity.getMemberPassword()))
-            return null;
-
+//            return null;
+            throw new BadRequestException();
         // 사용자의 이메일과 비밀번호가 맞으면 Access 토큰과 Refresh토큰을 쿠키 값으로 준다.
         String token = jwtUtil.generateToken(memberEntity);
         String refreshJwt = jwtUtil.generateRefreshToken(memberEntity);

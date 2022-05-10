@@ -1,8 +1,8 @@
 package com.ssaffron.business.api.controller;
 
-import com.ssaffron.business.api.dto.ApplyForDto;
+import com.ssaffron.business.api.dto.ApplyDto;
 import com.ssaffron.business.api.dto.LaundryPlanDto;
-import com.ssaffron.business.api.dto.RequestApplyForDto;
+import com.ssaffron.business.api.dto.RequestApplyDto;
 import com.ssaffron.business.api.dto.MonthPlanDto;
 import com.ssaffron.business.api.exception.*;
 import com.ssaffron.business.api.service.MemberService;
@@ -33,39 +33,38 @@ public class PlanController {
     }
 
     // tt Laundry Plan 요금제 단일 조회
-    @GetMapping("/laundry/{laundry-plan-index}")
-    public ResponseEntity<LaundryPlanDto> getListLaundry(@PathVariable("laundry-plan-index") int laundryplanindex) {
-        LaundryPlanDto laundryPlanDto = planService.findOneLaundryPlan(laundryplanindex);
+    @GetMapping("/laundry/{laundry-plan-Id}")
+    public ResponseEntity<LaundryPlanDto> getListLaundry(@PathVariable("laundry-plan-Id") int laundryplanId) {
+        LaundryPlanDto laundryPlanDto = planService.findOneLaundryPlan(laundryplanId);
         return new ResponseEntity<>(laundryPlanDto, HttpStatus.OK);
     }
 
     // tt 요금제 신청 header로 불러오는 법 ->
     @PostMapping("")
-    public ResponseEntity createApplyFor(@RequestBody RequestApplyForDto requestApplyForDto) {
+    public ResponseEntity createApplyFor(@RequestBody RequestApplyDto requestApplyDto) {
         String memberEmail = memberService.decodeJWT();
-        int monthPlanIndex = requestApplyForDto.getMonthPlanIndex();
+        int monthPlanId = requestApplyDto.getMonthPlanId();
 //        String memberEmail = requestApplyForDto.getMemberEmail();
-        ApplyForDto applyForDto = requestApplyForDto.getApplyForDto();
         try {
-            planService.insertApplyFor(applyForDto, monthPlanIndex, memberEmail);
+            planService.insertApply(monthPlanId, memberEmail);
             return new ResponseEntity<>(HttpStatus.OK);
-        }catch(DuplicatedApplyForException e){
+        }catch(DuplicatedApplyException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     // tt 요금제 수정
     @PutMapping("")
-    public ResponseEntity updateApplyFor(@RequestBody RequestApplyForDto requestApplyForDto){
+    public ResponseEntity updateApplyFor(@RequestBody RequestApplyDto requestApplyDto){
         String memberEmail = memberService.decodeJWT();
-        int monthPlanIndex = requestApplyForDto.getMonthPlanIndex();
+        int monthPlanId = requestApplyDto.getMonthPlanId();
+        //바뀔 요금제
 //        String memberEmail = requestApplyForDto.getMemberEmail();
-        ApplyForDto applyForDto = requestApplyForDto.getApplyForDto();
         try {
-            planService.updateApplyFor(applyForDto, monthPlanIndex, memberEmail);
-        }catch (NoSuchApplyForException e){
+            planService.updateApply(monthPlanId, memberEmail);
+        }catch (NoSuchApplyException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }catch (ExistedApplyForException e){
+        }catch (ExistedApplyException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
@@ -73,12 +72,13 @@ public class PlanController {
 
     // tt 요금제 삭제
     @DeleteMapping("")
-    public ResponseEntity deleteApplyFor() {
+    public ResponseEntity deleteApplyFor(@RequestBody String reason) {
         String memberEmail = memberService.decodeJWT();
+        log.info("{}님이 해지하는 사유는 '{}' 입니다.",memberEmail,reason);
         try {
-            planService.deleteApplyFor(memberEmail);
+            planService.deleteApply(memberEmail);
             return new ResponseEntity<>(HttpStatus.OK);
-        }catch (DeleteApplyForException e){
+        }catch (DeleteApplyException e){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
@@ -90,29 +90,31 @@ public class PlanController {
         return new ResponseEntity<>(monthlist,HttpStatus.OK);
     }
     // dd 한달요금제 1개조회
-    @GetMapping("/month/{month_plan_index}")
-    public ResponseEntity<MonthPlanDto> getListMonth(@PathVariable int month_plan_index) {
-        MonthPlanDto monthone = planService.getMonthPlan(month_plan_index);
+    @GetMapping("/month/{month_plan_Id}")
+    public ResponseEntity<MonthPlanDto> getListMonth(@PathVariable int month_plan_Id) {
+        MonthPlanDto monthone = planService.getMonthPlan(month_plan_Id);
         return new ResponseEntity<>(monthone,HttpStatus.OK);
     }
 
     //dd 사용중인 요금제 list 조회
     @GetMapping("/admin/using-plan")
-    public ResponseEntity<List<ApplyForDto>> allListApplyFor() {
-        List<ApplyForDto> applylist = planService.getApplyList();
+    public ResponseEntity<List<ApplyDto>> allListApplyFor() {
+        List<ApplyDto> applylist = planService.getApplyList();
         return new ResponseEntity<>(applylist,HttpStatus.OK);
     }
 
     //dd 사용중인 요금제 조회
-    @GetMapping("/{memberemail}")
-    public ResponseEntity<ApplyForDto> getApplyFor(@PathVariable String memberemail) {
-        ApplyForDto applyone = planService.getApplyFor(memberemail);
+    @GetMapping("")
+    public ResponseEntity<ApplyDto> getApplyFor() {
+        String memberEmail = memberService.decodeJWT();
+
+        ApplyDto applyone = planService.getApply(memberEmail);
         return new ResponseEntity(applyone,HttpStatus.OK);
     }
 
     // dd Test : 다음달 요금제 변경------------
-    @GetMapping("/change/{memberindex}")
-    public ResponseEntity nextMonthPlan(@PathVariable("memberindex") int memberId, @RequestBody MonthPlanDto dto) { // 수정
+    @GetMapping("/change/{memberId}")
+    public ResponseEntity nextMonthPlan(@PathVariable("memberId") int memberId, @RequestBody MonthPlanDto dto) { // 수정
         return new ResponseEntity(HttpStatus.OK);
     }
 

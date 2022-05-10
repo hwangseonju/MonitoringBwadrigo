@@ -3,11 +3,10 @@ package com.ssaffron.business.api.service;
 import com.ssaffron.business.api.dto.*;
 import com.ssaffron.business.api.entity.*;
 import com.ssaffron.business.api.exception.NullAddressException;
-import com.ssaffron.business.api.exception.NullApplyForException;
+import com.ssaffron.business.api.exception.NullApplyException;
 import com.ssaffron.business.api.repository.*;
-import com.sun.mail.handlers.text_html;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,203 +14,224 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderService {
 
     private final MemberRepository memberRepository;
     private final EmployeeRepository employeeRepository;
-    private final CollectForRepository collectForRepository;
-    private final PayForRepository payForRepository;
+    private final CollectRepository collectRepository;
+    private final PayRepository payRepository;
     private final LaundryPlanRepository laundryPlanRepository;
-    private final ApplyForRepository applyForRepository;
+    private final ApplyRepository applyRepository;
 
-    public boolean collectionRequest(String memberEmail, List<CollectForDto> collectForDtoList){
+    public boolean collectionRequest(String memberEmail, List<CollectDto> collectDtoList){
         //수거 신청 성공/실패
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
         if(memberEntity.getMemberAddress() == null)
             throw new NullAddressException();
-        ApplyForEntity applyForEntity = applyForRepository.findByMemberEntityAndApplyForDeliveryCountIsNotNull(memberEntity).orElse(null);
-        if(applyForEntity == null){
-            throw new NullApplyForException(memberEntity.getMemberName());
+        ApplyEntity applyEntity = applyRepository.findByMemberEntityAndApplyDeliveryCountIsNotNull(memberEntity).orElse(null);
+        if(applyEntity == null){
+            throw new NullApplyException(memberEntity.getMemberName());
         }
-        List<CollectForEntity> collectForEntityList = collectForDtoList.
-                stream().map(collectForDto -> new CollectForEntity(
-                        collectForDto.getCollectFortype(), memberEntity)).collect(Collectors.toList());
-        collectForRepository.saveAll(collectForEntityList);
+        List<CollectEntity> collectEntityList = collectDtoList.
+                stream().map(collectDto -> new CollectEntity(
+                        collectDto.getCollecttype(),LocalDateTime.now(), memberEntity)).collect(Collectors.toList());
+        collectRepository.saveAll(collectEntityList);
         return true;
     }
 
-    public List<CollectForDto> collectionRequestInquiry(String memberEmail){
+    public List<CollectDto> collectionRequestInquiry(String memberEmail){
         //한 사용자의 수거 요청 목록을 조회 할 수 있다.
         //수거한 직원의 정보를 볼 수 없다. -> 사용자용
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
-        return collectForRepository.findAllByMemberEntity(memberEntity).
-                stream().map(collectForEntity -> CollectForDto.builder().
-                    collectForIndex(collectForEntity.getCollectForIndex()).
-                    collectForRequestDate(collectForEntity.getCollectForRequestDate()).
-                    collectForWithdrawDate(collectForEntity.getCollectForWithdrawDate()).
-                    collectFortype(collectForEntity.getCollectForType()).
+
+        return collectRepository.findAllByMemberEntityOrderByCollectRequestDateDesc(memberEntity)
+//        return memberEntity.getCollectionEntities()
+                .stream().map(collectEntity -> CollectDto.builder().
+                    collectId(collectEntity.getCollectId()).
+                    collectRequestDate(collectEntity.getCollectRequestDate()).
+                    collectWithdrawDate(collectEntity.getCollectWithdrawDate()).
+                    collecttype(collectEntity.getCollectType()).
                     build()).collect(Collectors.toList());
-                    //collectForIndex를 넣는 이유 -> 접수번호 확인
+                    //collectId를 넣는 이유 -> 접수번호 확인
+    }
+    public List<CollectDto> isCollect(String memberEmail){
+        //한 사용자의 수거 요청 목록이 있는지 확인 할 수 있다.
+        log.info(memberEmail);
+        MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
+        return collectRepository.findAllByMemberEntityAndCollectWithdrawDateIsNullAndEmployeeEntityIsNull(memberEntity)
+//        return memberEntity.getCollectionEntities()
+                .stream().map(collectEntity -> CollectDto.builder().
+                        collectId(collectEntity.getCollectId()).
+                        collectRequestDate(collectEntity.getCollectRequestDate()).
+                        collectWithdrawDate(collectEntity.getCollectWithdrawDate()).
+                        collecttype(collectEntity.getCollectType()).
+                        build()).collect(Collectors.toList());
+
     }
 
-    public List<CollectForDtoEmployeeForm> fetchAllCollectionRequest(){
+    public List<CollectDtoEmployeeForm> fetchAllCollectionRequest(){
         //모든 사용자의 수거 요청 목록이 보여짐. -> 수거한 직원 정보를 볼 수 있다.
         //JWT에서 Role이 직원에 해당 할 때 접근 가능하도록 설정 필요
-        return collectForRepository.findAll().
-                stream().map(collectForEntity -> CollectForDtoEmployeeForm.builder().
+        return collectRepository.findAll().
+                stream().map(collectEntity -> CollectDtoEmployeeForm.builder().
                     memberDto(MemberDto.builder().
-                                memberEmail(collectForEntity.getMemberEntity().getMemberEmail()).
-                                memberName(collectForEntity.getMemberEntity().getMemberName()).build()).
-                    collectForDto(CollectForDto.builder().
-                            collectForIndex(collectForEntity.getCollectForIndex()).
-                            collectFortype(collectForEntity.getCollectForType()).
-                            collectForRequestDate(collectForEntity.getCollectForRequestDate()).
-                            collectForWithdrawDate(collectForEntity.getCollectForWithdrawDate()).build()).
+                                memberEmail(collectEntity.getMemberEntity().getMemberEmail()).
+                                memberName(collectEntity.getMemberEntity().getMemberName()).build()).
+                        collectDto(CollectDto.builder().
+                            collectId(collectEntity.getCollectId()).
+                            collecttype(collectEntity.getCollectType()).
+                            collectRequestDate(collectEntity.getCollectRequestDate()).
+                            collectWithdrawDate(collectEntity.getCollectWithdrawDate()).build()).
                     employeeDto(EmployeeDto.builder().
-                            employeeIndex(collectForEntity.getEmployeeEntity().getEmployeeIndex()).
-                            employeeName(collectForEntity.getEmployeeEntity().getEmployeeName()).
-                            employeePhone(collectForEntity.getEmployeeEntity().getEmployeePhone()).build()).build()
+                            employeeId(collectEntity.getEmployeeEntity().getEmployeeId()).
+                            employeeName(collectEntity.getEmployeeEntity().getEmployeeName()).
+                            employeePhone(collectEntity.getEmployeeEntity().getEmployeePhone()).build()).build()
                 ).collect(Collectors.toList());
 
     }
 
-    public List<CollectForDtoEmployeeForm> fetchCollectionRequestByMember(String memberEmail){
+    public List<CollectDtoEmployeeForm> fetchCollectionRequestByMember(String memberEmail){
         //특정 사용자의 수거 요청 목록이 보여짐. -> 수거한 직원 정보를 볼 수 있다.
         //JWT에서 Role이 직원에 해당 할 때 접근 가능하도록 설정 필요
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
-        return collectForRepository.findAllByMemberEntity(memberEntity).
-                stream().map(collectForEntity -> CollectForDtoEmployeeForm.builder().
+        return collectRepository.findAllByMemberEntity(memberEntity).
+                stream().map(collectEntity -> CollectDtoEmployeeForm.builder().
                         memberDto(MemberDto.builder().
-                                memberEmail(collectForEntity.getMemberEntity().getMemberEmail()).
-                                memberName(collectForEntity.getMemberEntity().getMemberName()).build()).
-                        collectForDto(CollectForDto.builder().
-                                collectForIndex(collectForEntity.getCollectForIndex()).
-                                collectFortype(collectForEntity.getCollectForType()).
-                                collectForRequestDate(collectForEntity.getCollectForRequestDate()).
-                                collectForWithdrawDate(collectForEntity.getCollectForWithdrawDate()).build()).
+                                memberEmail(collectEntity.getMemberEntity().getMemberEmail()).
+                                memberName(collectEntity.getMemberEntity().getMemberName()).build()).
+                        collectDto(CollectDto.builder().
+                                collectId(collectEntity.getCollectId()).
+                                collecttype(collectEntity.getCollectType()).
+                                collectRequestDate(collectEntity.getCollectRequestDate()).
+                                collectWithdrawDate(collectEntity.getCollectWithdrawDate()).build()).
                         employeeDto(EmployeeDto.builder().
-                                employeeIndex(collectForEntity.getEmployeeEntity().getEmployeeIndex()).
-                                employeeName(collectForEntity.getEmployeeEntity().getEmployeeName()).
-                                employeePhone(collectForEntity.getEmployeeEntity().getEmployeePhone()).build()).build()
+                                employeeId(collectEntity.getEmployeeEntity().getEmployeeId()).
+                                employeeName(collectEntity.getEmployeeEntity().getEmployeeName()).
+                                employeePhone(collectEntity.getEmployeeEntity().getEmployeePhone()).build()).build()
                 ).collect(Collectors.toList());
     }
 
-    public List<CollectForDtoEmployeeForm> fetchCollectionRequestByEmployee(int employeeIndex){
+    public List<CollectDtoEmployeeForm> fetchCollectionRequestByEmployee(int employeeId){
         //직원이 수거한 수거 요청을 확인 할 수 있다.
         //JWT에서 Role이 직원에 해당 할 때 접근 가능하도록 설정 필요
-        EmployeeEntity employeeEntity = employeeRepository.findById(employeeIndex).get();
-        return collectForRepository.findAllByEmployeeEntity(employeeEntity).
-                stream().map(collectForEntity -> CollectForDtoEmployeeForm.builder().
+        EmployeeEntity employeeEntity = employeeRepository.findById(employeeId).get();
+        return collectRepository.findAllByEmployeeEntity(employeeEntity).
+                stream().map(collectEntity -> CollectDtoEmployeeForm.builder().
                         memberDto(MemberDto.builder().
-                                memberEmail(collectForEntity.getMemberEntity().getMemberEmail()).
-                                memberName(collectForEntity.getMemberEntity().getMemberName()).build()).
-                        collectForDto(CollectForDto.builder().
-                                collectForIndex(collectForEntity.getCollectForIndex()).
-                                collectFortype(collectForEntity.getCollectForType()).
-                                collectForRequestDate(collectForEntity.getCollectForRequestDate()).
-                                collectForWithdrawDate(collectForEntity.getCollectForWithdrawDate()).build()).
+                                memberEmail(collectEntity.getMemberEntity().getMemberEmail()).
+                                memberName(collectEntity.getMemberEntity().getMemberName()).build()).
+                        collectDto(CollectDto.builder().
+                                collectId(collectEntity.getCollectId()).
+                                collecttype(collectEntity.getCollectType()).
+                                collectRequestDate(collectEntity.getCollectRequestDate()).
+                                collectWithdrawDate(collectEntity.getCollectWithdrawDate()).build()).
                         employeeDto(EmployeeDto.builder().
-                                employeeIndex(collectForEntity.getEmployeeEntity().getEmployeeIndex()).
-                                employeeName(collectForEntity.getEmployeeEntity().getEmployeeName()).
-                                employeePhone(collectForEntity.getEmployeeEntity().getEmployeePhone()).build()).build()
+                                employeeId(collectEntity.getEmployeeEntity().getEmployeeId()).
+                                employeeName(collectEntity.getEmployeeEntity().getEmployeeName()).
+                                employeePhone(collectEntity.getEmployeeEntity().getEmployeePhone()).build()).build()
                 ).collect(Collectors.toList());
     }
 
-    public boolean collectionApproval(List<CollectForDto> collectForDtoList, EmployeeDto employeeDto){
+    public boolean collectionApproval(List<CollectDto> collectDtoList, EmployeeDto employeeDto){
         //수거를 할 직원을 할당할 수 있다.
-        EmployeeEntity employeeEntity = employeeRepository.findById(employeeDto.getEmployeeIndex()).get();
+        EmployeeEntity employeeEntity = employeeRepository.findById(employeeDto.getEmployeeId()).get();
         //사원번호호 사원 엔티티 생성
-        List<CollectForEntity> collectForEntityList = new ArrayList<>();
-        collectForDtoList.forEach(collectForDto -> {
-            CollectForEntity collectForEntity = collectForRepository.findById(collectForDto.getCollectForIndex()).get();
-            collectForEntity.setEmployeeEntity(employeeEntity);
-            collectForEntityList.add(collectForEntity);
+        List<CollectEntity> collectEntityList = new ArrayList<>();
+        collectDtoList.forEach(collectDto -> {
+            CollectEntity collectEntity = collectRepository.findById(collectDto.getCollectId()).get();
+            collectEntity.setEmployeeEntity(employeeEntity);
+            collectEntityList.add(collectEntity);
         });
-        collectForRepository.saveAll(collectForEntityList);
+        collectRepository.saveAll(collectEntityList);
         return true;
     }
 
-    public boolean withdrawalOfCollection(long collectionForIndex){
-        //사용자 인증은 JWT를 통해 본인만 진행이 되고, collectionForIndex자체는 PK이기 때문에 중복이 없음
+    public boolean withdrawalOfCollection(long collectionId){
+        //사용자 인증은 JWT를 통해 본인만 진행이 되고, collectionId자체는 PK이기 때문에 중복이 없음
         //직원은 접근이 가능함.
-        CollectForEntity collectForEntity = collectForRepository.findById(collectionForIndex).get();
-        collectForEntity.setCollectForWithdrawDate(LocalDateTime.now());
-        collectForRepository.save(collectForEntity);
+        CollectEntity collectEntity = collectRepository.findById(collectionId).get();
+        collectEntity.setCollectWithdrawDate(LocalDateTime.now());
+        collectRepository.save(collectEntity);
         return true;
 
     }
 
-    public boolean registBill(String memberEmail, long collectForIndex, int laudryPlanIndex, PayForDto payForDto){
+    public boolean registBill(String memberEmail, long collectId, int laudryPlanId, PayDto payDto){
         //collectDto로 빨래 수거 맡긴 날 찾아오기
-        //regist 후에 ApplyForEntity도 수정하기
+        //regist 후에 ApplyEntity도 수정하기
         //collectDto에서의 Type은 laundryPlan의 Type에 해당 되고 세부 타입에 따라 여러 row가 나올 수 있다.
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
-        CollectForEntity collectForEntity = collectForRepository.findById(collectForIndex).get();
-        LaundryPlanEntity laundryPlanEntity = laundryPlanRepository.findById(laudryPlanIndex).get();
+        CollectEntity collectEntity = collectRepository.findById(collectId).get();
+        LaundryPlanEntity laundryPlanEntity = laundryPlanRepository.findById(laudryPlanId).get();
 
-        PayForEntity payForEntity = new PayForEntity(
-                                            payForDto.getPayForRequestCount(),
+        PayEntity payEntity = new PayEntity(
+                                            payDto.getPayRequestCount(),
                                             LocalDateTime.now(),
-                                            collectForEntity.getCollectForRequestDate(),
-                                            collectForEntity,
+                                            collectEntity.getCollectRequestDate(),
+                                            collectEntity,
                                             memberEntity,
                                             laundryPlanEntity
                                     );
-        payForRepository.save(payForEntity);
-        ApplyForEntity applyForEntity = applyForRepository.findByMemberEntityAndApplyForDeliveryCountIsNotNull(memberEntity).get();
+        payRepository.save(payEntity);
+        ApplyEntity applyEntity = applyRepository.findByMemberEntityAndApplyDeliveryCountIsNotNull(memberEntity).get();
         //신청한 요금제로 상태관리
-        if(applyForEntity.getMonthPlanEntity().getMonthPlanIndex() == 1){
+        if(applyEntity.getMonthPlanEntity().getMonthPlanId() == 1){
             return true;
             //저장할 필요가 없음 1일 때는 자유요금제
 
         }
-        int requestCount = payForEntity.getPayForRequestCount();
-        switch (laundryPlanEntity.getLaundryPlanType()) {
+        int requestCount = payEntity.getPayRequestCount();
+        switch (laundryPlanEntity.getLaundryPlanTypeEng()) {
             case "wash": {
-                int count = Math.max(applyForEntity.getApplyForWashCount() - requestCount, 0);
-                applyForEntity.setApplyForWashCount(count);
+                int count = Math.max(applyEntity.getApplyWashCount() - requestCount, 0);
+                applyEntity.setApplyWashCount(count);
                 break;
             }
             case "bedding": {
-                int count = Math.max(applyForEntity.getApplyForBeddingCount() - requestCount, 0);
-                applyForEntity.setApplyForBeddingCount(count);
+                int count = Math.max(applyEntity.getApplyBeddingCount() - requestCount, 0);
+                applyEntity.setApplyBeddingCount(count);
                 break;
             }
             case "cleaning": {
-                int count = Math.max(applyForEntity.getApplyForCleaningCount() - requestCount, 0);
-                applyForEntity.setApplyForCleaningCount(count);
+                int count = Math.max(applyEntity.getApplyCleaningCount() - requestCount, 0);
+                applyEntity.setApplyCleaningCount(count);
                 break;
             }
             case "shirt": {
-                int count = Math.max(applyForEntity.getApplyForShirtCount() - requestCount, 0);
-                applyForEntity.setApplyForShirtCount(count);
+                int count = Math.max(applyEntity.getApplyShirtCount() - requestCount, 0);
+                applyEntity.setApplyShirtCount(count);
                 break;
             }
             case "delivery": {
-                int count = Math.max(applyForEntity.getApplyForDeliveryCount() - requestCount, 0);
-                applyForEntity.setApplyForDeliveryCount(count);
+                int count = Math.max(applyEntity.getApplyDeliveryCount() - requestCount, 0);
+                applyEntity.setApplyDeliveryCount(count);
                 break;
             }
         }
 
-        applyForRepository.save(applyForEntity);
+        applyRepository.save(applyEntity);
         return true;
     }
 
-    public List<PayForDto> getBill(String memberEmail){
+    public List<PayDto> getBill(String memberEmail, int month){
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
-        return payForRepository.findAllByMemberEntity(memberEntity).
-                stream().map(payForEntity -> PayForDto.builder().
-                    payForRequestCount(payForEntity.getPayForRequestCount()).
-                    payForResponseDate(payForEntity.getPayForResponseDate()).
-                    payForPickDate(payForEntity.getPayForPickDate()).
+        LocalDateTime end = LocalDateTime.now();
+        LocalDateTime start = LocalDateTime.now().minusMonths(month);
+        return payRepository.findAllByMemberEntityAndPayResponseDateBetweenOrderByPayResponseDateDesc(memberEntity, start, end).
+                stream().map(payEntity -> PayDto.builder().
+                    payId(payEntity.getPayId()).
+                    payRequestCount(payEntity.getPayRequestCount()).
+                    payResponseDate(payEntity.getPayResponseDate()).
+                    payPickDate(payEntity.getPayPickDate()).
                     laundryPlanDto(LaundryPlanDto.builder()
-                            .laundryPlanDescription(payForEntity.getLaundryPlanEntity().getLaundryPlanDescription())
-                            .laundryPlanType(payForEntity.getLaundryPlanEntity().getLaundryPlanType())
-                            .laundryPlanDetails(payForEntity.getLaundryPlanEntity().getLaundryPlanDetails())
-                            .laundryPlanPrice(payForEntity.getLaundryPlanEntity().getLaundryPlanPrice())
+                            .laundryPlanDescription(payEntity.getLaundryPlanEntity().getLaundryPlanDescription())
+                            .laundryPlanTypeKor(payEntity.getLaundryPlanEntity().getLaundryPlanTypeKor())
+                            .laundryPlanTypeEng(payEntity.getLaundryPlanEntity().getLaundryPlanTypeEng())
+                            .laundryPlanDetails(payEntity.getLaundryPlanEntity().getLaundryPlanDetails())
+                            .laundryPlanPrice(payEntity.getLaundryPlanEntity().getLaundryPlanPrice())
                             .build()
                     ).build()
         ).collect(Collectors.toList());

@@ -5,18 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PayForDtoEmployeeForm {
+public class PayDtoEmployeeForm {
 
-    private PayForDto payForDto;
+    private PayDto payDto;
 
     private MemberDto memberDto;
 
-    private CollectForDto collectForDto;
+    private CollectDto collectDto;
 
 }

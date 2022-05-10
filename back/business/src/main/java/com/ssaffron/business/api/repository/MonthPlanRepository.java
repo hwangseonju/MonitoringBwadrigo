@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MonthPlanRepository extends JpaRepository<MonthPlanEntity, Integer> {
-    MonthPlanEntity findByMonthPlanIndex(int monthPlanIndex);
+    MonthPlanEntity findByMonthPlanId(int monthPlanId);
 }

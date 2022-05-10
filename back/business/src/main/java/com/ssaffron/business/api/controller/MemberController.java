@@ -3,6 +3,8 @@ package com.ssaffron.business.api.controller;
 import com.ssaffron.business.api.dto.LoginRequestDto;
 import com.ssaffron.business.api.dto.MemberDto;
 import com.ssaffron.business.api.entity.MemberEntity;
+import com.ssaffron.business.api.exception.BadRequestException;
+import com.ssaffron.business.api.exception.NullMemberException;
 import com.ssaffron.business.api.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +37,13 @@ public class MemberController {
     public ResponseEntity doLogin(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse res){
         //로그인 할 때, JWT를 헤더에 넣어서 반환
 
-        Map<String, Object> result = memberService.login(loginRequestDto.getMemberEmail(), loginRequestDto.getMemberPassword());
+        Map<String, Object> result;
+        try {
+           result  = memberService.login(loginRequestDto.getMemberEmail(), loginRequestDto.getMemberPassword());
+
+        }catch (NullMemberException | BadRequestException e){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
 
         res.addCookie((Cookie) result.get("accessToken"));
         res.addCookie((Cookie) result.get("refreshToken"));
@@ -44,6 +52,20 @@ public class MemberController {
 
         return new ResponseEntity<>(result, HttpStatus.OK);
 
+    }
+
+    @DeleteMapping("/logout")
+    public ResponseEntity doLogout(HttpServletResponse response){
+
+        Cookie cookie1 = new Cookie("accessToken",null);
+        cookie1.setMaxAge(0);
+        cookie1.setPath("/");
+        Cookie cookie2 = new Cookie("refreshToken",null);
+        cookie2.setMaxAge(0);
+        cookie2.setPath("/");
+        response.addCookie(cookie1);
+        response.addCookie(cookie2);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/check/{email}")
@@ -90,7 +112,8 @@ public class MemberController {
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity refreshToken(@PathVariable("useremail") String memberEmail){
+    public ResponseEntity refreshToken(){
+        String memberEmail = memberService.decodeJWT();
         HttpHeaders headers = new HttpHeaders();
         log.info("refreshToken in "+memberEmail);
         return new ResponseEntity(headers, HttpStatus.OK);
