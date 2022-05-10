@@ -31,5 +31,15 @@ spring:
     secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
     token-validity-in-seconds: 86400
 
+  output:
+    ansi:
+      enabled: always
+
+logging:
+  slack:
+    webhook-uri: https://hooks.slack.com/services/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
+  config: classpath:logback-spring.xml
+
 server:
   port: 8081
+
