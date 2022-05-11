@@ -5,8 +5,9 @@ import javax.servlet.http.HttpServletRequest;
 public class HeaderUtil {
 
     private final static String HEADER_AUTHORIZATION = "Authorization";
-    private final static String HEADER_REDIRECT_URI = "redirect";
+    private final static String HEADER_REFERER_URI = "Referer";
     private final static String TOKEN_PREFIX = "Bearer ";
+    private final static String REFERER_PREFIX = "http://localhost:3000";
 
     public static String getAccessToken(HttpServletRequest request) {
         String tokenValue = request.getHeader(HEADER_AUTHORIZATION);
@@ -23,7 +24,8 @@ public class HeaderUtil {
     }
 
     public static String getHeaderRedirectUri(HttpServletRequest request){
-        String redirectValue = request.getHeader(HEADER_REDIRECT_URI);
+        String redirectValue = request.getHeader(HEADER_REFERER_URI);
+        redirectValue = redirectValue.substring(REFERER_PREFIX.length());
 
         if(redirectValue == null){
             return null;

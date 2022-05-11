@@ -35,8 +35,9 @@ public class RequestFilter extends OncePerRequestFilter {
             header.put("Authorization",token);
             requestUnirest(request,header);
         }
-        else
+        else {
             filterChain.doFilter(request, response);
+        }
     }
 
     private void requestUnirest(HttpServletRequest request, Map<String,String> header) throws IOException {
@@ -68,7 +69,7 @@ public class RequestFilter extends OncePerRequestFilter {
 
         switch (requestMethod){
             case "GET":
-                Unirest.get(requestURI).headers(header);
+                Unirest.get(requestURI).headers(header).asJson();
                 break;
             case "POST":
                 Unirest.post(requestURI).headers(header).body(fields).asJson();
@@ -77,7 +78,7 @@ public class RequestFilter extends OncePerRequestFilter {
                 Unirest.put(requestURI).headers(header).body(fields).asJson();
                 break;
             case "DELETE":
-                Unirest.delete(requestURI).headers(header);
+                Unirest.delete(requestURI).headers(header).asJson();
                 break;
             default:
                 break;
