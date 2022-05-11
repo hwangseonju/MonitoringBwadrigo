@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URI;
 import java.util.Map;
 
 @RestController
@@ -29,35 +30,37 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/signup")
-    public ResponseEntity registerMember(@RequestBody MemberDto memberDto){
+    public ResponseEntity registerMember(@RequestBody MemberDto memberDto, @RequestParam String redirect){
         memberService.registerMember(memberDto);
-        return new ResponseEntity(HttpStatus.OK);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(redirect));
+        return new ResponseEntity(headers, HttpStatus.OK);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity doLogin(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse res){
-        //로그인 할 때, JWT를 헤더에 넣어서 반환
-
-        Map<String, Object> result;
-        try {
-           result  = memberService.login(loginRequestDto.getMemberEmail(), loginRequestDto.getMemberPassword());
-
-        }catch (NullMemberException | BadRequestException e){
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-
-        //로그인, 이름
-        res.addCookie((Cookie) result.get("accessToken"));
-        res.addCookie((Cookie) result.get("refreshToken"));
-        result.remove("accessToken");
-        result.remove("refreshToken");
-
-        return new ResponseEntity<>(result, HttpStatus.OK);
-
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity doLogin(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse res){
+//        //로그인 할 때, JWT를 헤더에 넣어서 반환
+//
+//        Map<String, Object> result;
+//        try {
+//           result  = memberService.login(loginRequestDto.getMemberEmail(), loginRequestDto.getMemberPassword());
+//
+//        }catch (NullMemberException | BadRequestException e){
+//            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+//        }
+//
+//        //로그인, 이름
+//        res.addCookie((Cookie) result.get("accessToken"));
+//        res.addCookie((Cookie) result.get("refreshToken"));
+//        result.remove("accessToken");
+//        result.remove("refreshToken");
+//
+//        return new ResponseEntity<>(result, HttpStatus.OK);
+//
+//    }
 
     @DeleteMapping("/logout")
-    public ResponseEntity doLogout(HttpServletResponse response){
+    public ResponseEntity doLogout(HttpServletResponse response, @RequestParam String redirect){
 
         Cookie cookie1 = new Cookie("accessToken",null);
         cookie1.setMaxAge(0);
@@ -67,18 +70,24 @@ public class MemberController {
         cookie2.setPath("/");
         response.addCookie(cookie1);
         response.addCookie(cookie2);
-        return new ResponseEntity(HttpStatus.OK);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(redirect));
+        return new ResponseEntity(headers, HttpStatus.OK);
     }
 
     @GetMapping("/check/{email}")
-    public ResponseEntity checkDuplication(@PathVariable("email") String email) throws DuplicatedEmailException{
+    public ResponseEntity checkDuplication(@PathVariable("email") String email, @RequestParam String redirect) throws DuplicatedEmailException{
         log.info("check duplication in "+email);
         memberService.checkEmailDuplicate(email);
-        return new ResponseEntity(HttpStatus.OK);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(redirect));
+        return new ResponseEntity(headers, HttpStatus.OK);
     }
 
     @GetMapping()
-    public ResponseEntity<MemberDto> getMember(){
+    public ResponseEntity<MemberDto> getMember(@RequestParam String redirect){
         String memberEmail = memberService.decodeJWT();
         MemberEntity memberEntity = memberService.getMember(memberEmail);
         MemberDto memberDto = MemberDto.builder()
@@ -91,29 +100,40 @@ public class MemberController {
                 .memberStatus(memberEntity.getMemberStatus())
                 .userRole(memberEntity.getRole())
                 .build();
-        return new ResponseEntity<>(memberDto, HttpStatus.OK);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(redirect));
+        return new ResponseEntity<>(memberDto, headers, HttpStatus.OK);
     }
 
     @PutMapping()
-    public ResponseEntity<String> updateMember(@RequestBody MemberModifyDto memberModifyDto){
+    public ResponseEntity<String> updateMember(@RequestBody MemberModifyDto memberModifyDto, @RequestParam String redirect){
         String memberEmail = memberService.decodeJWT();
         memberService.updateMember(memberModifyDto);
         MemberEntity response = memberService.getMember(memberEmail);
-        return new ResponseEntity<>("수정 완료", HttpStatus.OK);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(redirect));
+        return new ResponseEntity<>("수정 완료", headers, HttpStatus.OK);
     }
 
     @DeleteMapping()
-    public ResponseEntity<String> deleteMember(){
+    public ResponseEntity<String> deleteMember(@RequestParam String redirect){
         String memberEmail = memberService.decodeJWT();
         memberService.deleteMember(memberEmail);
-        return new ResponseEntity<>("삭제 완료" ,HttpStatus.OK);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(redirect));
+        return new ResponseEntity<>("삭제 완료" , headers, HttpStatus.OK);
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity refreshToken(){
+    public ResponseEntity refreshToken(@RequestParam String redirect){
         String memberEmail = memberService.decodeJWT();
-        HttpHeaders headers = new HttpHeaders();
         log.info("refreshToken in "+memberEmail);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(redirect));
         return new ResponseEntity(headers, HttpStatus.OK);
     }
 
