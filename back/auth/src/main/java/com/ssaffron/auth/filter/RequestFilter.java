@@ -26,8 +26,8 @@ public class RequestFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws IOException, ServletException {
-        //헤더에 토큰이 있으면 검사, 없으면 로그인
         String token = HeaderUtil.getAccessToken(request);
+
         Unirest.config().defaultBaseUrl("http://localhost:8081");
         if(token != null){
             Map<String,String> header = new HashMap<>();
@@ -42,6 +42,9 @@ public class RequestFilter extends OncePerRequestFilter {
     private void requestUnirest(HttpServletRequest request, Map<String,String> header) throws IOException {
         String requestURI = request.getRequestURI();
         String requestMethod  = request.getMethod();
+        String redirectUri = HeaderUtil.getHeaderRedirectUri(request);
+        requestURI = requestURI+"?redirect="+redirectUri;
+
         InputStream inputStream = request.getInputStream();
         String body = null;
         StringBuilder stringBuilder = new StringBuilder();
@@ -65,24 +68,18 @@ public class RequestFilter extends OncePerRequestFilter {
 
         switch (requestMethod){
             case "GET":
-                log.info("겟임.");
                 Unirest.get(requestURI).headers(header);
                 break;
             case "POST":
-                log.info("포스트임.");
                 Unirest.post(requestURI).headers(header).body(fields).asJson();
-                log.info("URL: {}, HEADER: {}, BODY: {}",requestURI,header,fields);
                 break;
             case "PUT":
-                log.info("풋임.");
                 Unirest.put(requestURI).headers(header).body(fields).asJson();
                 break;
             case "DELETE":
-                log.info("삭제임");
                 Unirest.delete(requestURI).headers(header);
                 break;
             default:
-                log.info("??");
                 break;
         }
     }
