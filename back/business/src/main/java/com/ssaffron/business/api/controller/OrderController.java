@@ -59,4 +59,16 @@ public class OrderController {
         List<PayDto> payDtoList = orderService.getBill(memberEmail, month);
         return new ResponseEntity(payDtoList, HttpStatus.OK);
     }
+
+    @GetMapping("/collect/check")
+    public ResponseEntity isCollect(){
+        String memberEmail = memberService.decodeJWT();
+
+        List<CollectDto> collectDtoList = orderService.isCollect(memberEmail);
+        if(collectDtoList.size() == 0){
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity(collectDtoList, HttpStatus.OK);
+    }
+
 }
