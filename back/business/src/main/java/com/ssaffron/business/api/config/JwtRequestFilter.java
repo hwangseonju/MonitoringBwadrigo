@@ -1,14 +1,10 @@
 package com.ssaffron.business.api.config;
 
 import com.ssaffron.business.api.entity.MemberEntity;
-import com.ssaffron.business.api.service.CookieUtil;
-import com.ssaffron.business.api.service.MemberDetailsService;
-import com.ssaffron.business.api.service.MemberService;
-import com.ssaffron.business.api.service.RedisUtil;
+import com.ssaffron.business.api.service.*;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,12 +30,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final CookieUtil cookieUtil;
 
+
+
     private final RedisUtil redisUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
 
-        final Cookie jwtToken = cookieUtil.getCookie(httpServletRequest,JwtUtil.ACCESS_TOKEN_NAME);
+        String jwtToken = HeaderUtil.getAccessToken(httpServletRequest);
 
         String memberEmail = null;
         String jwt = null;
@@ -48,7 +46,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         try{
             if(jwtToken != null){
-                jwt = jwtToken.getValue();
+                jwt = jwtToken;
                 memberEmail = jwtUtil.getUsername(jwt);
             }
             if(memberEmail!=null){
