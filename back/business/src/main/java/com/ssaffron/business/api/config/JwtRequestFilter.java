@@ -14,7 +14,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -27,10 +26,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final MemberDetailsService memberDetailsService;
 
     private final JwtUtil jwtUtil;
-
-    private final CookieUtil cookieUtil;
-
-
 
     private final RedisUtil redisUtil;
 
@@ -59,9 +54,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 }
             }
         }catch (ExpiredJwtException e){
-            Cookie refreshToken = cookieUtil.getCookie(httpServletRequest,JwtUtil.REFRESH_TOKEN_NAME);
+            String refreshToken = HeaderUtil.getRefreshToken(httpServletRequest);
             if(refreshToken!=null){
-                refreshJwt = refreshToken.getValue();
+                refreshJwt = refreshToken;
             }
         }catch(Exception e){
 
@@ -79,10 +74,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
                     MemberEntity memberEntity = new MemberEntity();
                     memberEntity.setMemberEmail(refreshUname);
-                    String newToken =jwtUtil.generateToken(memberEntity);
-
-                    Cookie newAccessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME,newToken);
-                    httpServletResponse.addCookie(newAccessToken);
                 }
             }
         }catch(ExpiredJwtException e){

@@ -34,8 +34,6 @@ public class MemberService {
 
     private final JwtUtil jwtUtil;
 
-    private final CookieUtil cookieUtil;
-
     private final RedisUtil redisUtil;
 
     private final PasswordEncoder passwordEncoder;
@@ -91,40 +89,10 @@ public class MemberService {
         memberRepository.save(memberEntity);
     }
 
-    public Map<String, Object> login(String memberEmail, String memberPwd) {
-        Map<String, Object> result = new HashMap<>();
-        MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
-
-        // 존재하는 회원인가?
-        if(memberEntity == null)
-            throw new NullMemberException();
-
-        // 비밀번호가 맞는지 비교
-        if(!passwordEncoder.matches(memberPwd ,memberEntity.getMemberPassword()))
-//            return null;
-            throw new BadRequestException();
-        // 사용자의 이메일과 비밀번호가 맞으면 Access 토큰과 Refresh토큰을 쿠키 값으로 준다.
-        String token = jwtUtil.generateToken(memberEntity);
-        String refreshJwt = jwtUtil.generateRefreshToken(memberEntity);
-        Cookie accessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME, token);
-        Cookie refreshToken = cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, refreshJwt);
-        redisUtil.setDataExpire(refreshJwt, memberEntity.getMemberEmail(), JwtUtil.REFRESH_TOKEN_VALIDATION_SECOND);
-//        res.addCookie(accessToken);
-//        res.addCookie(refreshToken);
-
-        result.put("memberName", memberEntity.getMemberName());
-        result.put("accessToken", accessToken);
-        result.put("refreshToken", refreshToken);
-
-        log.info(redisUtil.getData(refreshJwt));
-
-        return result;
-    }
 
     public String decodeJWT() {
         org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String memberEmail = principal.getUsername();
-//        String memberPassword = principal.getPassword();
 
         return memberEmail;
     }

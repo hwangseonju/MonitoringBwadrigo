@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/api/member")
@@ -37,27 +36,6 @@ public class MemberController {
         return new ResponseEntity(headers, HttpStatus.OK);
     }
 
-//    @PostMapping("/login")
-//    public ResponseEntity doLogin(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse res){
-//        //로그인 할 때, JWT를 헤더에 넣어서 반환
-//
-//        Map<String, Object> result;
-//        try {
-//           result  = memberService.login(loginRequestDto.getMemberEmail(), loginRequestDto.getMemberPassword());
-//
-//        }catch (NullMemberException | BadRequestException e){
-//            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-//        }
-//
-//        //로그인, 이름
-//        res.addCookie((Cookie) result.get("accessToken"));
-//        res.addCookie((Cookie) result.get("refreshToken"));
-//        result.remove("accessToken");
-//        result.remove("refreshToken");
-//
-//        return new ResponseEntity<>(result, HttpStatus.OK);
-//
-//    }
 
     @DeleteMapping("/logout")
     public ResponseEntity doLogout(HttpServletResponse response, @RequestParam String redirect){
