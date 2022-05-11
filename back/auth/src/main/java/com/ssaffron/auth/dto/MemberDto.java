@@ -1,6 +1,5 @@
 package com.ssaffron.auth.dto;
 
-import com.ssaffron.auth.config.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,9 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MemberDto {
-
     private String memberEmail;
-    private String memberName;
-    private UserRole memberRole;
-
+    private String memberPassword;
 }
