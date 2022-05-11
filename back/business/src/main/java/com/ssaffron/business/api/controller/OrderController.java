@@ -4,10 +4,12 @@ import com.ssaffron.business.api.dto.*;
 import com.ssaffron.business.api.service.MemberService;
 import com.ssaffron.business.api.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -20,7 +22,7 @@ public class OrderController {
     private final MemberService memberService;
 
     @PostMapping("")
-    public ResponseEntity collectionRequest(@RequestBody List<CollectDto> collectDtoList){
+    public ResponseEntity collectionRequest(@RequestBody List<CollectDto> collectDtoList, @RequestParam String redirect){
         String memberEmaill = memberService.decodeJWT();
 //        try {
             orderService.collectionRequest(memberEmaill, collectDtoList);
@@ -30,33 +32,41 @@ public class OrderController {
 //            return new ResponseEntity(HttpStatus.BAD_REQUEST);
 //            //NullAddressException과 NullApplyException이 다른 Status를 가지면 좋을 것 같다.
 //        }
-        return new ResponseEntity(HttpStatus.OK);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(redirect));
+        return new ResponseEntity(headers, HttpStatus.OK);
     }
 
     @GetMapping("")
-    public ResponseEntity collectionRequestInquiry(){
+    public ResponseEntity collectionRequestInquiry(@RequestParam String redirect){
         String memberEmail = memberService.decodeJWT();
 
         List<CollectDto> collectDtoList = orderService.collectionRequestInquiry(memberEmail);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(redirect));
         if(collectDtoList.size() == 0){
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
+            return new ResponseEntity(headers, HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity(collectDtoList, HttpStatus.OK);
+        return new ResponseEntity(collectDtoList, headers, HttpStatus.OK);
     }
 
     @DeleteMapping("/{collectId}")
-    public ResponseEntity withdrawalOfCollection(@PathVariable("collectId") long collectId){
+    public ResponseEntity withdrawalOfCollection(@PathVariable("collectId") long collectId, @RequestParam String redirect){
         orderService.withdrawalOfCollection(collectId);
-        return new ResponseEntity(HttpStatus.OK);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(redirect));
+        return new ResponseEntity(headers, HttpStatus.OK);
     }
 
 
 
     @GetMapping("/bill/{month}")
-    public ResponseEntity getBill(@PathVariable("month") int month){
+    public ResponseEntity getBill(@PathVariable("month") int month, @RequestParam String redirect){
         String memberEmail = memberService.decodeJWT();
 
         List<PayDto> payDtoList = orderService.getBill(memberEmail, month);
-        return new ResponseEntity(payDtoList, HttpStatus.OK);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(redirect));
+        return new ResponseEntity(payDtoList, headers, HttpStatus.OK);
     }
 }
