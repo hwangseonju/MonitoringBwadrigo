@@ -1,4 +1,9 @@
 spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://k6s104.p.ssafy.io:3333/test?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: login_manager
+    password: ssafyLoginManager123
   main:
     allow-circular-references: true
   cache:

@@ -2,6 +2,7 @@ package com.ssaffron.auth.util;
 
 //import com.ssaffron.business.api.entity.MemberEntity;
 import com.ssaffron.auth.dto.MemberDto;
+import com.ssaffron.auth.entity.MemberEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -38,47 +39,22 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // 토큰이 유효한 토큰인지 검사한 후, 토큰에 담긴 payload 값을 가져온다
-    public Claims extractAllClaims(String token) throws ExpiredJwtException {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey(SECRET_KEY))
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
-    // 추출한 payload로 부터 memberEmail을 가져온다
-    public String getUsername(String token) {
-        return extractAllClaims(token).get("memberEmail", String.class);
-    }
-
-    public String getUserRole(String token) {
-        return extractAllClaims(token).get("memberRole", String.class);
-    }
-
-    // 토큰이 만료되었는지 확인
-    public Boolean isTokenExpired(String token) {
-        final Date expiration = extractAllClaims(token).getExpiration();
-        return expiration.before(new Date());
-    }
-
     // Access 토큰을 형성
-    public String generateToken(MemberDto memberDto) {
-        return doGenerateToken(memberDto, TOKEN_VALIDATION_SECOND);
+    public String generateToken(MemberEntity memberEntity) {
+        return doGenerateToken(memberEntity, TOKEN_VALIDATION_SECOND);
     }
 
     // Refresh 토큰을 형성
-    public String generateRefreshToken(MemberDto memberDto) {
-        return doGenerateToken(memberDto, REFRESH_TOKEN_VALIDATION_SECOND);
+    public String generateRefreshToken(MemberEntity memberEntity) {
+        return doGenerateToken(memberEntity, REFRESH_TOKEN_VALIDATION_SECOND);
     }
 
 
     // 토큰 생성, payload에 담길 값은 memberEmail
-    public String doGenerateToken(MemberDto memberDto, long expireTime) {
-
+    public String doGenerateToken(MemberEntity memberEntity, long expireTime) {
         Claims claims = Jwts.claims();
-        claims.put("memberEmail", memberDto.getMemberEmail());
-        claims.put("memberRole", memberDto.getMemberRole());
+        claims.put("memberEmail", memberEntity.getMemberEmail());
+        claims.put("memberRole", memberEntity.getRole());
 
         String jwt = Jwts.builder()
                 .setClaims(claims)
@@ -87,14 +63,6 @@ public class JwtUtil {
                 .signWith(getSigningKey(SECRET_KEY), SignatureAlgorithm.HS256)
                 .compact();
 
-
         return jwt;
     }
-
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = getUsername(token);
-
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
-
 }
