@@ -45,9 +45,5 @@ public class MemberController {
         HttpHeaders headers = new HttpHeaders();
         return new ResponseEntity(headers, HttpStatus.OK);
     }
-
-    @GetMapping("/test")
-    public void test(){
-        log.info("testController");
-    }
+//-
 }
