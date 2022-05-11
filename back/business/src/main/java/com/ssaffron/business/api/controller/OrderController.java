@@ -69,4 +69,16 @@ public class OrderController {
         headers.setLocation(URI.create(redirect));
         return new ResponseEntity(payDtoList, headers, HttpStatus.OK);
     }
+
+    @GetMapping("/collect/check")
+    public ResponseEntity isCollect(){
+        String memberEmail = memberService.decodeJWT();
+
+        List<CollectDto> collectDtoList = orderService.isCollect(memberEmail);
+        if(collectDtoList.size() == 0){
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity(collectDtoList, HttpStatus.OK);
+    }
+
 }
