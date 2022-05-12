@@ -38,16 +38,16 @@ public class OrderController {
     }
 
     @GetMapping("")
-    public ResponseEntity collectionRequestInquiry(@RequestParam String redirect){
+    public ResponseEntity collectionRequestInquiry(){
         String memberEmail = memberService.decodeJWT();
 
         List<CollectDto> collectDtoList = orderService.collectionRequestInquiry(memberEmail);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(redirect));
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setLocation(URI.create(redirect));
         if(collectDtoList.size() == 0){
-            return new ResponseEntity(headers, HttpStatus.NO_CONTENT);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity(collectDtoList, headers, HttpStatus.OK);
+        return new ResponseEntity(collectDtoList, HttpStatus.OK);
     }
 
     @DeleteMapping("/{collectId}")
