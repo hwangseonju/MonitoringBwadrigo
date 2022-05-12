@@ -26,7 +26,7 @@ spring:
         - id: all
           uri: http://localhost:8081
           predicates:
-            - Path=/v1/api/member/signup,/v1/api/plan/month/**,/v1/api/plan/laundry/**
+            - Path=/v1/api/member/signup,/v1/api/plan/month/**,/v1/api/plan/laundry/**,/v1/api/member/check/**
             - Method=POST,GET
 
         - id: auth
