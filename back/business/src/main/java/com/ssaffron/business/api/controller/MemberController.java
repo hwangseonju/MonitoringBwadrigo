@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.net.URI;
 
 @RestController
@@ -55,17 +56,17 @@ public class MemberController {
     }
 
     @GetMapping("/check/{email}")
-    public ResponseEntity checkDuplication(@PathVariable("email") String email, @RequestParam String redirect) throws DuplicatedEmailException{
+    public ResponseEntity checkDuplication(@PathVariable("email") String email) throws DuplicatedEmailException{
         log.info("check duplication in "+email);
         memberService.checkEmailDuplicate(email);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(redirect));
+//        headers.setLocation(URI.create(redirect));
         return new ResponseEntity(headers, HttpStatus.OK);
     }
 
     @GetMapping()
-    public ResponseEntity<MemberDto> getMember(@RequestParam String redirect){
+    public ResponseEntity<MemberDto> getMember(){
         String memberEmail = memberService.decodeJWT();
         MemberEntity memberEntity = memberService.getMember(memberEmail);
         MemberDto memberDto = MemberDto.builder()
@@ -78,10 +79,13 @@ public class MemberController {
                 .memberStatus(memberEntity.getMemberStatus())
                 .userRole(memberEntity.getRole())
                 .build();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(redirect));
-        return new ResponseEntity<>(memberDto, headers, HttpStatus.OK);
+        log.info("in - data {}",memberDto.toString());
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setLocation(URI.create(redirect));
+//        headers.add("test","test");
+//        log.info("{}",headers.getLocation());
+//        response.sendRedirect(redirect);
+        return new ResponseEntity<>(memberDto, HttpStatus.OK);
     }
 
     @PutMapping()
