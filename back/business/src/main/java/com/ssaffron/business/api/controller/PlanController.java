@@ -44,7 +44,7 @@ public class PlanController {
         return new ResponseEntity<>(laundryPlanDto, HttpStatus.OK);
     }
 
-    // tt 요금제 신청 header로 불러오는 법 ->
+    // tt 요금제 신청
     @PostMapping("")
     public ResponseEntity createApplyFor(@RequestBody RequestApplyDto requestApplyDto) throws DuplicatedApplyException{
         String memberEmail = memberService.decodeJWT();
