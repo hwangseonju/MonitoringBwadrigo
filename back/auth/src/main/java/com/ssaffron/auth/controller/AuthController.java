@@ -3,15 +3,15 @@ package com.ssaffron.auth.controller;
 import com.ssaffron.auth.dto.MemberDto;
 import com.ssaffron.auth.entity.MemberEntity;
 import com.ssaffron.auth.service.MemberService;
+import com.ssaffron.auth.util.HeaderUtil;
 import com.ssaffron.auth.util.JwtUtil;
 import com.ssaffron.auth.util.RedisUtil;
 import kong.unirest.Unirest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
@@ -26,7 +26,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Slf4j
-public class MemberController {
+public class AuthController {
 
     private final static String HEADER_AUTHORIZATION = "Authorization";
     private final static String BUSINESS = "http://localhost:8081";
@@ -56,15 +56,21 @@ public class MemberController {
         return new ResponseEntity(headers, HttpStatus.OK);
     }
 
-    @RequestMapping("*")
-    public ResponseEntity returnMethode(HttpServletRequest request) throws IOException {
-        String authorization = request.getHeader(HEADER_AUTHORIZATION);
+    @RequestMapping(value = {"/member/**", "/order/**", "/plan/**"}, method = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.POST})
+//    @GetMapping("/member")
+    public Object returnMethode(HttpServletRequest request) throws IOException {
+        String authorization = HeaderUtil.getAccessToken(request);
         String requestUri = BUSINESS + request.getRequestURI();
         String requestMethod = request.getMethod();
+        HttpHeaders headers = new HttpHeaders();
         Map<String,String> header = new HashMap<>();
         header.put("Content-Type", "application/json;charset=UTF-8");
         header.put("Authorization",authorization);
-        log.info("{}",requestUri);
+//        headers.add("Content-Type", "application/json;charset=UTF-8");
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(authorization);
+//        headers.add("Authorization",authorization);
+        log.info("auth 그 외의 요청 {}, 너의 헤더는? {}",requestUri,authorization);
 
         InputStream inputStream = request.getInputStream();
         String body = null;
@@ -86,22 +92,26 @@ public class MemberController {
         for(int i=1;i< bodyArr.length;i+=2){
             fields.put(bodyArr[i-1],bodyArr[i]);
         }
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity httpEntity = new HttpEntity(fields, headers);
 
         switch (requestMethod){
             case "GET":
-                return (ResponseEntity) Unirest.get(requestUri).headers(header).asJson();
+//                return  Unirest.get(requestUri).headers(header).asJson();
+                return restTemplate.exchange(requestUri, HttpMethod.GET, httpEntity, Object.class);
             case "POST":
-                return (ResponseEntity) Unirest.post(requestUri).headers(header).body(fields).asJson();
+                return restTemplate.exchange(requestUri, HttpMethod.POST, httpEntity, Object.class);
 
             case "PUT":
-                return (ResponseEntity) Unirest.put(requestUri).headers(header).body(fields).asJson();
+                return restTemplate.exchange(requestUri, HttpMethod.PUT, httpEntity, Object.class);
 
             case "DELETE":
-                return (ResponseEntity) Unirest.delete(requestUri).headers(header).asJson();
+                return restTemplate.exchange(requestUri, HttpMethod.DELETE, httpEntity, Object.class);
 
             default:
                 return new ResponseEntity(HttpStatus.BAD_REQUEST);
 
         }
     }
+
 }

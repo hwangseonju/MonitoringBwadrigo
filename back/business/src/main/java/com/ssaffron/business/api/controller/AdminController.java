@@ -20,37 +20,33 @@ import java.util.List;
 public class AdminController {
     private final AdminService adminService;
     @GetMapping("/list")
-    public ResponseEntity fetchAllCollectionRequest(@RequestParam String redirect){
+    public ResponseEntity fetchAllCollectionRequest(){
         //직원만 접근 가능한 URI
         List<CollectDtoEmployeeForm> collectDtoEmployeeFormList = adminService.fetchAllCollectionRequest();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(redirect));
-        return new ResponseEntity(collectDtoEmployeeFormList, headers, HttpStatus.OK);
+
+        return new ResponseEntity(collectDtoEmployeeFormList, HttpStatus.OK);
     }
 
     @GetMapping("/find")
-    public ResponseEntity fetchCollectionRequestByMember(@RequestBody String findMemberEmail, @RequestParam String redirect){
+    public ResponseEntity fetchCollectionRequestByMember(@RequestBody String findMemberEmail){
         //직원만 접근 가능한 URI
         List<CollectDtoEmployeeForm> collectDtoEmployeeFormList = adminService.fetchCollectionRequestByMember(findMemberEmail);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(redirect));
-        return new ResponseEntity(collectDtoEmployeeFormList, headers, HttpStatus.OK);
+
+        return new ResponseEntity(collectDtoEmployeeFormList, HttpStatus.OK);
     }
 
     @GetMapping("/find/employee")
-    public ResponseEntity fetchCollectionRequestByEmployee(@RequestBody int employeeId, @RequestParam String redirect){
+    public ResponseEntity fetchCollectionRequestByEmployee(@RequestBody int employeeId){
         List<CollectDtoEmployeeForm> collectDtoEmployeeFormList = adminService.fetchCollectionRequestByEmployee(employeeId);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(redirect));
-        return new ResponseEntity(collectDtoEmployeeFormList, headers, HttpStatus.OK);
+
+        return new ResponseEntity(collectDtoEmployeeFormList, HttpStatus.OK);
     }
 
     @PutMapping("")
-    public ResponseEntity collectionApproval(@RequestBody CollectionApprovalDto collectionApprovalDto, @RequestParam String redirect){
+    public ResponseEntity collectionApproval(@RequestBody CollectionApprovalDto collectionApprovalDto){
         List<CollectDto> collectDtoList = collectionApprovalDto.getCollectDtoList();
         EmployeeDto employeeDto = collectionApprovalDto.getEmployeeDto();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(redirect));
+
         if(collectDtoList.size() == 0){
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
@@ -58,19 +54,17 @@ public class AdminController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         adminService.collectionApproval(collectDtoList, employeeDto);
-        return new ResponseEntity(headers, HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/bill")
-    public ResponseEntity registBill(@RequestBody PayDtoEmployeeForm payDtoEmployeeForm, @RequestParam String redirect){
+    public ResponseEntity registBill(@RequestBody PayDtoEmployeeForm payDtoEmployeeForm){
         MemberDto memberDto = payDtoEmployeeForm.getMemberDto();
         CollectDto collectDto = payDtoEmployeeForm.getCollectDto();
         LaundryPlanDto laundryPlanDto = payDtoEmployeeForm.getPayDto().getLaundryPlanDto();
         PayDto payDto = payDtoEmployeeForm.getPayDto();
         adminService.registBill(memberDto.getMemberEmail(), collectDto.getCollectId(), laundryPlanDto.getLaundryPlanId(), payDto);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(redirect));
 
-        return new ResponseEntity(headers, HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
