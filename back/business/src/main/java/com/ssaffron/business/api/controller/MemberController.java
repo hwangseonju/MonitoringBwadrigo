@@ -53,7 +53,7 @@ public class MemberController {
     }
 
     @GetMapping("/check/{email}")
-    public ResponseEntity checkDuplication(@PathVariable("email") String email) throws DuplicatedEmailException{
+    public ResponseEntity checkDuplication(@PathVariable("email") String email){
         log.info("check duplication in "+email);
         memberService.checkEmailDuplicate(email);
 
@@ -63,17 +63,7 @@ public class MemberController {
     @GetMapping()
     public ResponseEntity<MemberDto> getMember(){
         String memberEmail = memberService.decodeJWT();
-        MemberEntity memberEntity = memberService.getMember(memberEmail);
-        MemberDto memberDto = MemberDto.builder()
-                .memberEmail(memberEntity.getMemberEmail())
-                .memberName(memberEntity.getMemberName())
-                .memberPhone(memberEntity.getMemberPhone())
-                .memberAddress(memberEntity.getMemberAddress())
-                .memberGender(memberEntity.isMemberGender())
-                .memberAge(memberEntity.getMemberAge())
-                .memberStatus(memberEntity.getMemberStatus())
-                .userRole(memberEntity.getRole())
-                .build();
+        MemberDto memberDto = memberService.getMemberDto(memberEmail);
         log.info("in - data {}",memberDto.toString());
 
         return new ResponseEntity<>(memberDto, HttpStatus.OK);

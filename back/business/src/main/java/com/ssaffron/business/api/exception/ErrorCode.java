@@ -12,7 +12,11 @@ public enum ErrorCode implements EnumModel{
     // COMMON
     INVALID_CODE(400, "C001", "Invalid Code"),
     RESOURCE_NOT_FOUND(400, "C002", "Resource Not Found"),
-    DUPLICATED_RESOURCE(400, "C003", "Duplicated Resource");
+    DUPLICATED_RESOURCE(400, "C003", "Duplicated Resource"),
+    NOT_MATCHED_PASSWORD(400, "C004", "Not Matched Password"),
+
+    // AWS
+    ASW_ERROR(400, "A001", "aws client error");
 
     private int status;
     private String code;
