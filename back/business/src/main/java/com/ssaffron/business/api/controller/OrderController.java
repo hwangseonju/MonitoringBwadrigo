@@ -22,19 +22,12 @@ public class OrderController {
     private final MemberService memberService;
 
     @PostMapping("")
-    public ResponseEntity collectionRequest(@RequestBody List<CollectDto> collectDtoList, @RequestParam String redirect){
+    public ResponseEntity collectionRequest(@RequestBody List<CollectDto> collectDtoList){
         String memberEmaill = memberService.decodeJWT();
-//        try {
-            orderService.collectionRequest(memberEmaill, collectDtoList);
-//        }catch (NotFoundAddressException e){
-//            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-//        }catch (NullApplyException e){
-//            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-//            //NullAddressException과 NullApplyException이 다른 Status를 가지면 좋을 것 같다.
-//        }
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(redirect));
-        return new ResponseEntity(headers, HttpStatus.OK);
+
+        orderService.collectionRequest(memberEmaill, collectDtoList);
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("")
@@ -42,8 +35,7 @@ public class OrderController {
         String memberEmail = memberService.decodeJWT();
 
         List<CollectDto> collectDtoList = orderService.collectionRequestInquiry(memberEmail);
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setLocation(URI.create(redirect));
+
         if(collectDtoList.size() == 0){
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
@@ -51,23 +43,19 @@ public class OrderController {
     }
 
     @DeleteMapping("/{collectId}")
-    public ResponseEntity withdrawalOfCollection(@PathVariable("collectId") long collectId, @RequestParam String redirect){
+    public ResponseEntity withdrawalOfCollection(@PathVariable("collectId") long collectId){
         orderService.withdrawalOfCollection(collectId);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(redirect));
-        return new ResponseEntity(headers, HttpStatus.OK);
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 
-
-
     @GetMapping("/bill/{month}")
-    public ResponseEntity getBill(@PathVariable("month") int month, @RequestParam String redirect){
+    public ResponseEntity getBill(@PathVariable("month") int month){
         String memberEmail = memberService.decodeJWT();
 
         List<PayDto> payDtoList = orderService.getBill(memberEmail, month);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(redirect));
-        return new ResponseEntity(payDtoList, headers, HttpStatus.OK);
+
+        return new ResponseEntity(payDtoList, HttpStatus.OK);
     }
 
     @GetMapping("/collect/check")

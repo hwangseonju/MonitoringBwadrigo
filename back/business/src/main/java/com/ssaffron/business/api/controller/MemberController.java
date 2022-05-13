@@ -30,16 +30,15 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/signup")
-    public ResponseEntity registerMember(@RequestBody MemberDto memberDto, @RequestParam String redirect){
+    public ResponseEntity registerMember(@RequestBody MemberDto memberDto){
         memberService.registerMember(memberDto);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(redirect));
-        return new ResponseEntity(headers, HttpStatus.OK);
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 
     @DeleteMapping("/logout")
-    public ResponseEntity doLogout(HttpServletResponse response, @RequestParam String redirect){
+    public ResponseEntity doLogout(HttpServletResponse response){
 
         Cookie cookie1 = new Cookie("accessToken",null);
         cookie1.setMaxAge(0);
@@ -50,9 +49,7 @@ public class MemberController {
         response.addCookie(cookie1);
         response.addCookie(cookie2);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(redirect));
-        return new ResponseEntity(headers, HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/check/{email}")
@@ -60,9 +57,7 @@ public class MemberController {
         log.info("check duplication in "+email);
         memberService.checkEmailDuplicate(email);
 
-        HttpHeaders headers = new HttpHeaders();
-//        headers.setLocation(URI.create(redirect));
-        return new ResponseEntity(headers, HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping()
@@ -80,43 +75,33 @@ public class MemberController {
                 .userRole(memberEntity.getRole())
                 .build();
         log.info("in - data {}",memberDto.toString());
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setLocation(URI.create(redirect));
-//        headers.add("test","test");
-//        log.info("{}",headers.getLocation());
-//        response.sendRedirect(redirect);
+
         return new ResponseEntity<>(memberDto, HttpStatus.OK);
     }
 
     @PutMapping()
-    public ResponseEntity<String> updateMember(@RequestBody MemberModifyDto memberModifyDto, @RequestParam String redirect){
+    public ResponseEntity<String> updateMember(@RequestBody MemberModifyDto memberModifyDto){
         String memberEmail = memberService.decodeJWT();
         memberService.updateMember(memberModifyDto);
         MemberEntity response = memberService.getMember(memberEmail);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(redirect));
-        return new ResponseEntity<>("수정 완료", headers, HttpStatus.OK);
+        return new ResponseEntity<>("수정 완료", HttpStatus.OK);
     }
 
     @DeleteMapping()
-    public ResponseEntity<String> deleteMember(@RequestParam String redirect){
+    public ResponseEntity<String> deleteMember(){
         String memberEmail = memberService.decodeJWT();
         memberService.deleteMember(memberEmail);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(redirect));
-        return new ResponseEntity<>("삭제 완료" , headers, HttpStatus.OK);
+        return new ResponseEntity<>("삭제 완료" , HttpStatus.OK);
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity refreshToken(@RequestParam String redirect){
+    public ResponseEntity refreshToken(){
         String memberEmail = memberService.decodeJWT();
         log.info("refreshToken in "+memberEmail);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(redirect));
-        return new ResponseEntity(headers, HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }
