@@ -27,24 +27,26 @@ public class RequestFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws IOException, ServletException {
         String token = HeaderUtil.getAccessToken(request);
+        log.info("in auth filter");
 
-        Unirest.config().defaultBaseUrl("http://localhost:8081");
-        if(token != null){
-            Map<String,String> header = new HashMap<>();
-            header.put("Content-Type", "application/json;charset=UTF-8");
-            header.put("Authorization",token);
-            requestUnirest(request,header);
-        }
-        else {
+//        if(token != null){
+//            Map<String,String> header = new HashMap<>();
+//            header.put("Content-Type", "application/json;charset=UTF-8");
+//            header.put("Authorization",token);
+//            requestUnirest(request,header);
+//        }
+//        else {
             filterChain.doFilter(request, response);
-        }
+//        }
     }
 
     private void requestUnirest(HttpServletRequest request, Map<String,String> header) throws IOException {
         String requestURI = request.getRequestURI();
         String requestMethod  = request.getMethod();
         String redirectUri = HeaderUtil.getHeaderRedirectUri(request);
-        requestURI = requestURI+"?redirect="+redirectUri;
+//        Unirest.config().defaultBaseUrl("http://localhost:8081");
+        requestURI = "http://localhost:8081"+requestURI;
+        log.info("접근하는 uri {} - method {} - redirect {}", requestURI, requestMethod,redirectUri);
 
         InputStream inputStream = request.getInputStream();
         String body = null;
@@ -67,21 +69,21 @@ public class RequestFilter extends OncePerRequestFilter {
             fields.put(bodyArr[i-1],bodyArr[i]);
         }
 
-        switch (requestMethod){
-            case "GET":
-                Unirest.get(requestURI).headers(header).asJson();
-                break;
-            case "POST":
-                Unirest.post(requestURI).headers(header).body(fields).asJson();
-                break;
-            case "PUT":
-                Unirest.put(requestURI).headers(header).body(fields).asJson();
-                break;
-            case "DELETE":
-                Unirest.delete(requestURI).headers(header).asJson();
-                break;
-            default:
-                break;
-        }
+//        switch (requestMethod){
+//            case "GET":
+//                Unirest.get(requestURI).headers(header).queryString("redirect",redirectUri).asJson();
+//                break;
+//            case "POST":
+//                Unirest.post(requestURI).headers(header).queryString("redirect",redirectUri).body(fields).asJson();
+//                break;
+//            case "PUT":
+//                Unirest.put(requestURI).headers(header).queryString("redirect",redirectUri).body(fields).asJson();
+//                break;
+//            case "DELETE":
+//                Unirest.delete(requestURI).headers(header).queryString("redirect",redirectUri).asJson();
+//                break;
+//            default:
+//                break;
+//        }
     }
 }
