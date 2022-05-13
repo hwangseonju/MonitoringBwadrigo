@@ -3,6 +3,7 @@ package com.ssaffron.auth.util;
 //import com.ssaffron.business.api.entity.MemberEntity;
 import com.ssaffron.auth.entity.MemberEntity;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -18,13 +19,9 @@ import java.util.Date;
 @Slf4j
 public class JwtUtil {
 
-//    @Value("${spring.jwt.token-validity-in-seconds}")
-//    public static long TOKEN_VALIDATION_SECOND;
-    public final static long TOKEN_VALIDATION_SECOND = 1000L * 60 * 60 * 4;
-    public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 60 * 24;
 
-    final static public String ACCESS_TOKEN_NAME = "accessToken";
-    final static public String REFRESH_TOKEN_NAME = "refreshToken";
+    public final static long TOKEN_VALIDATION_SECOND = 1000L * 60 * 60 *4;
+    public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 60 * 24;
 
     @Value("${spring.jwt.secret}")
     private String SECRET_KEY;
@@ -42,6 +39,19 @@ public class JwtUtil {
     // Refresh 토큰을 형성
     public String generateRefreshToken(MemberEntity memberEntity) {
         return doGenerateToken(memberEntity, REFRESH_TOKEN_VALIDATION_SECOND);
+    }
+
+    // 토큰이 유효한 토큰인지 검사한 후, 토큰에 담긴 payload 값을 가져온다
+    public Claims extractAllClaims(String token) throws ExpiredJwtException {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey(SECRET_KEY))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    public String getMemberEmail(String token) {
+        return extractAllClaims(token).get("memberEmail", String.class);
     }
 
 
