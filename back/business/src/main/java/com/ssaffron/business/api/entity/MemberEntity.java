@@ -2,8 +2,6 @@ package com.ssaffron.business.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssaffron.business.api.config.UserRole;
-import com.ssaffron.business.api.dto.MemberDto;
-import com.ssaffron.business.api.dto.MemberModifyDto;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -71,5 +69,5 @@ public class MemberEntity{
     private List<CollectEntity> collectionEntities = new ArrayList<>();
 
     @OneToOne(mappedBy = "memberEntity")
-    private ApplyEntity applyForEntity;
+    private ApplyEntity applyEntity;
 }
