@@ -47,16 +47,20 @@ public class AuthController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Authorization", "Bearer " + token);
         httpHeaders.add("RefreshToken", "Bearer " + refreshToken);
+
         return new ResponseEntity<>(memberEntity.getMemberName(), httpHeaders, HttpStatus.OK);
     }
 
     @GetMapping("/auth/refresh")
-    public ResponseEntity refreshToken(@PathVariable("useremail") String memberEmail){
-        HttpHeaders headers = new HttpHeaders();
-        return new ResponseEntity(headers, HttpStatus.OK);
+    public ResponseEntity refreshToken(HttpServletRequest httpServletRequest){
+        String accessToken = memberService.refreshAccessToken(httpServletRequest);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", "Bearer " + accessToken);
+
+        return new ResponseEntity(httpHeaders, HttpStatus.OK);
     }
 
-    @RequestMapping(value = {"/member/**", "/order/**", "/plan/**"}, method = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.POST})
+    @RequestMapping(value = {"/member/**", "/order/**", "/plan/**", "/manager/**"}, method = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.POST})
 //    @GetMapping("/member")
     public Object returnMethode(HttpServletRequest request) throws IOException {
         String authorization = HeaderUtil.getAccessToken(request);
@@ -97,8 +101,8 @@ public class AuthController {
 
         switch (requestMethod){
             case "GET":
-//                return  Unirest.get(requestUri).headers(header).asJson();
                 return restTemplate.exchange(requestUri, HttpMethod.GET, httpEntity, Object.class);
+
             case "POST":
                 return restTemplate.exchange(requestUri, HttpMethod.POST, httpEntity, Object.class);
 
