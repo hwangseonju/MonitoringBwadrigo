@@ -54,6 +54,10 @@ dependencies {
 
     // slack webhook
     implementation 'com.github.maricn:logback-slack-appender:1.4.0'
+    // bucket4j
+    // https://mvnrepository.com/artifact/com.github.vladimir-bukhtoyarov/bucket4j-core
+    implementation 'com.github.vladimir-bukhtoyarov:bucket4j-core:7.0.0'
+
 }
 
 dependencyManagement {
