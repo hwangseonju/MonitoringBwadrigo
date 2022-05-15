@@ -37,7 +37,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String memberEmail = null;
         String jwt = null;
         String refreshJwt = null;
-        String refreshUname = null;
+        String refreshmemberEmail = null;
 
         try{
             if(jwtToken != null){
@@ -64,16 +64,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         try{
             if(refreshJwt != null){
-                refreshUname = redisUtil.getData(refreshJwt);
+                refreshmemberEmail = String.valueOf(redisUtil.getData(refreshJwt).get("memberEmail"));
 
-                if(refreshUname != null && refreshUname.equals(jwtUtil.getUsername(refreshJwt))){
-                    UserDetails userDetails = memberDetailsService.loadUserByUsername(refreshUname);
+                if(refreshmemberEmail != null && refreshmemberEmail.equals(jwtUtil.getUsername(refreshJwt))){
+                    UserDetails userDetails = memberDetailsService.loadUserByUsername(refreshmemberEmail);
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
                     usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-
-                    MemberEntity memberEntity = new MemberEntity();
-                    memberEntity.setMemberEmail(refreshUname);
                 }
             }
         }catch(ExpiredJwtException e){

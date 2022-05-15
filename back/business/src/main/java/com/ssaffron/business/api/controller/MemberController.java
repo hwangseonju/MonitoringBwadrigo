@@ -1,24 +1,22 @@
 package com.ssaffron.business.api.controller;
 
-import com.ssaffron.business.api.dto.LoginRequestDto;
+
 import com.ssaffron.business.api.dto.MemberDto;
 import com.ssaffron.business.api.dto.MemberModifyDto;
 import com.ssaffron.business.api.entity.MemberEntity;
-import com.ssaffron.business.api.exception.BadRequestException;
-import com.ssaffron.business.api.exception.NullMemberException;
 import com.ssaffron.business.api.exception.DuplicatedEmailException;
+import com.ssaffron.business.api.service.HeaderUtil;
 import com.ssaffron.business.api.service.MemberService;
+import com.ssaffron.business.api.service.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.URI;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/v1/api/member")
@@ -28,6 +26,7 @@ import java.net.URI;
 public class MemberController {
 
     private final MemberService memberService;
+    private final RedisUtil redisUtil;
 
     @PostMapping("/signup")
     public ResponseEntity registerMember(@RequestBody MemberDto memberDto){
@@ -38,16 +37,9 @@ public class MemberController {
 
 
     @DeleteMapping("/logout")
-    public ResponseEntity doLogout(HttpServletResponse response){
-
-        Cookie cookie1 = new Cookie("accessToken",null);
-        cookie1.setMaxAge(0);
-        cookie1.setPath("/");
-        Cookie cookie2 = new Cookie("refreshToken",null);
-        cookie2.setMaxAge(0);
-        cookie2.setPath("/");
-        response.addCookie(cookie1);
-        response.addCookie(cookie2);
+    public ResponseEntity doLogout(HttpServletRequest httpServletRequest){
+        String refreshToken = HeaderUtil.getRefreshToken(httpServletRequest);
+        redisUtil.deleteRefreshToken(refreshToken);
 
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -85,7 +77,7 @@ public class MemberController {
         memberService.updateMember(memberModifyDto);
         MemberEntity response = memberService.getMember(memberEmail);
 
-        return new ResponseEntity<>("수정 완료", HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping()
@@ -93,7 +85,7 @@ public class MemberController {
         String memberEmail = memberService.decodeJWT();
         memberService.deleteMember(memberEmail);
 
-        return new ResponseEntity<>("삭제 완료" , HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/refresh")
