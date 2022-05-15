@@ -39,7 +39,7 @@ function Login() {
     const submit = async() => {
         await axios({
             method : "post",
-            url : "/v1/api/member/login",
+            url : "/v1/api/auth/login",
             data : input
         
         }).then((res) => {
