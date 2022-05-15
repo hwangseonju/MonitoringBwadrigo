@@ -6,7 +6,6 @@ import com.ssaffron.auth.service.MemberService;
 import com.ssaffron.auth.util.HeaderUtil;
 import com.ssaffron.auth.util.JwtUtil;
 import com.ssaffron.auth.util.RedisUtil;
-import kong.unirest.Unirest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -47,23 +46,30 @@ public class AuthController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Authorization", "Bearer " + token);
         httpHeaders.add("RefreshToken", "Bearer " + refreshToken);
+
         return new ResponseEntity<>(memberEntity.getMemberName(), httpHeaders, HttpStatus.OK);
     }
 
     @GetMapping("/auth/refresh")
-    public ResponseEntity refreshToken(@PathVariable("useremail") String memberEmail){
-        HttpHeaders headers = new HttpHeaders();
-        return new ResponseEntity(headers, HttpStatus.OK);
+    public ResponseEntity refreshToken(HttpServletRequest httpServletRequest){
+        String accessToken = memberService.refreshAccessToken(httpServletRequest);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", "Bearer " + accessToken);
+
+        return new ResponseEntity(httpHeaders, HttpStatus.OK);
     }
 
-    @RequestMapping(value = {"/member/**", "/order/**", "/plan/**"}, method = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.POST})
+    @RequestMapping(value = {"/member/**", "/order/**", "/plan/**", "/manager/**"}, method = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.POST})
     public Object returnMethode(HttpServletRequest request) throws IOException {
         String authorization = HeaderUtil.getAccessToken(request);
+        String RefreshToken = HeaderUtil.getRefreshToken(request);
         String requestUri = BUSINESS + request.getRequestURI();
         String requestMethod = request.getMethod();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(authorization);
+        headers.add("RefreshToken", RefreshToken);
+
         log.info("auth 그 외의 요청 {}, 너의 헤더는? {}",requestUri,authorization);
 
         InputStream inputStream = request.getInputStream();
