@@ -39,5 +39,5 @@ spring:
         - id: auth
           uri: http://k6s104.p.ssafy.io:8082
           predicates:
-            - Path=/v1/api/auth
+            - Path=/v1/api/**
             - Method=GET,PUT,DELETE,POST
