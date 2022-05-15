@@ -64,16 +64,14 @@ public class AuthController {
 //    @GetMapping("/member")
     public Object returnMethode(HttpServletRequest request) throws IOException {
         String authorization = HeaderUtil.getAccessToken(request);
+        String RefreshToken = HeaderUtil.getRefreshToken(request);
         String requestUri = BUSINESS + request.getRequestURI();
         String requestMethod = request.getMethod();
         HttpHeaders headers = new HttpHeaders();
-        Map<String,String> header = new HashMap<>();
-        header.put("Content-Type", "application/json;charset=UTF-8");
-        header.put("Authorization",authorization);
-//        headers.add("Content-Type", "application/json;charset=UTF-8");
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(authorization);
-//        headers.add("Authorization",authorization);
+        headers.add("RefreshToken", RefreshToken);
+
         log.info("auth 그 외의 요청 {}, 너의 헤더는? {}",requestUri,authorization);
 
         InputStream inputStream = request.getInputStream();
