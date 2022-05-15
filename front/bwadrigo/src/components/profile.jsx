@@ -21,6 +21,8 @@ function Profile() {
             
         }).then((res) => {
             localStorage.removeItem("memberName")
+            localStorage.removeItem("authorization")
+            localStorage.removeItem("refreshtoken")
             window.location.href = "/"
         })
     })
