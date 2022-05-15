@@ -28,8 +28,7 @@ import java.util.Map;
 @Slf4j
 public class AuthController {
 
-    private final static String HEADER_AUTHORIZATION = "Authorization";
-    private final static String BUSINESS = "http://localhost:8081";
+    private final static String BUSINESS = "http://k6s104.p.ssafy.io:8081";
     private final JwtUtil jwtUtil;
     private final RedisUtil redisUtil;
     private final MemberService memberService;
@@ -61,7 +60,6 @@ public class AuthController {
     }
 
     @RequestMapping(value = {"/member/**", "/order/**", "/plan/**", "/manager/**"}, method = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.POST})
-//    @GetMapping("/member")
     public Object returnMethode(HttpServletRequest request) throws IOException {
         String authorization = HeaderUtil.getAccessToken(request);
         String RefreshToken = HeaderUtil.getRefreshToken(request);
