@@ -7,10 +7,7 @@ import com.ssaffron.business.api.dto.MemberModifyDto;
 import com.ssaffron.business.api.entity.MemberEntity;
 import com.ssaffron.business.api.entity.MemberStatus;
 
-import com.ssaffron.business.api.exception.BadRequestException;
-import com.ssaffron.business.api.exception.NullMemberException;
-import com.ssaffron.business.api.exception.DuplicatedEmailException;
-import com.ssaffron.business.api.exception.ErrorCode;
+import com.ssaffron.business.api.exception.*;
 import com.ssaffron.business.api.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -31,11 +28,6 @@ import java.util.Map;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-
-    private final JwtUtil jwtUtil;
-
-    private final RedisUtil redisUtil;
-
     private final PasswordEncoder passwordEncoder;
 
     public void checkEmailDuplicate(String email){
@@ -55,8 +47,6 @@ public class MemberService {
                 .memberAge(memberDto.getMemberAge())
                 .memberStatus(MemberStatus.ACTIVATE)
                 .role(UserRole.ROLE_USER)
-                .memberCreateDate(LocalDateTime.now())
-                .memberUpdateDate(LocalDateTime.now())
                 .build();
         memberRepository.save(memberEntity);
     }
@@ -65,10 +55,23 @@ public class MemberService {
         return memberRepository.findByMemberEmail(memberEmail);
     }
 
+    public MemberDto getMemberDto(String memberEmail){
+        MemberEntity memberEntity = getMember(memberEmail);
+        MemberDto memberDto = MemberDto.builder()
+                .memberEmail(memberEntity.getMemberEmail())
+                .memberName(memberEntity.getMemberName())
+                .memberPhone(memberEntity.getMemberPhone())
+                .memberAddress(memberEntity.getMemberAddress())
+                .memberGender(memberEntity.isMemberGender())
+                .memberAge(memberEntity.getMemberAge())
+                .build();
+        return memberDto;
+    }
+
     public void updateMember(MemberModifyDto memberModifyDto){
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberModifyDto.getMemberEmail());
         if(!passwordEncoder.matches(memberModifyDto.getMemberPassword(), memberEntity.getMemberPassword())){
-            throw new NullPointerException();
+            throw new NotMatchedPasswordException("Not Matched Password");
         }
         else{
             if(memberModifyDto.getModifiedPassword()==null){

@@ -6,7 +6,6 @@ import com.ssaffron.auth.service.MemberService;
 import com.ssaffron.auth.util.HeaderUtil;
 import com.ssaffron.auth.util.JwtUtil;
 import com.ssaffron.auth.util.RedisUtil;
-import kong.unirest.Unirest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -29,8 +28,7 @@ import java.util.StringTokenizer;
 @Slf4j
 public class AuthController {
 
-    private final static String HEADER_AUTHORIZATION = "Authorization";
-    private final static String BUSINESS = "http://localhost:8081";
+    private final static String BUSINESS = "http://k6s104.p.ssafy.io:8081";
     private final JwtUtil jwtUtil;
     private final RedisUtil redisUtil;
     private final MemberService memberService;
@@ -48,29 +46,30 @@ public class AuthController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Authorization", "Bearer " + token);
         httpHeaders.add("RefreshToken", "Bearer " + refreshToken);
+
         return new ResponseEntity<>(memberEntity.getMemberName(), httpHeaders, HttpStatus.OK);
     }
 
     @GetMapping("/auth/refresh")
-    public ResponseEntity refreshToken(@PathVariable("useremail") String memberEmail){
-        HttpHeaders headers = new HttpHeaders();
-        return new ResponseEntity(headers, HttpStatus.OK);
+    public ResponseEntity refreshToken(HttpServletRequest httpServletRequest){
+        String accessToken = memberService.refreshAccessToken(httpServletRequest);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", "Bearer " + accessToken);
+
+        return new ResponseEntity(httpHeaders, HttpStatus.OK);
     }
 
-    @RequestMapping(value = {"/member/**", "/order/**", "/plan/**"}, method = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.POST})
-//    @GetMapping("/member")
+    @RequestMapping(value = {"/member/**", "/order/**", "/plan/**", "/manager/**"}, method = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.POST})
     public Object returnMethode(HttpServletRequest request) throws IOException {
         String authorization = HeaderUtil.getAccessToken(request);
+        String RefreshToken = HeaderUtil.getRefreshToken(request);
         String requestUri = BUSINESS + request.getRequestURI();
         String requestMethod = request.getMethod();
         HttpHeaders headers = new HttpHeaders();
-        Map<String,String> header = new HashMap<>();
-        header.put("Content-Type", "application/json;charset=UTF-8");
-        header.put("Authorization",authorization);
-//        headers.add("Content-Type", "application/json;charset=UTF-8");
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(authorization);
-//        headers.add("Authorization",authorization);
+        headers.add("RefreshToken", RefreshToken);
+
         log.info("auth 그 외의 요청 {}, 너의 헤더는? {}",requestUri,authorization);
 
         InputStream inputStream = request.getInputStream();

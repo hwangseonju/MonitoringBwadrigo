@@ -45,6 +45,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v1/api/member/login").permitAll()
                 .antMatchers("/v1/api/member/logout").permitAll()
                 .antMatchers("/v1/api/member/check/**").permitAll()
+                .antMatchers("/v1/api/plan/month/**").permitAll()
+                .antMatchers("/v1/api/plan/laundry/**").permitAll()
+                .antMatchers("/v1/api/manager/**").hasRole("ADMIN")
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().authenticated();
 
