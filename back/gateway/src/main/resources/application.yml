@@ -7,7 +7,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: http://k6s104.p.ssafy.io:8081,http://k6s104.p.ssafy.io:8082,http://k6s1041.p.ssafy.io,http://localhost:3000
+            allowedOrigins: http://k6s104.p.ssafy.io:8081,http://k6s104.p.ssafy.io:8082,https://k6s1041.p.ssafy.io,http://localhost:3000
             allow-credentials: true
             allowedHeaders:
               - x-requested-with
