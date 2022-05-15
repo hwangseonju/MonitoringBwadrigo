@@ -12,6 +12,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice(annotations = RestController.class)
 public class BaRestControllerAdvice {
 
+    @ExceptionHandler(DeleteApplyException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ResponseEntity errorHandler(DeleteApplyException e){
+        ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_CODE);
+        response.setDetatil(e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(value = {NotFoundAddressException.class, NotFoundApplyException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity nullPointerHandler(NullPointerException e){

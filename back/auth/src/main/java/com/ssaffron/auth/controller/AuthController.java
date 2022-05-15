@@ -6,7 +6,6 @@ import com.ssaffron.auth.service.MemberService;
 import com.ssaffron.auth.util.HeaderUtil;
 import com.ssaffron.auth.util.JwtUtil;
 import com.ssaffron.auth.util.RedisUtil;
-import kong.unirest.Unirest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -20,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 @RestController
 @RequestMapping("/v1/api")
@@ -92,26 +92,52 @@ public class AuthController {
         for(int i=1;i< bodyArr.length;i+=2){
             fields.put(bodyArr[i-1],bodyArr[i]);
         }
-        RestTemplate restTemplate = new RestTemplate();
-        HttpEntity httpEntity = new HttpEntity(fields, headers);
 
+        HttpEntity httpEntity = new HttpEntity(fields, headers);
+        ResponseEntity response = null;
         switch (requestMethod){
             case "GET":
-                return restTemplate.exchange(requestUri, HttpMethod.GET, httpEntity, Object.class);
-
+                response = getResponse(requestUri, HttpMethod.GET, httpEntity);
+                break;
             case "POST":
-                return restTemplate.exchange(requestUri, HttpMethod.POST, httpEntity, Object.class);
-
+                response = getResponse(requestUri, HttpMethod.POST, httpEntity);
+                break;
             case "PUT":
-                return restTemplate.exchange(requestUri, HttpMethod.PUT, httpEntity, Object.class);
-
+                response =  getResponse(requestUri, HttpMethod.PUT, httpEntity);
+                break;
             case "DELETE":
-                return restTemplate.exchange(requestUri, HttpMethod.DELETE, httpEntity, Object.class);
-
+                response = getResponse(requestUri, HttpMethod.DELETE, httpEntity);
+                break;
             default:
-                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+                response = new ResponseEntity(HttpStatus.BAD_REQUEST);
 
         }
+        log.info(response.getBody().toString());
+        return response;
+    }
+
+    public ResponseEntity getResponse(String requestUri, HttpMethod method, HttpEntity httpEntity){
+
+        ResponseEntity responseEntity = null;
+        RestTemplate restTemplate = new RestTemplate();
+        try{
+            responseEntity = restTemplate.exchange(requestUri, method, httpEntity, ResponseEntity.class);
+
+        }catch (Exception e){
+            log.info(e.getMessage());
+            StringTokenizer st = new StringTokenizer(e.getMessage(),":");
+            HttpStatus status = HttpStatus.valueOf(Integer.parseInt(st.nextToken().trim()));
+            log.info("{} 에러 코드", status);
+            String message = null;
+            while(st.hasMoreTokens()){
+                message = st.nextToken();
+            }
+            st = new StringTokenizer(message, "}");
+            message = st.nextToken();
+            log.info(message);
+            responseEntity = new ResponseEntity(message, status);
+        }
+        return responseEntity;
     }
 
 }
