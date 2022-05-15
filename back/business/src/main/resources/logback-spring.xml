@@ -48,10 +48,7 @@
     <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
         <destination>k6s104.p.ssafy.io:5000</destination>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"></encoder>
-        <providers>
-            <message/>
-            <timestamp/>
-        </providers>
+
     </appender>
 
     <root level="INFO">
