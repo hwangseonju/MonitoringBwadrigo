@@ -27,17 +27,8 @@ spring:
           uri: http://k6s104.p.ssafy.io:8081
           predicates:
             - Path=/v1/api/member/signup,/v1/api/plan/month/**,/v1/api/plan/laundry/**,/v1/api/member/check/**
-            - Method=POST,GET
 
         - id: auth
           uri: http://k6s104.p.ssafy.io:8082
           predicates:
             - Path=/v1/api/**
-            - Method=GET,PUT,DELETE,POST
-#          filters:
-#            - name: AuthFilter
-#              args:
-#                baseMessage: Spring Cloud Gateway AuthFilter
-#                preLogger: true
-#                postLogger: true
-#            - AddRequestHeader=redirect, http://localhost:3000/myInfo
