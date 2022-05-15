@@ -30,7 +30,7 @@ public class HeaderUtil {
         }
 
         if (tokenValue.startsWith(TOKEN_PREFIX)) {
-            return tokenValue.substring(TOKEN_PREFIX.length());
+            return tokenValue;
         }
 
         return null;
