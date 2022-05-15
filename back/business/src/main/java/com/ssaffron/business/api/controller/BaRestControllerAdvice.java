@@ -18,7 +18,6 @@ public class BaRestControllerAdvice {
         ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_CODE);
         response.setDetatil(e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-//        return e.getMessage();
     }
 
     @ExceptionHandler(value = {NotFoundAddressException.class, NotFoundApplyException.class})
@@ -34,6 +33,6 @@ public class BaRestControllerAdvice {
     public ResponseEntity duplicatedKeyHandler(DuplicateKeyException e){
         ErrorResponse response = ErrorResponse.of(ErrorCode.RESOURCE_NOT_FOUND);
         response.setDetatil(e.getMessage());
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
 }

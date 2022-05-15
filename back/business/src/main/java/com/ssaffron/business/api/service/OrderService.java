@@ -21,10 +21,8 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     private final MemberRepository memberRepository;
-    private final EmployeeRepository employeeRepository;
     private final CollectRepository collectRepository;
     private final PayRepository payRepository;
-    private final LaundryPlanRepository laundryPlanRepository;
     private final ApplyRepository applyRepository;
 
     @Transactional
@@ -33,10 +31,7 @@ public class OrderService {
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
         if(memberEntity.getMemberAddress() == null)
             throw new NotFoundAddressException("Not Found Address");
-        ApplyEntity applyEntity = applyRepository.findByMemberEntityAndApplyDeliveryCountIsNotNull(memberEntity).orElse(null);
-        if(applyEntity == null){
-            throw new NotFoundApplyException("Not Found Apply");
-        }
+        ApplyEntity applyEntity = applyRepository.findByMemberEntityAndApplyDeliveryCountIsNotNull(memberEntity).orElseThrow(()-> new NotFoundApplyException("Not Found Apply"));
         List<CollectEntity> collectEntityList = collectDtoList.
                 stream().map(collectDto -> new CollectEntity(
                         collectDto.getCollecttype(),LocalDateTime.now(), memberEntity)).collect(Collectors.toList());
@@ -51,7 +46,6 @@ public class OrderService {
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
 
         return collectRepository.findAllByMemberEntityOrderByCollectRequestDateDesc(memberEntity)
-//        return memberEntity.getCollectionEntities()
                 .stream().map(collectEntity -> CollectDto.builder().
                     collectId(collectEntity.getCollectId()).
                     collectRequestDate(collectEntity.getCollectRequestDate()).
@@ -65,7 +59,6 @@ public class OrderService {
         log.info(memberEmail);
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
         return collectRepository.findAllByMemberEntityAndCollectWithdrawDateIsNullAndEmployeeEntityIsNull(memberEntity)
-//        return memberEntity.getCollectionEntities()
                 .stream().map(collectEntity -> CollectDto.builder().
                         collectId(collectEntity.getCollectId()).
                         collectRequestDate(collectEntity.getCollectRequestDate()).
@@ -74,11 +67,6 @@ public class OrderService {
                         build()).collect(Collectors.toList());
 
     }
-
-
-
-
-
 
     public boolean withdrawalOfCollection(long collectionId){
         //사용자 인증은 JWT를 통해 본인만 진행이 되고, collectionId자체는 PK이기 때문에 중복이 없음
@@ -89,8 +77,6 @@ public class OrderService {
         return true;
 
     }
-
-
 
     public List<PayDto> getBill(String memberEmail, int month){
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
