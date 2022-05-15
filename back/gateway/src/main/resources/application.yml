@@ -7,7 +7,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: http://localhost:8081,http://localhost:8082,http://localhost:3000
+            allowedOrigins: http://k6s104.p.ssafy.io:8081,http://k6s104.p.ssafy.io:8082,http://k6s1041.p.ssafy.io:3000
             allow-credentials: true
             allowedHeaders:
               - x-requested-with
@@ -24,13 +24,13 @@ spring:
 
       routes:
         - id: all
-          uri: http://localhost:8081
+          uri: http://k6s104.p.ssafy.io:8081
           predicates:
             - Path=/v1/api/member/signup,/v1/api/plan/month/**,/v1/api/plan/laundry/**,/v1/api/member/check/**
             - Method=POST,GET
 
         - id: auth
-          uri: http://localhost:8082
+          uri: http://k6s104.p.ssafy.io:8082
           predicates:
             - Path=/v1/api/**
             - Method=GET,PUT,DELETE,POST
