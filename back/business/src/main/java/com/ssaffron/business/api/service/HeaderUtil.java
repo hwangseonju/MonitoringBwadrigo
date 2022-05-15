@@ -1,11 +1,14 @@
 package com.ssaffron.business.api.service;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.servlet.http.HttpServletRequest;
 
+@Slf4j
 public class HeaderUtil {
 
     private final static String HEADER_AUTHORIZATION = "Authorization";
-    private final static String HEADER_REFRESH = "Refresh";
+    private final static String HEADER_REFRESH = "RefreshToken";
 
     private final static String TOKEN_PREFIX = "Bearer ";
 
@@ -25,6 +28,7 @@ public class HeaderUtil {
 
     public static String getRefreshToken(HttpServletRequest request) {
         String tokenValue = request.getHeader(HEADER_REFRESH);
+
 
         if (tokenValue == null) {
             return null;

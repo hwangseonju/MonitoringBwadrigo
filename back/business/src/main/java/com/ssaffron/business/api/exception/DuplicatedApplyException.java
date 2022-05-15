@@ -5,19 +5,9 @@ import org.springframework.dao.DuplicateKeyException;
 
 @Slf4j
 public class DuplicatedApplyException extends DuplicateKeyException {
+    // PlanService - insertApply : 요금제 신청 시 기존 서비스가 존재하면 값을 넣지 않기 위한 예외 처리
 
     private ErrorCode errorCode;
-
-    public DuplicatedApplyException(String messgae, ErrorCode errorCode){
-        super(messgae);
-        this.errorCode = errorCode;
-        log.info("님께서 이미 신청한 서비스가 있습니다.");
-    }
-
-    public DuplicatedApplyException(ErrorCode errorCode){
-        super(errorCode.getMessage());
-        this.errorCode = errorCode;
-    }
 
     public DuplicatedApplyException(String message){
         super(message);
@@ -28,8 +18,4 @@ public class DuplicatedApplyException extends DuplicateKeyException {
         return this.errorCode;
     }
 
-//    public DuplicatedApplyException(String memberName){
-//        super(memberName + "님께서 이미 신청한 서비스가 있습니다.");
-//        log.info("{}님께서 이미 신청한 서비스가 있습니다.", memberName);
-//    }
 }
