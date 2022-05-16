@@ -4,33 +4,58 @@ import { Button, InputGroup, FormControl } from 'react-bootstrap';
 
 function MyInfoModify() {
     const [member, setMember] = useState({
-        "memberId":"1",
-        "memberEmail":"test@test.com",
-        "memberName":"test",
-        "memberPhone":"010-1233-1223",
-        "memberAddress":"강남구 역삼동 2",
-        "memberGender":"",
-        "memberAge":"",
-        "memberStatus":"",
-        "userRole":"",
+        memberEmail:"",
+        memberName:"",
+        memberPassword:"",
+        memberAddress:""
     });
+    // const [memberPassword, setMemberPassword, setMemberAddress] = useState("")
+    const [modifiedPassword, setModifiedPassword] = useState(null)
     const [memberPassword, setMemberPassword] = useState("")
+
     useEffect(()=>{
-        axios.get(
-        "/v1/api/member"
-        )
-        .then((res) =>{
-        
-            let memberDto = res.data
-            setMember(memberDto);
-
-        })
-
+        let Authorization = localStorage.getItem("authorization")
+        let RefreshToekn = localStorage.getItem("refreshtoken")
+        let url = "/v1/api/member"
+        async function getMember(){
+            
+            await axios({
+                method : "get",
+                url : url,
+                headers : {
+                    "Authorization" : Authorization,
+                    "RefreshToken" : RefreshToekn 
+                }
+            }).then((res) => {
+                console.log(res)
+                setMember(res.data)
+            }).catch((err)=>{
+                console.log(err);
+            }
+            )
+            // console.log(response)
+        }
+        getMember();
+        // const result = getMeber();
+        // setMember(result);
     },[])
     const pwdChange = (e) => {
         console.log(e.target.value)
         setMemberPassword(e.target.value)
     }
+    const addressChange = (e) => {
+        setMember({
+            memberEmail: member.memberEmail,
+            memberName: member.memberName,
+            memberPassword:"",
+            memberAddress: e.target.value})
+    }
+
+    const modifyPwd = (e) => {
+        setModifiedPassword(e.target.value)
+    }
+    
+
     const updateUser = useCallback(async(e)=>{
         let Authorization = localStorage.getItem("authorization")
         let RefreshToekn = localStorage.getItem("refreshtoken")
@@ -39,8 +64,7 @@ function MyInfoModify() {
             url : "/v1/api/member",
             data : {
                 "memberEmail": member.memberEmail,
-                "memberName": member.memberName,
-                "memberPhone":member.memberPhone,
+                "modifiedPassword": modifiedPassword,
                 "memberAddress": member.memberAddress,
                 "memberPassword" : memberPassword
             },
@@ -51,6 +75,10 @@ function MyInfoModify() {
         }).then((res) => {
             alert("회원정보 변경에 성공했습니다.")
             axios({
+                headers : {
+                    "Authorization" : Authorization,
+                    "RefreshToken" : RefreshToekn 
+                },
                 method:"delete",
                 url:"/v1/api/member/logout"
                 
@@ -81,10 +109,12 @@ function MyInfoModify() {
             value={memberPassword}
             /><br />
             
-            비밀번호 확인
+            변경 비밀번호
             <FormControl
             aria-label="memberPasswordCheck"
             aria-describedby="basic-addon1"
+            onChange={modifyPwd}
+            value={modifiedPassword}
             /><br />
             
             이름
@@ -97,9 +127,11 @@ function MyInfoModify() {
             
             배송지<br />
             <FormControl
-            value={member.memberAddress}
+            placeholder={member.memberAddress}
             aria-label="memberAddress"
             aria-describedby="basic-addon1"
+            onChange={addressChange}
+            value={member.memberAddress}
             /><br/>
             
             <Button onClick={updateUser} variant="dark">변경사항 저장</Button>
