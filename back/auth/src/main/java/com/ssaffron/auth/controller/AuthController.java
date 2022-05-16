@@ -29,7 +29,7 @@ import java.util.StringTokenizer;
 @Slf4j
 public class AuthController {
 
-    private final static String BUSINESS = "http://localhost:8081";
+    private final static String BUSINESS = "http://k6s104.p.ssafy.io:8081";
     private final JwtUtil jwtUtil;
     private final RedisUtil redisUtil;
     private final MemberService memberService;
