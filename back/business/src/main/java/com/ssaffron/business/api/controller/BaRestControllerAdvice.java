@@ -1,6 +1,7 @@
 package com.ssaffron.business.api.controller;
 
 import com.ssaffron.business.api.exception.*;
+import org.slf4j.MDC;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ public class BaRestControllerAdvice {
     public ResponseEntity errorHandler(DeleteApplyException e){
         ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_CODE);
         response.setDetail(e.getMessage());
+        MDC.put("errorCode",response.getCode());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -25,6 +27,7 @@ public class BaRestControllerAdvice {
     public ResponseEntity nullPointerHandler(NullPointerException e){
         ErrorResponse response = ErrorResponse.of(ErrorCode.RESOURCE_NOT_FOUND);
         response.setDetail(e.getMessage());
+        MDC.put("errorCode",response.getCode());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -33,6 +36,7 @@ public class BaRestControllerAdvice {
     public ResponseEntity duplicatedKeyHandler(DuplicateKeyException e){
         ErrorResponse response = ErrorResponse.of(ErrorCode.RESOURCE_NOT_FOUND);
         response.setDetail(e.getMessage());
+        MDC.put("errorCode",response.getCode());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -41,6 +45,7 @@ public class BaRestControllerAdvice {
     public ResponseEntity runtimeHandler(NotMatchedPasswordException e){
         ErrorResponse response = ErrorResponse.of(ErrorCode.NOT_MATCHED_PASSWORD);
         response.setDetail(e.getMessage());
+        MDC.put("errorCode",response.getCode());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
