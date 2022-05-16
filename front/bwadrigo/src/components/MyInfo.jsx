@@ -37,6 +37,26 @@ function MyInfo() {
         // const result = getMeber();
         // setMember(result);
     },[])
+
+
+    const deleteMember = useCallback(async() => {
+        let Authorization = localStorage.getItem("authorization")
+        let RefreshToekn = localStorage.getItem("refreshtoken")
+
+        await axios({
+            method: "delete",
+            url : "/v1/api/member",
+            headers : {
+                "Authorization" : Authorization,
+                "RefreshToken" : RefreshToekn 
+            }
+        }).then((res) => {
+            localStorage.removeItem("memberName")
+            localStorage.removeItem("authorization");
+            localStorage.removeItem("refreshtoken");
+            window.location.href = "/"
+        })
+    })
     
     return (
         <div>
@@ -49,7 +69,7 @@ function MyInfo() {
             <hr></hr>
             <h4>배송 정보</h4>
             배송지 {member.memberAddress}<br />
-            <Link to="/">회원탈퇴</Link>
+            <Button onClick={deleteMember}>회원탈퇴</Button>
         </div>
     )
     
