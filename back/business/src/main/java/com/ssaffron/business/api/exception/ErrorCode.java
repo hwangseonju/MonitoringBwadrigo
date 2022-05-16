@@ -15,6 +15,7 @@ public enum ErrorCode implements EnumModel{
     DUPLICATED_RESOURCE(400, "C003", "Duplicated Resource"),
     NOT_MATCHED_PASSWORD(400, "C004", "Not Matched Password"),
     UNAUTHORIZATION(401, "C005", "Invalid JWT"),
+    JWT_EXPIRED(401, "C006", "EXPIRED JWT"),
 
     // AWS
     ASW_ERROR(400, "A001", "aws client error");

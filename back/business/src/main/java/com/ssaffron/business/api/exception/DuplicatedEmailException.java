@@ -8,8 +8,8 @@ public class DuplicatedEmailException extends DuplicateKeyException {
 
     private ErrorCode errorCode;
 
-    public DuplicatedEmailException(String messgae){
-        super(messgae);
+    public DuplicatedEmailException(String message){
+        super(message);
         log.info("이미 존재하는 이메일");
     }
 
