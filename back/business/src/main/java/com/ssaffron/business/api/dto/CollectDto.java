@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 public class CollectDto {
     private long collectId;
-    private String collecttype;
+    private String collectType;
     private LocalDateTime collectRequestDate;
     private LocalDateTime collectWithdrawDate;
 
