@@ -1,5 +1,6 @@
 package com.ssaffron.auth.controller;
 
+import clojure.lang.Obj;
 import com.ssaffron.auth.dto.MemberDto;
 import com.ssaffron.auth.entity.MemberEntity;
 import com.ssaffron.auth.service.MemberService;
@@ -28,7 +29,7 @@ import java.util.StringTokenizer;
 @Slf4j
 public class AuthController {
 
-    private final static String BUSINESS = "http://k6s104.p.ssafy.io:8081";
+    private final static String BUSINESS = "http://localhost:8081";
     private final JwtUtil jwtUtil;
     private final RedisUtil redisUtil;
     private final MemberService memberService;
@@ -59,7 +60,7 @@ public class AuthController {
         return new ResponseEntity(httpHeaders, HttpStatus.OK);
     }
 
-    @RequestMapping(value = {"/member/**", "/order/**", "/plan/**", "/manager/**"}, method = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.POST})
+    @RequestMapping(value = {"/member/**", "/order/**", "/plan/**", "/manager/**"}, method = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.PUT, RequestMethod.POST})
     public Object returnMethode(HttpServletRequest request) throws IOException {
         String authorization = HeaderUtil.getAccessToken(request);
         String RefreshToken = HeaderUtil.getRefreshToken(request);
@@ -72,28 +73,35 @@ public class AuthController {
 
         log.info("auth 그 외의 요청 {}, 너의 헤더는? {}",requestUri,authorization);
 
-        InputStream inputStream = request.getInputStream();
         String body = null;
         StringBuilder stringBuilder = new StringBuilder();
         BufferedReader bufferedReader = null;
-        if (inputStream != null) {
-            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            char[] charBuffer = new char[128];
-            int bytesRead = -1;
-            while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
-                stringBuilder.append(charBuffer, 0, bytesRead);
+
+        try {
+            InputStream inputStream = request.getInputStream();
+            if (inputStream != null) {
+                bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                char[] charBuffer = new char[128];
+                int bytesRead = -1;
+                while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
+                    stringBuilder.append(charBuffer, 0, bytesRead);
+                }
+            }
+        } catch (IOException ex) {
+            throw ex;
+        } finally {
+            if (bufferedReader != null) {
+                try {
+                    bufferedReader.close();
+                } catch (IOException ex) {
+                    throw ex;
+                }
             }
         }
+
         body = stringBuilder.toString();
-        body = body.replaceAll("[\\t\\s]","").replaceAll("\"","").replaceAll(" ","").replace("{","");
-        String[] bodyArr = body.split(":|,|}");
-
-        Map<String, Object> fields = new HashMap<>();
-        for(int i=1;i< bodyArr.length;i+=2){
-            fields.put(bodyArr[i-1],bodyArr[i]);
-        }
-
-        HttpEntity httpEntity = new HttpEntity(fields, headers);
+        log.info("{}",body);
+        HttpEntity httpEntity = new HttpEntity(body, headers);
         ResponseEntity response = null;
         switch (requestMethod){
             case "GET":
@@ -112,7 +120,7 @@ public class AuthController {
                 response = new ResponseEntity(HttpStatus.BAD_REQUEST);
 
         }
-        log.info(response.getBody().toString());
+        log.info("너의 결과는? {}",response.getStatusCode());
         return response;
     }
 
@@ -121,7 +129,7 @@ public class AuthController {
         ResponseEntity responseEntity = null;
         RestTemplate restTemplate = new RestTemplate();
         try{
-            responseEntity = restTemplate.exchange(requestUri, method, httpEntity, ResponseEntity.class);
+            responseEntity = restTemplate.exchange(requestUri, method, httpEntity, Object.class);
 
         }catch (Exception e){
             log.info(e.getMessage());
