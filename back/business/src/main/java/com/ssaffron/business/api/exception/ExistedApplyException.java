@@ -8,8 +8,8 @@ public class ExistedApplyException extends RuntimeException{
     // 사용하지 않는 것 같음 모든 테스트 후 사용되지 않으면 삭제 예정
     private ErrorCode errorCode;
 
-    public ExistedApplyException(String messgae){
-        super(messgae);
+    public ExistedApplyException(String message){
+        super(message);
         log.info("님께서 기존에 신청한 서비스와 동일합니다.");
     }
 
