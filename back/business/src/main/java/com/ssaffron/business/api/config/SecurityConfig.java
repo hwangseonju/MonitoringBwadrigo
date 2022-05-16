@@ -3,6 +3,7 @@ package com.ssaffron.business.api.config;
 import com.ssaffron.business.api.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -48,6 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v1/api/plan/month/**").permitAll()
                 .antMatchers("/v1/api/plan/laundry/**").permitAll()
                 .antMatchers("/v1/api/manager/**").hasRole("ADMIN")
+                .antMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().authenticated();
 
@@ -56,7 +58,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override // ignore check swagger resource
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/v1/api/member/signup", "/v1/api/member/login","/v1/api/member/logout" , "/v1/api/member/check/**");
+//        web.ignoring().antMatchers("/v1/api/member/signup", "/v1/api/member/login","/v1/api/member/logout" , "/v1/api/member/check/**");
+        web.ignoring().mvcMatchers(HttpMethod.OPTIONS.OPTIONS, "/**");
+        web.ignoring().antMatchers("/v3/api-docs", "/configuration/ui",
+                "/swagger-resources/**", "/configuration/security",
+                "/swagger-ui/index.html", "/webjars/**", "/swagger/**");
+
     }
 
     @Bean
