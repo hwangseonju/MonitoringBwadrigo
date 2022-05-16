@@ -11,6 +11,7 @@ import com.ssaffron.business.api.service.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +41,7 @@ public class MemberController {
     public ResponseEntity doLogout(HttpServletRequest httpServletRequest){
         String refreshToken = HeaderUtil.getRefreshToken(httpServletRequest);
         redisUtil.deleteRefreshToken(refreshToken);
-
+        MDC.clear();
         return new ResponseEntity(HttpStatus.OK);
     }
 
