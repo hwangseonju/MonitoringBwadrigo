@@ -7,6 +7,11 @@ import com.ssaffron.business.api.dto.MonthPlanDto;
 import com.ssaffron.business.api.exception.*;
 import com.ssaffron.business.api.service.MemberService;
 import com.ssaffron.business.api.service.PlanService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +27,7 @@ import java.util.List;
 @RequestMapping("/v1/api/plan")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+//@Api(value = "Plan Api")
 @Slf4j
 public class PlanController {
 
@@ -29,6 +35,14 @@ public class PlanController {
     private final MemberService memberService;
 
     // tt Laundry Plan 요금제 전체 조회
+//    @Operation(value = "정액요금제 전체 조회", notes = "정액요금제 전체 조회")
+    @Operation(summary = "정액요금제 전체 조회", description = "정액요금제 전체 조회를 한 후 성공 시 200, 미성공 시 400 error를 반환한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK !!"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND !!"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
+    })
     @GetMapping("/laundry/list")
     public ResponseEntity<List<LaundryPlanDto>> allListLaundry() {
         List<LaundryPlanDto> laundryPlanDtos = planService.findAllLaundryPlan();
