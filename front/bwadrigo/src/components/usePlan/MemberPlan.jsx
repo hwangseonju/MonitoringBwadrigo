@@ -81,24 +81,48 @@ function MemberPlan() {
     memberAddress: "광주 어디",
   });
   useEffect(()=>{
-    axios.get("/v1/api/member")
-    .then((res)=>{
-      setMemberList(res.data)
-    })
-  },[])
-  useEffect(()=>{
-    axios.get("/v1/api/plan")
-    .then((res)=>{
-      console.log(res)
-      setApplyList(res.data)
-      
-      axios.get(`/v1/api/plan/month/${res.data.monthPlanId}`).then((plan)=>{
-        // startDate()
-        // endDate()
-        console.log(plan)
-        setPlan(plan.data)
-      })
-    })
+    let Authorization = localStorage.getItem("authorization")
+    let RefreshToekn = localStorage.getItem("refreshtoken")
+    let url = "/v1/api/member"
+    async function getMember(){
+            
+      await axios({
+        method : "get",
+        url : url,
+        headers : {
+            "Authorization" : Authorization,
+            "RefreshToken" : RefreshToekn 
+        }
+      }).then((res) => {
+        console.log(res)
+        setMemberList(res.data)
+        axios({
+          method : "get",
+          url : "/v1/api/plan",
+          headers : {
+            "Authorization" : Authorization,
+            "RefreshToken" : RefreshToekn 
+          }
+        })
+        .then((res)=>{
+          console.log(res)
+          setApplyList(res.data)
+          
+          axios.get(`/v1/api/plan/month/${res.data.monthPlanId}`).then((plan)=>{
+            // startDate()
+            // endDate()
+            console.log(plan)
+            setPlan(plan.data)
+          })
+        })
+      }).catch((err)=>{
+        console.log(err);
+      }
+      )
+            // console.log(response)
+    }
+    getMember();
+    
   },[])
 
   return (
@@ -174,7 +198,7 @@ function MemberPlan() {
                             <b>요금제 금액</b>
                           </Col>
                           <Col xs={8} style={{ textAlign: "right" }}>
-                            {plan.monthPlanPrice}
+                            {plan.monthPlanPrice.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}원
                           </Col>
                         </Row>
                         <br />

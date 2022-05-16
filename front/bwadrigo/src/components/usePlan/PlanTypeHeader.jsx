@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Card, Button, Accordion, Table, Row, Col, Container } from "react-bootstrap";
 
 function PlanTypeHeader() {
@@ -23,21 +23,27 @@ function PlanTypeHeader() {
   // 변경할 요금제
   const [changeUsePlan, setChangeUsePlan] = useState();
 
-  const changePlan = (planId) => {
+  const changePlan = useCallback(async(planId) => {
     console.log(planId);
     setChangeUsePlan(planId);
-    axios({
+    let Authorization = localStorage.getItem("authorization")
+    let RefreshToekn = localStorage.getItem("refreshtoken")
+    await axios({
       method:"put",
       url:"/v1/api/plan",
       data:{
         "monthPlanId":planId
+      },
+      headers : {
+        "Authorization" : Authorization,
+        "RefreshToken" : RefreshToekn 
       }
     })
     .then((res)=>{
       alert("요금제 변경 요청이 정상적으로 이루어졌습니다.\n현재 사용중인 요금제 마감일 이후 요금제가 변경됩니다.")
       window.location.href="/member-plan"
     })
-  };
+  });
 
   useEffect(()=>{
     axios.get("/v1/api/plan/month/list").then((res)=>{

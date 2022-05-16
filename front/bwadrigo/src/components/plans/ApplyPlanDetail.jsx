@@ -13,12 +13,18 @@ function ApplyPlanDetail() {
   // console.log(MonthPlan[detail_id.applyid-1])
   const navigate = useNavigate();
   const applyService = useCallback(async (e) => {
+    let Authorization = localStorage.getItem("authorization")
+    let RefreshToekn = localStorage.getItem("refreshtoken")
     await axios({
       method: "post",
       url: "/v1/api/plan",
       data: {
         monthPlanId: detail_id.applyid,
       },
+      headers : {
+        "Authorization" : Authorization,
+        "RefreshToken" : RefreshToekn 
+    }
     })
       .then((res) => {
         console.log(res);

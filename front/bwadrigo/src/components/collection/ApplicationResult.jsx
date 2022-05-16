@@ -20,57 +20,68 @@ function ApplicationResult(){
         ]
     )
     useEffect(()=>{
-        axios({
-            method: "get",
-            url : "/v1/api/member"
-        }).then((res) =>{
-            console.log("loginCheck")
-            console.log(res.data)
+        let Authorization = localStorage.getItem("authorization")
+        let RefreshToekn = localStorage.getItem("refreshtoken")
+        async function getResult(){
             axios({
                 method: "get",
-                url : "/v1/api/plan"
-            }).then((res)=>{
-                console.log("serviceCheck")
-                console.log(res.data == "")
-                if(res.data == ""){
-                    setCheckApply(true);
-                    window.location.href="/pleaseService"
+                url : "/v1/api/member",
+                headers : {
+                    "Authorization" : Authorization,
+                    "RefreshToken" : RefreshToekn 
+                }
+            }).then((res) =>{
+                console.log("loginCheck")
+                console.log(res.data)
+                axios({
+                    method: "get",
+                    url : "/v1/api/plan",
+                    headers : {
+                        "Authorization" : Authorization,
+                        "RefreshToken" : RefreshToekn 
+                    }
+                }).then((res)=>{
+                    console.log("serviceCheck")
+                    console.log(res.data == "")
+                    if(res.data == ""){
+                        setCheckApply(true);
+                        window.location.href="/pleaseService"
+                    }else{
+                        axios({
+                            method : "get",
+                            url : "/v1/api/order/collect/check",
+                            headers : {
+                                "Authorization" : Authorization,
+                                "RefreshToken" : RefreshToekn 
+                            }
+                        }).then((res)=>{
+                            console.log(res)
+                            if(res.status == 204){
+                                window.location.href = "/applicationInfo"
+                            }
+                            else
+                                setCollectDtoList(res.data)
+                        })
+                    }
+                })    
+            }).catch((err)=>{
+                if(err.response.status == 401){
+                    localStorage.removeItem("memberName")
+                    localStorage.removeItem("authorization");
+                    localStorage.removeItem("refreshtoken");
+                    window.location.replace("/pleaseLogin")
                 }else{
                     axios({
-                        method : "get",
-                        url : "/v1/api/order/collect/check"
-                    }).then((res)=>{
-                        console.log(res)
-                        // setCollect(true)
-                        if(res.status == 204){
-                            // setCheckService(false)
-                            window.location.href = "/applicationInfo"
-                        }
-                        else
-                            setCollectDtoList(res.data)
+                        method: "delete",
+                        url:"/v1/api/member/logout"
+                    }).then(()=>{
+                        window.location.href="/pleaseLogin"
+                        
                     })
                 }
-            })    
-        }).catch((err)=>{
-            // console.log(err.response.status)
-            if(err.response.status == 401){
-                // axios({
-                //     method:"get",
-                //     url : "/v1/api/member/refresh"
-                // }).then(()=>{
-                //     window.location.replace("/applicationResult")
-                // })
-                window.location.replace("/pleaseLogin")
-            }else{
-                axios({
-                    method: "delete",
-                    url:"/v1/api/member/logout"
-                }).then(()=>{
-                    window.location.href="/pleaseLogin"
-                    
-                })
-            }
-        })
+            })
+        }
+        getResult();
     },[])
         
    

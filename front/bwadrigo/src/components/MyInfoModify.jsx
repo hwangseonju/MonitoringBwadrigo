@@ -32,6 +32,8 @@ function MyInfoModify() {
         setMemberPassword(e.target.value)
     }
     const updateUser = useCallback(async(e)=>{
+        let Authorization = localStorage.getItem("authorization")
+        let RefreshToekn = localStorage.getItem("refreshtoken")
         await axios({
             method: "put",
             url : "/v1/api/member",
@@ -41,6 +43,10 @@ function MyInfoModify() {
                 "memberPhone":member.memberPhone,
                 "memberAddress": member.memberAddress,
                 "memberPassword" : memberPassword
+            },
+            headers : {
+                "Authorization" : Authorization,
+                "RefreshToken" : RefreshToekn 
             }
         }).then((res) => {
             alert("회원정보 변경에 성공했습니다.")

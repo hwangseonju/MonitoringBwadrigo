@@ -1,19 +1,25 @@
 import axios from "axios";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Button } from "react-bootstrap";
 import surveyData from "../../surveyData.json";
 
 function SurveyTermination() {
-  const goFinish = (e) => {
-    axios({
+  const goFinish = useCallback(async(e) => {
+    let Authorization = localStorage.getItem("authorization")
+    let RefreshToekn = localStorage.getItem("refreshtoken")
+    await axios({
       method : "delete",
       url : "/v1/api/plan",
-      data : reason
+      data : reason,
+      headers : {
+        "Authorization" : Authorization,
+        "RefreshToken" : RefreshToekn 
+      }
     }).then((res)=>{
       console.log(res)
       window.location.href = "/finish-termination";
     })
-  };
+  });
   const [reason, setReason] = useState("")
   const goCancle = () => {
     window.location.href = "/member-plan";

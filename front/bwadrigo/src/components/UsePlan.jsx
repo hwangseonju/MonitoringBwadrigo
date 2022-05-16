@@ -57,50 +57,69 @@ function UsePlan() {
         "monthPlanDeliveryCount" : 3,
     })
     useEffect(()=>{
-        axios({
-            method:"get",
-            url : "/v1/api/plan"
-        }).then((res)=>{
-            console.log(res.data)
-            setApplyDto(res.data)                
-            console.log(applyDto)
-            axios({
+        let Authorization = localStorage.getItem("authorization")
+        let RefreshToekn = localStorage.getItem("refreshtoken")
+        async function getPlan(){
+            await axios({
                 method:"get",
-                url:`/v1/api/plan/month/${res.data.monthPlanId}`
-            }).then((response)=>{
-                // startDate()
-                // endDate()
-                setMonthPlanDto(response.data)
+                url : "/v1/api/plan",
+                headers : {
+                    "Authorization" : Authorization,
+                    "RefreshToken" : RefreshToekn 
+                }
+            }).then((res)=>{
+                console.log(res.data)
+                setApplyDto(res.data)                
+                console.log(applyDto)
+                axios({
+                    method:"get",
+                    url:`/v1/api/plan/month/${res.data.monthPlanId}`,
+                    headers : {
+                        "Authorization" : Authorization,
+                        "RefreshToken" : RefreshToekn 
+                    }
+                }).then((response)=>{
+                    setMonthPlanDto(response.data)
+                })
+            }).catch((err)=>{
+                alert("신청하신 월정액이 없습니다.")
+                window.location.replace("/")
             })
-        }).catch((err)=>{
-            alert("신청하신 월정액이 없습니다.")
-            window.location.replace("/")
-        })
+        }
+        getPlan();
     },[])
     useEffect(()=>{
-        axios({
-            method:"get",
-            url :"/v1/api/order/bill/1"
-        }).then((res) => {
-            let list = res.data
-            let payDtoMap = new Map();
-            let set = new Set();
-            for(let i=0; i<list.length; i++){
-                let key = list[i].payResponseDate.split("T")[0];
-                set.add(key);
-                if(payDtoMap.has(key)){
-                    let payDtoList = payDtoMap.get(key);
-                    payDtoList.push(list[i])
-                    payDtoMap.set(key,payDtoList);
-                }else{
-                    let payDtoList = [];
-                    payDtoList.push(list[i])
-                    payDtoMap.set(key,payDtoList);
+        let Authorization = localStorage.getItem("authorization")
+        let RefreshToekn = localStorage.getItem("refreshtoken")
+        async function getOrder(){
+            await axios({
+                method:"get",
+                url :"/v1/api/order/bill/1",
+                headers : {
+                    "Authorization" : Authorization,
+                    "RefreshToken" : RefreshToekn 
                 }
-            }
-            setPayDto(payDtoMap)
-            setMySet(Array.from(set))
-        })
+            }).then((res) => {
+                let list = res.data
+                let payDtoMap = new Map();
+                let set = new Set();
+                for(let i=0; i<list.length; i++){
+                    let key = list[i].payResponseDate.split("T")[0];
+                    set.add(key);
+                    if(payDtoMap.has(key)){
+                        let payDtoList = payDtoMap.get(key);
+                        payDtoList.push(list[i])
+                        payDtoMap.set(key,payDtoList);
+                    }else{
+                        let payDtoList = [];
+                        payDtoList.push(list[i])
+                        payDtoMap.set(key,payDtoList);
+                    }
+                }
+                setPayDto(payDtoMap)
+                setMySet(Array.from(set))
+            })
+        }
     },[])
     return(
         <>

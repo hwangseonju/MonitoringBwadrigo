@@ -5,46 +5,76 @@ import axios from "axios";
 function ApplicationDetail() {
   const [address, setAddress] = useState("test");
   useEffect(() => {
-    axios.get("/v1/api/member").then((res) => {
+    let Authorization = localStorage.getItem("authorization")
+    let RefreshToekn = localStorage.getItem("refreshtoken")
+    async function getMember(){
+    axios({
+      method:"get",
+      url: "/v1/api/member",
+      headers : {
+        "Authorization" : Authorization,
+        "RefreshToken" : RefreshToekn 
+      }
+    }).then((res) => {
       console.log(res);
       if (res.data.memberAddress) {
         setAddress(res.data.memberAddress);
       }
     });
+    }
+    getMember();
   }, []);
   const [collectList, setCollectList] = useState([]);
   useEffect(() => {
-    axios.get("/v1/api/order/collect/check").then((res) => {
-      if (res.status == 204) {
-        window.location.replace("/applicationResult");
-      }
-      console.log(res);
-      let collectList = res.data;
-      for (let i = 0; i < collectList.length; i++) {
-        console.log(collectList[i].collecttype);
-        switch (collectList[i].collecttype) {
-          case "bedding":
-            collectList[i].collecttype = "이불";
-            break;
-          case "wash":
-            collectList[i].collecttype = "생활빨래";
-            break;
-          case "shirts":
-            collectList[i].collecttype = "셔츠";
-            break;
-          case "cleaning":
-            collectList[i].collecttype = "개별 클리닝";
-            break;
+    let Authorization = localStorage.getItem("authorization")
+    let RefreshToekn = localStorage.getItem("refreshtoken")
+    async function collectCheck(){
+      axios({
+        method : "get",
+        url : "/v1/api/order/collect/check",
+        headers : {
+          "Authorization" : Authorization,
+          "RefreshToken" : RefreshToekn 
         }
-      }
-      setCollectList(collectList);
-    });
+      }).then((res) => {
+        if (res.status == 204) {
+          window.location.replace("/applicationResult");
+        }
+        console.log(res);
+        let collectList = res.data;
+        for (let i = 0; i < collectList.length; i++) {
+          console.log(collectList[i].collecttype);
+          switch (collectList[i].collecttype) {
+            case "bedding":
+              collectList[i].collecttype = "이불";
+              break;
+            case "wash":
+              collectList[i].collecttype = "생활빨래";
+              break;
+            case "shirts":
+              collectList[i].collecttype = "셔츠";
+              break;
+            case "cleaning":
+              collectList[i].collecttype = "개별 클리닝";
+              break;
+          }
+        }
+        setCollectList(collectList);
+      });
+    }
+    collectCheck();
   }, []);
   const collectWithdraw = useCallback(async (e) => {
+    let Authorization = localStorage.getItem("authorization")
+    let RefreshToekn = localStorage.getItem("refreshtoken")
     console.log(e.target.name);
     await axios({
       method: "delete",
       url: `/v1/api/order/${e.target.name}`,
+      headers : {
+        "Authorization" : Authorization,
+        "RefreshToken" : RefreshToekn 
+      }
     }).then((res) => {
       alert("철회 신청 되어습니다.");
       window.location.reload();
@@ -52,10 +82,16 @@ function ApplicationDetail() {
     // console.log(e.target.name)
   });
   const allWithdraw = useCallback(async (e) => {
+    let Authorization = localStorage.getItem("authorization")
+    let RefreshToekn = localStorage.getItem("refreshtoken")
     for (let collect of collectList) {
       await axios({
         method: "delete",
         url: `/v1/api/order/${collect.collectId}`,
+        headers : {
+          "Authorization" : Authorization,
+          "RefreshToken" : RefreshToekn 
+        }
       });
     }
     window.location.reload();

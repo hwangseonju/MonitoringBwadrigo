@@ -5,21 +5,34 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function Application(){
-    const [checkValue, setCheckValue] = useState([]);
+    const [collectDto, setCheckValue] = useState([]);
     const [addrress, setAddress] = useState();
     const [isAddress, setIsAddress] = useState(false);
 
     //const axios = getAxios();
     useEffect(() => {
         try{
-            axios.get("/v1/api/member")
-            .then((res)=>{
-            console.log(res);
-            if(res.data.memberAddress){
-                setAddress(res.data.memberAddress);
-                setIsAddress(true);
-            }
-        })
+            let Authorization = localStorage.getItem("authorization")
+            let RefreshToekn = localStorage.getItem("refreshtoken")
+            let url = "/v1/api/member"
+            async function getMember(){
+            
+                await axios({
+                    method : "get",
+                    url : url,
+                    headers : {
+                        "Authorization" : Authorization,
+                        "RefreshToken" : RefreshToekn 
+                    }
+                }).then((res) => {
+                    if(res.data.memberAddress){
+                        setAddress(res.data.memberAddress);
+                        setIsAddress(true);
+                    }
+                })
+            // console.log(response)
+            }   
+            getMember();
         }
         catch(err){
             console.log(err);
@@ -28,21 +41,38 @@ function Application(){
     
     const changeHandler = (checked, id) => {
         if(checked){
-            setCheckValue([...checkValue, {collecttype : id}]);
+            setCheckValue([...collectDto, {collectType : id}]);
             console.log(id,"체크");
         }
         else{
-            setCheckValue(checkValue.filter(e => !e.collecttype.includes(id)));
+            setCheckValue(collectDto.filter(e => !e.collectType.includes(id)));
             console.log(id,"체크 해제");
         }
     }
     const test = () =>{
-        console.log(checkValue);
+        console.log(collectDto);
     }
     const navigate = useNavigate();
     const submit = async () =>{
+        let Authorization = localStorage.getItem("authorization")
+        let RefreshToekn = localStorage.getItem("refreshtoken")
+        let list = [];
+        for(let val of collectDto){
+            
+            list.push(val.collectType);
+        }
+        console.log(list)
         try{
-            await axios.post("/v1/api/order", checkValue);
+            await axios.post(
+                "/v1/api/order",
+                collectDto
+                ,
+                {
+                headers : {
+                    "Authorization" : Authorization,
+                    "RefreshToken" : RefreshToekn 
+                }    
+            });
             navigate("/applicationResult");
         }
         catch(err){
@@ -71,23 +101,23 @@ function Application(){
             <h2>맡길 세탁물 선택하기</h2>
             <Form>
                 <Form.Check type='checkbox' id='wash' label='생활빨래' 
-                checked = {checkValue.filter((e)=>{return e.collecttype.includes('wash')}).length>0 ? true : false} 
+                checked = {collectDto.filter((e)=>{return e.collectType.includes('wash')}).length>0 ? true : false} 
                 onChange={e => {
                     changeHandler(e.currentTarget.checked,e.currentTarget.id);
                     }} 
                 />
                 <Form.Check type='checkbox' id='bedding' label='이불' 
-                checked = {checkValue.filter((e)=>{return e.collecttype.includes('bedding')}).length>0 ? true : false} 
+                checked = {collectDto.filter((e)=>{return e.collectType.includes('bedding')}).length>0 ? true : false} 
                 onChange={e => {
                     changeHandler(e.currentTarget.checked,e.currentTarget.id);
                     }} 
                 /><Form.Check type='checkbox' id='shirts' label='와이셔츠' 
-                checked = {checkValue.filter((e)=>{return e.collecttype.includes('shirts')}).length>0 ? true : false} 
+                checked = {collectDto.filter((e)=>{return e.collectType.includes('shirts')}).length>0 ? true : false} 
                 onChange={e => {
                     changeHandler(e.currentTarget.checked,e.currentTarget.id);
                     }} 
                 /><Form.Check type='checkbox' id='cleaning' label='드라이 클리닝' 
-                checked = {checkValue.filter((e)=>{return e.collecttype.includes('cleaning')}).length>0 ? true : false} 
+                checked = {collectDto.filter((e)=>{return e.collectType.includes('cleaning')}).length>0 ? true : false} 
                 onChange={e => {
                     changeHandler(e.currentTarget.checked,e.currentTarget.id);
                     }} 

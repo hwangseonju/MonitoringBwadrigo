@@ -39,17 +39,19 @@ function Login() {
     const submit = async() => {
         await axios({
             method : "post",
-            url : "/v1/api/member/login",
+            url : "/v1/api/auth",
             data : input
         
         }).then((res) => {
-            // console.log(res.data.memberName)
-            localStorage.setItem("memberName",res.data.memberName);
+            console.log(res)
             if(check){
                 localStorage.setItem("memberEmail",input.memberEmail)
             }else{
                 localStorage.removeItem("memberEmail")
             }
+            localStorage.setItem("memberName",res.data);
+            localStorage.setItem("authorization", res.headers.authorization)
+            localStorage.setItem("refreshtoken", res.headers.refreshtoken)
             navigate(localStorage.getItem("tab"));
         }).catch(e => {
             alert("이메일 혹은 비밀번호를 확인 하세요.")

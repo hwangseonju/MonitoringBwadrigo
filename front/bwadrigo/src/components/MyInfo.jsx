@@ -10,16 +10,32 @@ function MyInfo() {
     memberPhone:"",
     memberAddress:""
 })
+    
     useEffect(()=>{
-        axios.get(
-        "/v1/api/member"
-        )
-        .then((res) =>{
-        
-            let memberDto = res.data
-            setMember(memberDto);
-        })
-
+        let Authorization = localStorage.getItem("authorization")
+        let RefreshToekn = localStorage.getItem("refreshtoken")
+        let url = "/v1/api/member"
+        async function getMember(){
+            
+            await axios({
+                method : "get",
+                url : url,
+                headers : {
+                    "Authorization" : Authorization,
+                    "RefreshToken" : RefreshToekn 
+                }
+            }).then((res) => {
+                console.log(res)
+                setMember(res.data)
+            }).catch((err)=>{
+                console.log(err);
+            }
+            )
+            // console.log(response)
+        }
+        getMember();
+        // const result = getMeber();
+        // setMember(result);
     },[])
     
     return (
