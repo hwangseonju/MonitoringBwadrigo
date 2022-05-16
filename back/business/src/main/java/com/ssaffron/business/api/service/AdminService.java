@@ -32,7 +32,7 @@ public class AdminService {
                                 memberName(collectEntity.getMemberEntity().getMemberName()).build()).
                         collectDto(CollectDto.builder().
                                 collectId(collectEntity.getCollectId()).
-                                collecttype(collectEntity.getCollectType()).
+                                collectType(collectEntity.getCollectType()).
                                 collectRequestDate(collectEntity.getCollectRequestDate()).
                                 collectWithdrawDate(collectEntity.getCollectWithdrawDate()).build()).
                         employeeDto(EmployeeDto.builder().
@@ -53,7 +53,7 @@ public class AdminService {
                                 memberName(collectEntity.getMemberEntity().getMemberName()).build()).
                         collectDto(CollectDto.builder().
                                 collectId(collectEntity.getCollectId()).
-                                collecttype(collectEntity.getCollectType()).
+                                collectType(collectEntity.getCollectType()).
                                 collectRequestDate(collectEntity.getCollectRequestDate()).
                                 collectWithdrawDate(collectEntity.getCollectWithdrawDate()).build()).
                         employeeDto(EmployeeDto.builder().
@@ -74,7 +74,7 @@ public class AdminService {
                                 memberName(collectEntity.getMemberEntity().getMemberName()).build()).
                         collectDto(CollectDto.builder().
                                 collectId(collectEntity.getCollectId()).
-                                collecttype(collectEntity.getCollectType()).
+                                collectType(collectEntity.getCollectType()).
                                 collectRequestDate(collectEntity.getCollectRequestDate()).
                                 collectWithdrawDate(collectEntity.getCollectWithdrawDate()).build()).
                         employeeDto(EmployeeDto.builder().
@@ -84,7 +84,7 @@ public class AdminService {
                 ).collect(Collectors.toList());
     }
 
-    public boolean collectionApproval(List<CollectDto> collectDtoList, EmployeeDto employeeDto){
+    public void collectionApproval(List<CollectDto> collectDtoList, EmployeeDto employeeDto){
         //수거를 할 직원을 할당할 수 있다.
         EmployeeEntity employeeEntity = employeeRepository.findById(employeeDto.getEmployeeId()).get();
         //사원번호호 사원 엔티티 생성
@@ -95,10 +95,9 @@ public class AdminService {
             collectEntityList.add(collectEntity);
         });
         collectRepository.saveAll(collectEntityList);
-        return true;
     }
 
-    public boolean registBill(String memberEmail, long collectId, int laudryPlanId, PayDto payDto){
+    public void registBill(String memberEmail, long collectId, int laudryPlanId, PayDto payDto){
         //collectDto로 빨래 수거 맡긴 날 찾아오기
         //regist 후에 ApplyEntity도 수정하기
         //collectDto에서의 Type은 laundryPlan의 Type에 해당 되고 세부 타입에 따라 여러 row가 나올 수 있다.
@@ -118,7 +117,7 @@ public class AdminService {
         ApplyEntity applyEntity = applyRepository.findByMemberEntityAndApplyDeliveryCountIsNotNull(memberEntity).get();
         //신청한 요금제로 상태관리
         if(applyEntity.getMonthPlanEntity().getMonthPlanId() == 1){
-            return true;
+            return;
             //저장할 필요가 없음 1일 때는 자유요금제
 
         }
@@ -152,6 +151,5 @@ public class AdminService {
         }
 
         applyRepository.save(applyEntity);
-        return true;
     }
 }

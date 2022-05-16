@@ -2,7 +2,6 @@ package com.ssaffron.business.api.service;
 
 import com.ssaffron.business.api.dto.*;
 import com.ssaffron.business.api.entity.*;
-import com.ssaffron.business.api.exception.ErrorCode;
 import com.ssaffron.business.api.exception.NotFoundAddressException;
 import com.ssaffron.business.api.exception.NotFoundApplyException;
 import com.ssaffron.business.api.repository.*;
@@ -26,7 +25,7 @@ public class OrderService {
     private final ApplyRepository applyRepository;
 
     @Transactional
-    public boolean collectionRequest(String memberEmail, List<CollectDto> collectDtoList){
+    public void collectionRequest(String memberEmail, List<CollectDto> collectDtoList){
         //수거 신청 성공/실패
         MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
         if(memberEntity.getMemberAddress() == null)
@@ -34,10 +33,9 @@ public class OrderService {
         ApplyEntity applyEntity = applyRepository.findByMemberEntityAndApplyDeliveryCountIsNotNull(memberEntity).orElseThrow(()-> new NotFoundApplyException("Not Found Apply"));
         List<CollectEntity> collectEntityList = collectDtoList.
                 stream().map(collectDto -> new CollectEntity(
-                        collectDto.getCollecttype(),LocalDateTime.now(), memberEntity)).collect(Collectors.toList());
+                        collectDto.getCollectType(),LocalDateTime.now(), memberEntity)).collect(Collectors.toList());
 
         collectRepository.saveAll(collectEntityList);
-        return true;
     }
 
     public List<CollectDto> collectionRequestInquiry(String memberEmail){
@@ -50,7 +48,7 @@ public class OrderService {
                     collectId(collectEntity.getCollectId()).
                     collectRequestDate(collectEntity.getCollectRequestDate()).
                     collectWithdrawDate(collectEntity.getCollectWithdrawDate()).
-                    collecttype(collectEntity.getCollectType()).
+                        collectType(collectEntity.getCollectType()).
                     build()).collect(Collectors.toList());
                     //collectId를 넣는 이유 -> 접수번호 확인
     }
@@ -63,19 +61,17 @@ public class OrderService {
                         collectId(collectEntity.getCollectId()).
                         collectRequestDate(collectEntity.getCollectRequestDate()).
                         collectWithdrawDate(collectEntity.getCollectWithdrawDate()).
-                        collecttype(collectEntity.getCollectType()).
+                        collectType(collectEntity.getCollectType()).
                         build()).collect(Collectors.toList());
 
     }
 
-    public boolean withdrawalOfCollection(long collectionId){
+    public void withdrawalOfCollection(long collectionId){
         //사용자 인증은 JWT를 통해 본인만 진행이 되고, collectionId자체는 PK이기 때문에 중복이 없음
         //직원은 접근이 가능함.
         CollectEntity collectEntity = collectRepository.findById(collectionId).get();
         collectEntity.setCollectWithdrawDate(LocalDateTime.now());
         collectRepository.save(collectEntity);
-        return true;
-
     }
 
     public List<PayDto> getBill(String memberEmail, int month){
