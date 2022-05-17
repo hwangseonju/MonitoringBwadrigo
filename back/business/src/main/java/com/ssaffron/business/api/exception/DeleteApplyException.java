@@ -10,7 +10,6 @@ public class DeleteApplyException extends RuntimeException {
 
     public DeleteApplyException(String message){
         super(message);
-        log.info("님께서 신청한 서비스가 없습니다.");
     }
 
     public ErrorCode getErrorCode(){

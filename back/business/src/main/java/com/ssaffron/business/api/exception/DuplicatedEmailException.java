@@ -10,7 +10,6 @@ public class DuplicatedEmailException extends DuplicateKeyException {
 
     public DuplicatedEmailException(String message){
         super(message);
-        log.info("이미 존재하는 이메일");
     }
 
     public ErrorCode getErrorCode(){
