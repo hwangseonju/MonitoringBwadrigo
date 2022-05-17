@@ -18,7 +18,8 @@ public class BaRestControllerAdvice {
     public ResponseEntity errorHandler(DeleteApplyException e){
         ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_CODE);
         response.setDetail(e.getMessage());
-        MDC.put("errorCode",response.getCode());
+        MDC.put("Code",response.getCode());
+        MDC.put("MSG",response.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -27,16 +28,18 @@ public class BaRestControllerAdvice {
     public ResponseEntity nullPointerHandler(NullPointerException e){
         ErrorResponse response = ErrorResponse.of(ErrorCode.RESOURCE_NOT_FOUND);
         response.setDetail(e.getMessage());
-        MDC.put("errorCode",response.getCode());
+        MDC.put("Code",response.getCode());
+        MDC.put("MSG",response.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = {DuplicatedApplyException.class, DuplicatedEmailException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity duplicatedKeyHandler(DuplicateKeyException e){
-        ErrorResponse response = ErrorResponse.of(ErrorCode.RESOURCE_NOT_FOUND);
+        ErrorResponse response = ErrorResponse.of(ErrorCode.DUPLICATED_RESOURCE);
         response.setDetail(e.getMessage());
-        MDC.put("errorCode",response.getCode());
+        MDC.put("Code",response.getCode());
+        MDC.put("MSG",response.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -45,7 +48,8 @@ public class BaRestControllerAdvice {
     public ResponseEntity runtimeHandler(NotMatchedPasswordException e){
         ErrorResponse response = ErrorResponse.of(ErrorCode.NOT_MATCHED_PASSWORD);
         response.setDetail(e.getMessage());
-        MDC.put("errorCode",response.getCode());
+        MDC.put("Code",response.getCode());
+        MDC.put("MSG",response.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
