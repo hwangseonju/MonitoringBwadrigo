@@ -50,6 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v1/api/plan/laundry/**").permitAll()
                 .antMatchers("/v1/api/manager/**").hasRole("ADMIN")
                 .antMatchers("/swagger-ui/**").permitAll()
+                .antMatchers("/v1/api/bucket").permitAll()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().authenticated();
 

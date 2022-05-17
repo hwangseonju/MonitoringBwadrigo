@@ -20,10 +20,10 @@ public class BucketController {
 
     public BucketController() {
         //10분에 10개의 요청을 처리할 수 있는 Bucket 생성
-//        Bandwidth limit = Bandwidth.classic(10, Refill.intervally(10, Duration.ofMinutes(10)));
-//        this.bucket = Bucket.builder()
-//                .addLimit(limit)
-//                .build();
+        Bandwidth limit = Bandwidth.classic(10, Refill.intervally(10, Duration.ofMinutes(10)));
+        this.bucket = Bucket.builder()
+                .addLimit(limit)
+                .build();
     }
 
     @GetMapping("")
