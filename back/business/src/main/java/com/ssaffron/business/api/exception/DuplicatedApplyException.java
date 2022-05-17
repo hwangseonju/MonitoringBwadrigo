@@ -11,7 +11,6 @@ public class DuplicatedApplyException extends DuplicateKeyException {
 
     public DuplicatedApplyException(String message){
         super(message);
-        log.info("님께서 이미 신청한 서비스가 있습니다.");
     }
 
     public ErrorCode getErrorCode(){

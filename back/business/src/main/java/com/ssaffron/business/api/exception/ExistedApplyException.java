@@ -10,7 +10,6 @@ public class ExistedApplyException extends RuntimeException{
 
     public ExistedApplyException(String message){
         super(message);
-        log.info("님께서 기존에 신청한 서비스와 동일합니다.");
     }
 
     public ErrorCode getErrorCode(){

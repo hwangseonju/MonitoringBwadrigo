@@ -17,6 +17,7 @@ public enum ErrorCode implements EnumModel{
     UNAUTHORIZATION(401, "C005", "Invalid JWT"),
     JWT_EXPIRED(401, "C006", "EXPIRED JWT"),
 
+
     // AWS
     ASW_ERROR(400, "A001", "aws client error");
 
