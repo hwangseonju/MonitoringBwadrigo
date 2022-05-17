@@ -1,6 +1,7 @@
 package com.ssaffron.business.api.controller;
 
 import com.ssaffron.business.api.exception.*;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@Slf4j
 @RestControllerAdvice(annotations = RestController.class)
 public class BaRestControllerAdvice {
 
