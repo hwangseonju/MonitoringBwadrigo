@@ -9,10 +9,9 @@ public class NotFoundApplyException extends NullPointerException{
     // 에러를 정의한 열거형 클래스
     private ErrorCode errorCode;
 
-    public NotFoundApplyException(String messgae, ErrorCode errorCode){
-        super(messgae);
+    public NotFoundApplyException(String message, ErrorCode errorCode){
+        super(message);
         this.errorCode = errorCode;
-        log.info("신청한 서비스가 없습니다.");
     }
 
     // 에러 클래스에서 에러 메시지 전달
@@ -23,7 +22,6 @@ public class NotFoundApplyException extends NullPointerException{
 
     public NotFoundApplyException(String message){
         super(message);
-        log.info("신청한 서비스가 없습니다.");
     }
 
     public ErrorCode getErrorCode(){

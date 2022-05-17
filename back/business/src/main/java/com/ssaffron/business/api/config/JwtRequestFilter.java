@@ -1,10 +1,14 @@
 package com.ssaffron.business.api.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssaffron.business.api.entity.MemberEntity;
+import com.ssaffron.business.api.exception.ErrorCode;
+import com.ssaffron.business.api.exception.ErrorResponse;
 import com.ssaffron.business.api.service.*;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +21,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -53,29 +58,43 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 }
             }
-        }catch (ExpiredJwtException e){
-            String refreshToken = HeaderUtil.getRefreshToken(httpServletRequest);
-            if(refreshToken!=null){
-                refreshJwt = refreshToken;
-            }
-        }catch(Exception e){
+            MDC.put("memberEmail",memberEmail);
+        }catch (ExpiredJwtException e) {
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            httpServletResponse.setStatus(401);
+            httpServletResponse.setContentType("application/json;charset=utf-8");
+            PrintWriter out = httpServletResponse.getWriter();
+            ErrorResponse response = ErrorResponse.of(ErrorCode.JWT_EXPIRED);
+            response.setDetail("토큰이 만료 되었습니다.");
+            String jsonResponse = objectMapper.writeValueAsString(response);
+            out.print(jsonResponse);
+            return;
 
         }
+//            String refreshToken = HeaderUtil.getRefreshToken(httpServletRequest);
 
-        try{
-            if(refreshJwt != null){
-                refreshmemberEmail = String.valueOf(redisUtil.getData(refreshJwt).get("memberEmail"));
-
-                if(refreshmemberEmail != null && refreshmemberEmail.equals(jwtUtil.getUsername(refreshJwt))){
-                    UserDetails userDetails = memberDetailsService.loadUserByUsername(refreshmemberEmail);
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
-                    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                }
-            }
-        }catch(ExpiredJwtException e){
-
-        }
+//            if(refreshToken!=null){
+//                refreshJwt = refreshToken;
+//            }
+//        }catch(Exception e){
+//
+//        }
+//
+//        try{
+//            if(refreshJwt != null){
+//                refreshmemberEmail = String.valueOf(redisUtil.getData(refreshJwt).get("memberEmail"));
+//
+//                if(refreshmemberEmail != null && refreshmemberEmail.equals(jwtUtil.getUsername(refreshJwt))){
+//                    UserDetails userDetails = memberDetailsService.loadUserByUsername(refreshmemberEmail);
+//                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+//                    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+//                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+//                }
+//            }
+//        }catch(ExpiredJwtException e){
+//
+//        }
 
         filterChain.doFilter(httpServletRequest,httpServletResponse);
     }

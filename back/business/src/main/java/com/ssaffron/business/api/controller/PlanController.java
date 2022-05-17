@@ -7,6 +7,8 @@ import com.ssaffron.business.api.dto.MonthPlanDto;
 import com.ssaffron.business.api.exception.*;
 import com.ssaffron.business.api.service.MemberService;
 import com.ssaffron.business.api.service.PlanService;
+import com.ssaffron.business.api.success.SuccessCode;
+import com.ssaffron.business.api.success.SuccessHandler;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,6 +35,7 @@ public class PlanController {
 
     private final PlanService planService;
     private final MemberService memberService;
+    private final SuccessHandler successHandler;
 
     // tt Laundry Plan 요금제 전체 조회
 //    @Operation(value = "정액요금제 전체 조회", notes = "정액요금제 전체 조회")
@@ -64,7 +67,7 @@ public class PlanController {
         String memberEmail = memberService.decodeJWT();
         int monthPlanId = requestApplyDto.getMonthPlanId();
         planService.insertApply(monthPlanId, memberEmail);
-
+        successHandler.sendSuccessLog(SuccessCode.INSERT_APPLY,"POST v1/api/plan");
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -74,7 +77,7 @@ public class PlanController {
         String memberEmail = memberService.decodeJWT();
         int monthPlanId = requestApplyDto.getMonthPlanId();
         planService.updateApply(monthPlanId, memberEmail);
-
+        successHandler.sendSuccessLog(SuccessCode.UPDATE_APPLY,"PUT v1/api/plan");
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -83,7 +86,7 @@ public class PlanController {
     public ResponseEntity deleteApplyFor() throws DeleteApplyException{
         String memberEmail = memberService.decodeJWT();
         planService.deleteApply(memberEmail);
-
+        successHandler.sendSuccessLog(SuccessCode.DELETE_APPLY,"DELETE v1/api/plan");
         return new ResponseEntity<>(HttpStatus.OK);
 
     }

@@ -8,6 +8,5 @@ public class NotMatchedPasswordException extends RuntimeException{
 
     public NotMatchedPasswordException(String message){
         super(message);
-        log.info("기존 패스워드 불일치");
     }
 }

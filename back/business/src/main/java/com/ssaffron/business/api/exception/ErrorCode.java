@@ -10,14 +10,16 @@ import lombok.RequiredArgsConstructor;
 public enum ErrorCode implements EnumModel{
 
     // COMMON
-    INVALID_CODE(400, "C001", "Invalid Code"),
-    RESOURCE_NOT_FOUND(400, "C002", "Resource Not Found"),
-    DUPLICATED_RESOURCE(400, "C003", "Duplicated Resource"),
-    NOT_MATCHED_PASSWORD(400, "C004", "Not Matched Password"),
-    UNAUTHORIZATION(401, "C005", "Invalid JWT"),
+    INVALID_CODE(400, "K6S104-W001", "Invalid Code"),
+    RESOURCE_NOT_FOUND(400, "K6S104-W002", "Resource Not Found"),
+    DUPLICATED_RESOURCE(400, "K6S104-W003", "Duplicated Resource"),
+    NOT_MATCHED_PASSWORD(400, "K6S104-W004", "Not Matched Password"),
+    UNAUTHORIZATION(401, "K6S104-W005", "Invalid JWT"),
+    JWT_EXPIRED(401, "K6S104-W006", "EXPIRED JWT"),
+
 
     // AWS
-    ASW_ERROR(400, "A001", "aws client error");
+    ASW_ERROR(400, "K6S104-A001", "aws client error");
 
     private int status;
     private String code;

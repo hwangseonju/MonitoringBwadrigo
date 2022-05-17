@@ -3,6 +3,8 @@ package com.ssaffron.business.api.controller;
 import com.ssaffron.business.api.dto.*;
 import com.ssaffron.business.api.service.MemberService;
 import com.ssaffron.business.api.service.OrderService;
+import com.ssaffron.business.api.success.SuccessCode;
+import com.ssaffron.business.api.success.SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,13 +22,14 @@ public class OrderController {
 
     private final OrderService orderService;
     private final MemberService memberService;
+    private final SuccessHandler successHandler;
 
     @PostMapping("")
     public ResponseEntity collectionRequest(@RequestBody List<CollectDto> collectDtoList){
         String memberEmaill = memberService.decodeJWT();
 
         orderService.collectionRequest(memberEmaill, collectDtoList);
-
+        successHandler.sendSuccessLog(SuccessCode.COLLECTION_REQUEST,"POST v1/api/order");
         return new ResponseEntity(HttpStatus.OK);
     }
 
