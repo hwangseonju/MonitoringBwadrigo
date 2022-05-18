@@ -105,7 +105,7 @@ function ApplicationDetail() {
           <ListGroup key={collect.collectId} horizontal="xxl" as="ol">
             <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start">
               <div className="ms-2 me-auto">
-                <div className="fw-bold">세탁물 종류 : {collect.collecttype}</div>
+                <div className="fw-bold">세탁물 종류 : {collect.collectType}</div>
                 수거 요청일: {collect.collectRequestDate.split("T")[0]}
               </div>
               <Button bg="primary" className="button" name={collect.collectId} onClick={collectWithdraw}>
