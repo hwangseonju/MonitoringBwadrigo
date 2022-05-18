@@ -32,33 +32,21 @@ public class BucketController {
 
     public BucketController(SuccessHandler successHandler) {
         this.successHandler = successHandler;
-        //10분에 10개의 요청을 처리할 수 있는 Bucket 생성
-        Bandwidth limit = Bandwidth.classic(10, Refill.intervally(10, Duration.ofMinutes(10)));
+        // 10개의 클라이언트를 3분에 10개의 요청을 처리할 수 있는 Bucket 생성
+        Bandwidth limit = Bandwidth.classic(10, Refill.intervally(10, Duration.ofMinutes(3)));
         this.bucket = Bucket.builder()
                 .addLimit(limit)
                 .build();
     }
 
     @GetMapping("")
-    public ResponseEntity bucketTest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
-
-        ObjectMapper objectMapper = new ObjectMapper();
+    public ResponseEntity bucketTest(){
 
         if (bucket.tryConsume(1)) {
-//            successHandler.sendSuccessLog(SuccessCode.TOO_MANY,"GET v1/api/bucket");
             return ResponseEntity.status(HttpStatus.OK).build();
         }else {
             throw new TooManyException("Too Many Requests");
         }
 
-//        httpServletResponse.setStatus(429);
-//        httpServletResponse.setContentType("application/json;charset=utf-8");
-//        PrintWriter out = httpServletResponse.getWriter();
-//        ErrorResponse response = ErrorResponse.of(ErrorCode.TOO_MANY_REQEUSTS);
-//        response.setDetail("너무 많은 요청입니다.");
-//        String jsonResponse = objectMapper.writeValueAsString(response);
-//        out.print(jsonResponse);
-//        log.error("TOO MANY REQUEST");
-//        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
     }
 }
