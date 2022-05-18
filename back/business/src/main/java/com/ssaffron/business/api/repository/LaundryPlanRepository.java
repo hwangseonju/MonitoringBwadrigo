@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface LaundryPlanRepository extends JpaRepository<LaundryPlanEntity, Integer> {
     List<LaundryPlanEntity> findAll();
-    LaundryPlanEntity findByLaundryPlanIndex(int laundryPlanIndex);
+    LaundryPlanEntity findByLaundryPlanId(int laundryPlanId);
 }

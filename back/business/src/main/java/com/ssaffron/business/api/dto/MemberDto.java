@@ -1,18 +1,17 @@
 package com.ssaffron.business.api.dto;
 
 import com.ssaffron.business.api.config.UserRole;
+import com.ssaffron.business.api.entity.MemberEntity;
 import com.ssaffron.business.api.entity.MemberStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class MemberDto {
-    private int memberIndex;
+    private int memberId;
     private String memberEmail;
     private String memberPassword;
     private String memberName;
