@@ -31,6 +31,7 @@ import PaymentHistoryDetail from "./components/payment/PaymentHistoryDetail";
 import PleaseLogin from "./components/exception/PleaseLogin";
 import PleaseService from "./components/exception/PleaseService";
 import UsePlan from "./components/UsePlan";
+import "./App.css";
 
 
 function App() {

@@ -78,7 +78,7 @@ function Profile() {
             <div>
                 <Container className='profile_container'>
                     <br></br>
-                    <h2>{member.memberName}님 런드리고와 함께 빨래없는 생활을 시작하세요!</h2>
+                    <h2>{member.memberName}님<br/> 런드리고와 함께 빨래없는 생활을 시작하세요!</h2>
                     {/* <h2>빨래없는 생활을 시작하세요!</h2> */}
                     {/* <Button variant="success" href="/payHistory">결제내역</Button> */}
                     
@@ -97,7 +97,7 @@ function Profile() {
                                     />
                                 </a>
                                 <Figure.Caption>
-                                    결재내역
+                                    결제내역
                                 </Figure.Caption>
                             </Figure>
                         </Col>
@@ -140,7 +140,7 @@ function Profile() {
                         </tr>
 
                         <tr className='profile_href' onClick={memberPlan}>
-                            <th>이용중인 서비스</th>
+                            <th>이용중인 서비스 &lt;-클릭!</th>
                         </tr>
                     
                     </tbody>

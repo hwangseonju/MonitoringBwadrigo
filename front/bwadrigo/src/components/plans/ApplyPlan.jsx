@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Card, Button, Carousel } from "react-bootstrap";
 import MonthPlan from "../../month_plan_data.json";
 import styles from "./Plans.css";
+import "./ApplyPlan.css";
 
 const goPlanList = () => {
   window.location.href = "/laundryPlan";
@@ -31,6 +32,7 @@ function ApplyPlan({ applyplan }) {
 
   return (
     <Card
+      key={applyplan.month_plan_id}
       className="planBlock"
       onClick={() => {
         localStorage.setItem("selectMontPlan", applyplan.month_plan_id);
@@ -56,7 +58,7 @@ function ApplyPlanList() {
   const [monthPlan, setMonthPlan] = useState(MonthPlan);
 
   return (
-    <div>
+    <div className="home-container">
       <div className="banner">
         <Carousel className="mainBanner">
           <Carousel.Item interval={1000} className="main1"></Carousel.Item>
