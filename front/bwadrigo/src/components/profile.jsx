@@ -151,7 +151,7 @@ function Profile() {
             <div>
                 <br></br>
                 <Container className='profile_container'>
-                    <h2> 런드리고와 함께 빨래없는 생활을 시작하세요.</h2>
+                    <div className='profile_text'> 런드리고와 함께 빨래없는 생활을 시작하세요.</div>
                     <div className='profile_div'></div>
                     <Button className='profile_login' href="/login">로그인</Button>
                 </Container>
