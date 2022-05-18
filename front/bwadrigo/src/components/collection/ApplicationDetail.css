@@ -1,0 +1,15 @@
+.laundry_list{
+    height: 200px;
+    overflow: scroll;
+}
+
+.result_container{
+    padding: 20px;
+}
+
+.close_btn{
+    background-color: #dafd75;
+    color: black;
+    outline: 0;
+    border: 0;
+}

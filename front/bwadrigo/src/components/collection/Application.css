@@ -1,0 +1,25 @@
+h2{
+    font-size: 20px;
+}
+
+.button{
+    background-color: #1FB67A;
+    outline: 0;
+    border: 0;
+}
+
+.address_box{
+    margin: 10px;
+    padding: 20px;
+}
+
+.edit_address_btn{
+    position: absolute;
+    right: 0px;
+    top: -35px;
+}
+
+.check_box{
+    margin: 10px;
+    padding: 20px;
+}
