@@ -37,8 +37,10 @@ spring:
 
 logging:
   slack:
-    webhook-uri: https://hooks.slack.com/services/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
-    webhook-sabaek: https://hooks.slack.com/services/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
+    webhook-uri: https://hooks.slack.com/services
+#    /T03DDR1GRSN/B03DN60PVU4/pzD58Ox0eN5TiLAJ7uFjbIR1
+    webhook-sabaek: https://hooks.slack.com/services
+#    /T03DDR1GRSN/B03F47WK51A/M4HQA9HcpTKDM8h98LtipqYS
   config: classpath:logback-spring.xml
 
 server:
