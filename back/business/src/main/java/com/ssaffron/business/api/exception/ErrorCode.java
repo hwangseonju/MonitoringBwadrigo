@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ErrorCode implements EnumModel{
 
-    // COMMON
+    // WARNING
     INVALID_CODE(400, "K6S104-W001", "Invalid Code"),
     RESOURCE_NOT_FOUND(400, "K6S104-W002", "Resource Not Found"),
     DUPLICATED_RESOURCE(400, "K6S104-W003", "Duplicated Resource"),
@@ -17,6 +17,8 @@ public enum ErrorCode implements EnumModel{
     UNAUTHORIZATION(401, "K6S104-W005", "Invalid JWT"),
     JWT_EXPIRED(401, "K6S104-W006", "EXPIRED JWT"),
 
+    // ERROR
+    TOO_MANY_REQEUSTS(429, "K6S104-E001", "Too Many Requests"),
 
     // AWS
     ASW_ERROR(400, "K6S104-A001", "aws client error");
