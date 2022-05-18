@@ -1,5 +1,6 @@
 import {Nav, Image} from 'react-bootstrap';
 import {useCallback, useEffect, useState} from 'react';
+import "./Footer.css";
 
 function Footer(){
 
@@ -67,7 +68,7 @@ function Footer(){
 
 
     return(
-        <div>
+        <div className='footer_container'>
             <Nav className="justify-content-center" variant="tabs" defaultActiveKey={selectTab}>
                 <Nav.Item>
                     <Nav.Link eventKey="/" name="/" onClick={onChange} >
