@@ -67,6 +67,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             PrintWriter out = httpServletResponse.getWriter();
             ErrorResponse response = ErrorResponse.of(ErrorCode.JWT_EXPIRED);
             response.setDetail("토큰이 만료 되었습니다.");
+            MDC.put("Code",response.getCode());
+            MDC.put("MSG",response.getMessage());
+            log.warn(e.getMessage());
             String jsonResponse = objectMapper.writeValueAsString(response);
             out.print(jsonResponse);
             return;
