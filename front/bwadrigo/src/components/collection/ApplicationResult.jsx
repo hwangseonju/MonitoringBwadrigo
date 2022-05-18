@@ -24,7 +24,7 @@ function ApplicationResult(){
         let Authorization = localStorage.getItem("authorization")
         let RefreshToekn = localStorage.getItem("refreshtoken")
         async function getResult(){
-            axios({
+            await axios({
                 method: "get",
                 url : "/v1/api/member",
                 headers : {
@@ -43,7 +43,7 @@ function ApplicationResult(){
                     }
                 }).then((res)=>{
                     console.log("serviceCheck")
-                    console.log(res.data == "")
+                    console.log(res)
                     if(res.data == ""){
                         setCheckApply(true);
                         window.location.href="/pleaseService"
@@ -87,7 +87,7 @@ function ApplicationResult(){
         
    
     return(
-        <div className='container'>
+        <div className='application_container'>
             <Card className='result test-center'>
                 <h2>주문 접수 완료</h2>
                 <Button href='/applicationDetail' variant='success' className='button detail_btn'>자세히 보기</Button>
