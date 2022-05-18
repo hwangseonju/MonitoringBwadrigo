@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect, useCallback } from 'react';
 import { Button, InputGroup, FormControl } from 'react-bootstrap';
+import './MyInfoModify.css';
 
 function MyInfoModify() {
     const [member, setMember] = useState({
@@ -54,7 +55,6 @@ function MyInfoModify() {
     const modifyPwd = (e) => {
         setModifiedPassword(e.target.value)
     }
-    
 
     const updateUser = useCallback(async(e)=>{
         let Authorization = localStorage.getItem("authorization")
@@ -90,9 +90,9 @@ function MyInfoModify() {
     })
     return (
         <div>
-            <h3><Button href='/' variant="light">-</Button>내 정보 수정</h3>
-            <h4>정보수정</h4>
-            
+            <h3 className='text-center'>내 정보 수정</h3>
+            <hr />
+            <h4><div className='Sub-title'>정보수정</div></h4>
             이메일
             <FormControl
             value={member.memberEmail}
@@ -133,8 +133,7 @@ function MyInfoModify() {
             onChange={addressChange}
             value={member.memberAddress}
             /><br/>
-            
-            <Button onClick={updateUser} variant="dark">변경사항 저장</Button>
+            <button onClick={updateUser} className="Save-btn">변경사항 저장</button>
             
         </div>
     )
