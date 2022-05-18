@@ -22,6 +22,7 @@ public class BaRestControllerAdvice {
         response.setDetail(e.getMessage());
         MDC.put("Code",response.getCode());
         MDC.put("MSG",response.getMessage());
+        log.warn(e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -32,6 +33,7 @@ public class BaRestControllerAdvice {
         response.setDetail(e.getMessage());
         MDC.put("Code",response.getCode());
         MDC.put("MSG",response.getMessage());
+        log.warn(e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -42,6 +44,7 @@ public class BaRestControllerAdvice {
         response.setDetail(e.getMessage());
         MDC.put("Code",response.getCode());
         MDC.put("MSG",response.getMessage());
+        log.warn(e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -52,6 +55,7 @@ public class BaRestControllerAdvice {
         response.setDetail(e.getMessage());
         MDC.put("Code",response.getCode());
         MDC.put("MSG",response.getMessage());
+        log.warn(e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
