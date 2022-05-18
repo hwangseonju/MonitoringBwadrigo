@@ -1,0 +1,29 @@
+.container{
+    background-image: url('../../img/application/application_back.jpg');
+    background-size: cover;
+    width: 100vw;
+    height: 80vh;
+}
+
+.result{
+    position: absolute;
+    bottom: 200px;
+    width: 100%;
+    height: 100px;
+    padding: 20px;
+}
+
+.application_btn{
+    position: inherit;
+    right: 20px;
+    top: 10px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    padding: 17px;
+    background-color: #1FB67A;
+}
+
+.desc{
+    font-size: 13px;
+}

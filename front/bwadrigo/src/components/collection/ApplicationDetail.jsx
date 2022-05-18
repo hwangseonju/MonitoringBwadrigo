@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { Button, ListGroup } from "react-bootstrap";
+import { Button, Card, ListGroup } from "react-bootstrap";
+import "./ApplicationDetail.css";
 import axios from "axios";
 
 function ApplicationDetail() {
@@ -97,30 +98,33 @@ function ApplicationDetail() {
     window.location.reload();
   });
   return (
-    <div>
+    <div className="result_container">
       <h1>수거 신청 정보</h1>
-
-      {collectList.map((collect) => (
-        <ListGroup key={collect.collectId} horizontal="xxl" as="ol">
-          <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start">
-            <div className="ms-2 me-auto">
-              <div className="fw-bold">세탁물 종류 : {collect.collecttype}</div>
-              수거 요청일: {collect.collectRequestDate.split("T")[0]}
-            </div>
-            <Button bg="primary" name={collect.collectId} onClick={collectWithdraw}>
-              수거 철회
-            </Button>
-          </ListGroup.Item>
-        </ListGroup>
-      ))}
-      <h2>수거/배송 주소</h2>
+      <Card className="laundry_list">
+        {collectList.map((collect) => (
+          <ListGroup key={collect.collectId} horizontal="xxl" as="ol">
+            <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start">
+              <div className="ms-2 me-auto">
+                <div className="fw-bold">세탁물 종류 : {collect.collectType}</div>
+                수거 요청일: {collect.collectRequestDate.split("T")[0]}
+              </div>
+              <Button bg="primary" className="button" name={collect.collectId} onClick={collectWithdraw}>
+                수거 철회
+              </Button>
+            </ListGroup.Item>
+          </ListGroup>
+        ))}
+      </Card>
+      <h2 className="mt-4">수거/배송 주소</h2>
       <p>{address}</p>
-      <Button onClick={allWithdraw} variant="danger" size="lg">
-        수거 전체 철회
-      </Button>
-      <Button href="/applicationResult" variant="success" size="lg">
-        닫기
-      </Button>
+      <div className='d-grid gap-2'>
+        <Button onClick={allWithdraw} variant="danger" size="lg" className="cancel_all_btn">
+          수거 전체 철회
+        </Button>
+        <Button href="/applicationResult" variant="success" size="lg" className="close_btn">
+          닫기
+        </Button>
+      </div>
     </div>
   );
 }

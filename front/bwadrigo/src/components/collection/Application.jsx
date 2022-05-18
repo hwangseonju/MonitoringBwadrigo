@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import {Form, Button} from 'react-bootstrap';
+import {Form, Button, Card} from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import "./Application.css";
 // import getAxios from '../../Api';
 import axios from 'axios';
 
@@ -49,9 +50,7 @@ function Application(){
             console.log(id,"체크 해제");
         }
     }
-    const test = () =>{
-        console.log(collectDto);
-    }
+
     const navigate = useNavigate();
     const submit = async () =>{
         let Authorization = localStorage.getItem("authorization")
@@ -79,53 +78,63 @@ function Application(){
             console.log(err);
         }
     }
+    
+    const editAddress=()=>{
+        navigate("/myinfomodify")
+    }
 
     return(
         <div>
-            <h2>오늘밤 당신의 세탁물을 가지러 갑니다.</h2>
+            <br/>
+            <h2>오늘밤 문앞의 세탁물을 수거하러 갑니다.</h2>
             <br />
             <h2>수거/배송 주소</h2>
-            {isAddress?
-            <div>
-                <h2>{addrress}</h2>
-                <Button variant='success'>주소 수정하러 가기!</Button>
+            <Card className='address_box'>
+                {isAddress?
+                <div>
+                    <h2>{addrress}</h2>
+                    <Button variant='success' size='sm' className='button edit_address_btn' onClick={editAddress}>수정</Button>
+                </div>
+                :
+                <div>
+                    <h2>입력된 주소가 없습니다.</h2>
+                    <Button variant='success' className='button'>주소 입력하러 가기!</Button>  
+                </div>  
+                }
+            </Card>
+            
+            <br/>   
+            <Card className='check_box'>    
+                <h2>맡길 세탁물 선택하기</h2>
+                <Form>
+                    <Form.Check type='checkbox' id='wash' label='생활빨래' 
+                    checked = {collectDto.filter((e)=>{return e.collectType.includes('wash')}).length>0 ? true : false} 
+                    onChange={e => {
+                        changeHandler(e.currentTarget.checked,e.currentTarget.id);
+                        }} 
+                    />
+                    <Form.Check type='checkbox' id='bedding' label='이불' 
+                    checked = {collectDto.filter((e)=>{return e.collectType.includes('bedding')}).length>0 ? true : false} 
+                    onChange={e => {
+                        changeHandler(e.currentTarget.checked,e.currentTarget.id);
+                        }} 
+                    /><Form.Check type='checkbox' id='shirts' label='와이셔츠' 
+                    checked = {collectDto.filter((e)=>{return e.collectType.includes('shirts')}).length>0 ? true : false} 
+                    onChange={e => {
+                        changeHandler(e.currentTarget.checked,e.currentTarget.id);
+                        }} 
+                    /><Form.Check type='checkbox' id='cleaning' label='드라이 클리닝' 
+                    checked = {collectDto.filter((e)=>{return e.collectType.includes('cleaning')}).length>0 ? true : false} 
+                    onChange={e => {
+                        changeHandler(e.currentTarget.checked,e.currentTarget.id);
+                        }} 
+                    />
+                </Form>
+            </Card>        
+            <div className='d-grid gap-2'>
+                <Button onClick={submit} variant='success' size='lg' className='mt-4 mb-4 button'>수거신청하기</Button>
             </div>
-            :
-            <div>
-                <h2>입력된 주소가 없습니다.</h2>
-                <Button variant='success'>주소 입력하러 가기!</Button>  
-            </div>  
-            }
-            <p>요청사항</p>
-
-            <h2>맡길 세탁물 선택하기</h2>
-            <Form>
-                <Form.Check type='checkbox' id='wash' label='생활빨래' 
-                checked = {collectDto.filter((e)=>{return e.collectType.includes('wash')}).length>0 ? true : false} 
-                onChange={e => {
-                    changeHandler(e.currentTarget.checked,e.currentTarget.id);
-                    }} 
-                />
-                <Form.Check type='checkbox' id='bedding' label='이불' 
-                checked = {collectDto.filter((e)=>{return e.collectType.includes('bedding')}).length>0 ? true : false} 
-                onChange={e => {
-                    changeHandler(e.currentTarget.checked,e.currentTarget.id);
-                    }} 
-                /><Form.Check type='checkbox' id='shirts' label='와이셔츠' 
-                checked = {collectDto.filter((e)=>{return e.collectType.includes('shirts')}).length>0 ? true : false} 
-                onChange={e => {
-                    changeHandler(e.currentTarget.checked,e.currentTarget.id);
-                    }} 
-                /><Form.Check type='checkbox' id='cleaning' label='드라이 클리닝' 
-                checked = {collectDto.filter((e)=>{return e.collectType.includes('cleaning')}).length>0 ? true : false} 
-                onChange={e => {
-                    changeHandler(e.currentTarget.checked,e.currentTarget.id);
-                    }} 
-                />
-            </Form>
-
-            <Button onClick={submit} variant='success' size='lg'>수거신청하기</Button>
-            <Button onClick={test}>test</Button>
+            
         </div>
     )
 }

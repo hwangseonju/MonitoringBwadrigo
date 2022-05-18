@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { async } from 'q';
 import { useCallback, useEffect, useState } from 'react';
-import {Button} from 'react-bootstrap';
+import {Button, Card} from 'react-bootstrap';
+import "./ApplicationResult.css";
 
 function ApplicationResult(){
 
@@ -86,10 +87,12 @@ function ApplicationResult(){
         
    
     return(
-        <div>
-            <h1>주문 접수 완료</h1>
-            <Button href='/applicationDetail' variant='success'>자세히 보기</Button>
-            <Button href='/' variant='success' size='lg'>취소</Button>
+        <div className='container'>
+            <Card className='result test-center'>
+                <h2>주문 접수 완료</h2>
+                <Button href='/applicationDetail' variant='success' className='button detail_btn'>자세히 보기</Button>
+                <Button href='/' variant='success' className='button cancel_btn'>취소</Button>
+            </Card>  
         </div>
     )
 }
