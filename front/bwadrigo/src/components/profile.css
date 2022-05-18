@@ -1,0 +1,23 @@
+.profile_div{
+    padding-top: 30px;
+}
+
+.profile_container{
+    text-align: center;
+}
+
+.profile_href{
+    cursor: pointer;
+}
+
+.profile_login{
+    width: 80px;
+    height: 80px;
+    background-color: #dafd75;
+    color: black;
+    text-align: center;
+    line-height: 65px;
+    border-radius : 50%;
+    outline: 0;
+    border: 0;
+}
