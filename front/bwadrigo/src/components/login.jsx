@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 
 import {
     Form,
-    Button
+    Button,
+    Container
 } from "react-bootstrap"
 import { useNavigate } from 'react-router-dom';
 
@@ -58,39 +59,39 @@ function Login() {
         })
     }
     return (
+        <Container>
         <div>
             <h2>로그인</h2>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Label>Email address</Form.Label>
-                <Form.Control name='memberEmail' onChange={onChange} type="email" placeholder="Enter email" value={input.memberEmail}/>
-                <Form.Text className="text-muted">
-                We'll never share your email with anyone else.
-                </Form.Text>
+                <Form.Label>이메일</Form.Label>
+                <Form.Control name='memberEmail' onChange={onChange} type="email" placeholder="이메일을 입력해주세요" value={input.memberEmail}/>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control name='memberPassword' onChange={onChange} type="password" placeholder="Password" />
+                    <Form.Label>비밀번호</Form.Label>
+                    <Form.Control name='memberPassword' onChange={onChange} type="password" placeholder="비밀번호를 입력해주세요" />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicCheckbox">
                     <Form.Check type="checkbox" checked={check} onChange={checkChange} label="이메일 저장" />
                 </Form.Group>
+                <div>
                 <Button onClick={submit} variant="primary" type="submit">
                     로그인
                 </Button>
-            <div className="mt-3">
+            
                           <Button
                            block
                            className="btn-round"
                            color="primary"
-                           size="lg"
+                           
                            type="button"
                            href="/signup"
                           >
                           회원가입
                           </Button>
-                        </div>
+                          </div>
         </div>
+        </Container>
         
     )
     

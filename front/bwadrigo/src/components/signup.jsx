@@ -135,13 +135,17 @@ function Signup() {
     <div>
       <Container fluid="sm" style={{ width: "90%", maxWidth: "500px" }}>
       <br />
+      <h1>회원가입</h1>
       <br />
       <br />
+      <h3>런드리고와 함께</h3>
+      <h3>빨래 없는 생활을 시작해 볼까요?</h3>
       <Form>
         <Form.Group as={Row} className="mt-5 justify-content-center">
           <Col>
+            <Form.Label>이메일</Form.Label>
             <Form.Control
-              className="mb-1"
+              className="mb-3"
               type="email"
               placeholder="이메일"
               name="memberEmail"
@@ -150,8 +154,9 @@ function Signup() {
               maxLength={30}
             ></Form.Control>
             <span style={emailMsgColor}>{emailMsg}</span>
+            <Form.Label>비밀번호</Form.Label>
             <Form.Control
-              className="mb-1"
+              className="mb-3"
               type="password"
               placeholder="비밀번호"
               name="memberPassword"
@@ -160,8 +165,9 @@ function Signup() {
               maxLength={15}
             ></Form.Control>
             <span style={pwMsgColor}>{pwMsg}</span>
+            <Form.Label>비밀번호 확인</Form.Label>
             <Form.Control
-              className="mb-1"
+              className="mb-3"
               type="password"
               placeholder="비밀번호 확인"
               name="passwordConfirmation"
@@ -170,16 +176,18 @@ function Signup() {
               maxLength={15}
             ></Form.Control>
             <span style={pwCheckMsgColor}>{pwCheckMsg}</span>
+            <Form.Label>이름</Form.Label>
             <Form.Control
-              className="mb-1"
+              className="mb-3"
               placeholder="이름"
               name="memberName"
               onChange={onChange}
               value={memberName}
               maxLength={15}
             ></Form.Control>
+            <Form.Label>전화번호</Form.Label>
             <Form.Control
-              className="mb-1"
+              className="mb-3"
               placeholder="전화번호"
               name="memberPhone"
               onChange={onChange}
@@ -187,8 +195,9 @@ function Signup() {
               maxLength={15}
               onKeyPress={onKeyPress}
             ></Form.Control>
+            <Form.Label>주소</Form.Label>
             <Form.Control
-              className="mb-1"
+              className="mb-3"
               placeholder="주소"
               name="memberAddress"
               onChange={onChange}
