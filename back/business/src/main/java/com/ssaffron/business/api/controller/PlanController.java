@@ -60,7 +60,7 @@ public class PlanController {
 
     // tt 요금제 신청
     @PostMapping("")
-    public ResponseEntity createApplyFor(@RequestBody RequestApplyDto requestApplyDto) throws DuplicatedApplyException{
+    public ResponseEntity createApplyFor(@RequestBody RequestApplyDto requestApplyDto){
         String memberEmail = memberService.decodeJWT();
         int monthPlanId = requestApplyDto.getMonthPlanId();
         planService.insertApply(monthPlanId, memberEmail);
@@ -70,7 +70,7 @@ public class PlanController {
 
     // tt 요금제 수정
     @PutMapping("")
-    public ResponseEntity updateApplyFor(@RequestBody RequestApplyDto requestApplyDto) throws NotFoundApplyException{
+    public ResponseEntity updateApplyFor(@RequestBody RequestApplyDto requestApplyDto){
         String memberEmail = memberService.decodeJWT();
         int monthPlanId = requestApplyDto.getMonthPlanId();
         planService.updateApply(monthPlanId, memberEmail);
@@ -80,7 +80,7 @@ public class PlanController {
 
     // tt 요금제 삭제
     @DeleteMapping("")
-    public ResponseEntity deleteApplyFor(@RequestBody ReasonDto reasonDto) throws DeleteApplyException{
+    public ResponseEntity deleteApplyFor(@RequestBody ReasonDto reasonDto){
         String memberEmail = memberService.decodeJWT();
         planService.deleteApply(memberEmail);
         successHandler.sendSuccessLog(SuccessCode.DELETE_APPLY,"DELETE v1/api/plan", reasonDto);
@@ -113,7 +113,7 @@ public class PlanController {
 
     //dd 사용중인 요금제 조회
     @GetMapping("")
-    public ResponseEntity<ApplyDto> getApplyFor() throws NotFoundApplyException{
+    public ResponseEntity<ApplyDto> getApplyFor(){
         String memberEmail = memberService.decodeJWT();
 
         ApplyDto applyone = planService.getApply(memberEmail);
