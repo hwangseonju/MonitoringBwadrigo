@@ -50,6 +50,21 @@ function PlanTypeHeader() {
   });
 
   useEffect(() => {
+    let Authorization = localStorage.getItem("authorization");
+    let RefreshToekn = localStorage.getItem("refreshtoken");
+    async function getPlan(){
+      await axios({
+        method: "get",
+        url: "/v1/api/plan",
+        headers: {
+          Authorization: Authorization,
+          RefreshToken: RefreshToekn,
+        }
+      }).then((res) => {
+        setUsePlan(res.data.monthPlanId)
+      })
+    }
+    getPlan();
     axios.get("/v1/api/plan/month/list").then((res) => {
       console.log(res);
       setPlanList(res.data);

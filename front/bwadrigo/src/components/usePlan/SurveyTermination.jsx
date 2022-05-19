@@ -6,12 +6,16 @@ import styles from "./UsePlan.css";
 
 function SurveyTermination() {
   const goFinish = useCallback(async (e) => {
+    if(reason == "") {
+      alert("사유를 선택해주세요.");
+      return;
+    }
     let Authorization = localStorage.getItem("authorization");
     let RefreshToekn = localStorage.getItem("refreshtoken");
     await axios({
       method: "delete",
       url: "/v1/api/plan",
-      data: reason,
+      data: {reason: reason},
       headers: {
         Authorization: Authorization,
         RefreshToken: RefreshToekn,
