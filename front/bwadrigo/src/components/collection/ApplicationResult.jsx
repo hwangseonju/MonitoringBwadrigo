@@ -33,21 +33,16 @@ function ApplicationResult(){
                 }
             }).then((res) =>{
                 console.log("loginCheck")
-                console.log(res.data)
-                axios({
-                    method: "get",
-                    url : "/v1/api/plan",
-                    headers : {
-                        "Authorization" : Authorization,
-                        "RefreshToken" : RefreshToekn 
-                    }
-                }).then((res)=>{
-                    console.log("serviceCheck")
-                    console.log(res)
-                    if(res.data == ""){
-                        setCheckApply(true);
-                        window.location.href="/pleaseService"
-                    }else{
+                console.log(res)
+                async function getPlan(){
+                    await axios({
+                        method: "get",
+                        url : "/v1/api/plan",
+                        headers : {
+                            "Authorization" : Authorization,
+                            "RefreshToken" : RefreshToekn 
+                        }
+                    }).then((res)=>{
                         axios({
                             method : "get",
                             url : "/v1/api/order/collect/check",
@@ -56,30 +51,23 @@ function ApplicationResult(){
                                 "RefreshToken" : RefreshToekn 
                             }
                         }).then((res)=>{
-                            console.log(res)
                             if(res.status == 204){
                                 window.location.href = "/applicationInfo"
                             }
-                            else
-                                setCollectDtoList(res.data)
-                        })
-                    }
-                })    
+                                else
+                                    setCollectDtoList(res.data)
+                            })
+                        }
+                    ).catch((err)=>{
+                        window.location.href="/pleaseService"
+                    })
+                }
+                getPlan();
             }).catch((err)=>{
-                if(err.response.status == 401){
                     localStorage.removeItem("memberName")
                     localStorage.removeItem("authorization");
                     localStorage.removeItem("refreshtoken");
                     window.location.replace("/pleaseLogin")
-                }else{
-                    axios({
-                        method: "delete",
-                        url:"/v1/api/member/logout"
-                    }).then(()=>{
-                        window.location.href="/pleaseLogin"
-                        
-                    })
-                }
             })
         }
         getResult();

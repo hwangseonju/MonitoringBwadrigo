@@ -1,0 +1,14 @@
+.Sub-title{
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.Save-btn{
+    background-color: black;
+    color: #dafd75;
+    padding: 10px 10px;
+    border-radius: 5px;
+    border-color: white;
+    border: 0;
+    outline: 0;
+}

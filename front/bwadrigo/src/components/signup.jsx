@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Form, Container, Row, Col, Button } from "react-bootstrap";
+import "./signup.css";
 
 function Signup() {
 
@@ -135,7 +136,8 @@ function Signup() {
     <div>
       <Container fluid="sm" style={{ width: "90%", maxWidth: "500px" }}>
       <br />
-      <h1>회원가입</h1>
+      <h1 className='signup_h'>회원가입</h1>
+      <hr></hr>
       <br />
       <br />
       <h3>런드리고와 함께</h3>
@@ -206,7 +208,7 @@ function Signup() {
               onKeyPress={onKeyPress}
             ></Form.Control>
             <div className="d-grid gap-2">
-              <Button onClick={onSignup} variant="secondary">
+              <Button className='sigup_btn' onClick={onSignup} variant="secondary">
                 회원가입
               </Button>
             </div>
