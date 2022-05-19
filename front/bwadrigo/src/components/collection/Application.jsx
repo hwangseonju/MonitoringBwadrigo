@@ -53,6 +53,10 @@ function Application(){
 
     const navigate = useNavigate();
     const submit = async () =>{
+        if(!isAddress) {
+            alert("입력하신 주소가 없습니다.");
+            window.location.href = "/myInfo";
+        }
         let Authorization = localStorage.getItem("authorization")
         let RefreshToekn = localStorage.getItem("refreshtoken")
         let list = [];
@@ -98,7 +102,7 @@ function Application(){
                 :
                 <div>
                     <h2>입력된 주소가 없습니다.</h2>
-                    <Button variant='success' className='button'>주소 입력하러 가기!</Button>  
+                    <Button variant='success' className='button' href='/myInfo'>주소 입력하러 가기!</Button>  
                 </div>  
                 }
             </Card>

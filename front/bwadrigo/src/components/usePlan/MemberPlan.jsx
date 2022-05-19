@@ -96,27 +96,23 @@ function MemberPlan() {
         },
       })
         .then((res) => {
-          console.log(res);
-          setMemberList(res.data);
-          axios({
-            method: "get",
-            url: "/v1/api/plan",
-            headers: {
-              Authorization: Authorization,
-              RefreshToken: RefreshToekn,
-            },
-          }).then((res) => {
-            console.log(res);
-            setApplyList(res.data);
-            localStorage.setItem("applyeMontPlan", res.data.monthPlanId);
-
-            axios.get(`/v1/api/plan/month/${res.data.monthPlanId}`).then((plan) => {
-              // startDate()
-              // endDate()
-              console.log(plan);
-              setPlan(plan.data);
-            });
-          });
+          setMemberList(res.data)
+          async function getPlan(){
+            await axios({
+                method: "get",
+                url : "/v1/api/plan",
+                headers : {
+                    "Authorization" : Authorization,
+                    "RefreshToken" : RefreshToekn 
+                }
+            }).then((res)=>{
+              setApplyList(res.data)
+                }
+            ).catch((err)=>{
+                window.location.href="/pleaseService"
+            })
+        }
+        getPlan();
         })
         .catch((err) => {
           console.log(err);
@@ -316,7 +312,7 @@ function MemberPlan() {
                 </Row>
                 <Row>
                   <Col style={{ textAlign: "right" }}>
-                    <a href="@">안심 정찰 가격표 보기</a>
+                    <a href="/laundryPlan">안심 정찰 가격표 보기</a>
                   </Col>
                 </Row>
               </div>

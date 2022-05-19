@@ -77,7 +77,7 @@ function ApplicationDetail() {
         "RefreshToken" : RefreshToekn 
       }
     }).then((res) => {
-      alert("철회 신청 되어습니다.");
+      alert("철회 신청 되었습니다.");
       window.location.reload();
     });
     // console.log(e.target.name)
