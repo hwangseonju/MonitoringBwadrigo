@@ -34,7 +34,7 @@ public class PlanService {
 
     public List<LaundryPlanDto> findAllLaundryPlan(){
         return laundryPlanRepository.findAll()
-                .stream().map(laundryPlanEntity -> new LaundryPlanDto().builder()
+                .stream().map(laundryPlanEntity -> LaundryPlanDto.builder()
                         .laundryPlanId(laundryPlanEntity.getLaundryPlanId())
                         .laundryPlanTypeKor(laundryPlanEntity.getLaundryPlanTypeKor())
                         .laundryPlanDetails(laundryPlanEntity.getLaundryPlanDetails())
@@ -44,7 +44,7 @@ public class PlanService {
 
     public LaundryPlanDto findOneLaundryPlan(int laundryPlanId){
         LaundryPlanEntity laundryPlanEntity =  laundryPlanRepository.findByLaundryPlanId(laundryPlanId);
-        return new LaundryPlanDto().builder()
+        return LaundryPlanDto.builder()
                 .laundryPlanId(laundryPlanEntity.getLaundryPlanId())
                 .laundryPlanTypeKor(laundryPlanEntity.getLaundryPlanTypeKor())
                 .laundryPlanDetails(laundryPlanEntity.getLaundryPlanDetails())

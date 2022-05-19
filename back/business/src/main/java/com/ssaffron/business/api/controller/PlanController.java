@@ -1,9 +1,6 @@
 package com.ssaffron.business.api.controller;
 
-import com.ssaffron.business.api.dto.ApplyDto;
-import com.ssaffron.business.api.dto.LaundryPlanDto;
-import com.ssaffron.business.api.dto.RequestApplyDto;
-import com.ssaffron.business.api.dto.MonthPlanDto;
+import com.ssaffron.business.api.dto.*;
 import com.ssaffron.business.api.exception.*;
 import com.ssaffron.business.api.service.MemberService;
 import com.ssaffron.business.api.service.PlanService;
@@ -83,10 +80,10 @@ public class PlanController {
 
     // tt 요금제 삭제
     @DeleteMapping("")
-    public ResponseEntity deleteApplyFor() throws DeleteApplyException{
+    public ResponseEntity deleteApplyFor(@RequestBody ReasonDto reasonDto) throws DeleteApplyException{
         String memberEmail = memberService.decodeJWT();
         planService.deleteApply(memberEmail);
-        successHandler.sendSuccessLog(SuccessCode.DELETE_APPLY,"DELETE v1/api/plan");
+        successHandler.sendSuccessLog(SuccessCode.DELETE_APPLY,"DELETE v1/api/plan", reasonDto);
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
