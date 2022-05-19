@@ -3,7 +3,7 @@ import styles from "./UsePlan.css";
 
 function FinishTermination() {
   const goCancle = () => {
-    window.location.href = "/member-plan";
+    window.location.href = "/";
   };
 
   return (
