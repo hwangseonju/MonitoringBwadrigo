@@ -1,0 +1,141 @@
+.mainBanner {
+  height: 250px;
+  width: 100vw;
+}
+
+.banner {
+  position: relative;
+}
+
+.planTable {
+  position: absolute;
+  right: 2em;
+  top: 0.75em;
+}
+
+.main1 {
+  height: 250px;
+  width: 100vw;
+  background-image: url("/src/img/plans/mainbanner1.png");
+  background-size: cover;
+}
+
+.main2 {
+  height: 250px;
+  width: 100vw;
+  background-image: url("/src/img/plans/mainbanner2.png");
+  background-size: cover;
+}
+
+.main3 {
+  height: 250px;
+  width: 100vw;
+  background-image: url("/src/img/plans/mainbanner3.png");
+  background-size: cover;
+}
+
+.btnPrice {
+  width: 80px;
+  height: 40px;
+  color: #ffffff;
+  background: #1fb67a;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  transition: 0.3s;
+  left: 50%;
+  top: 50%;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 10px;
+}
+.btnPrice:focus {
+  outline: 0;
+}
+.btnPrice:hover {
+  background: rgba(0, 79, 255, 0.9);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 79, 255, 0.6);
+}
+
+.planBlock {
+  background-color: #eeeeee;
+  margin-right: 20px;
+  margin-left: 20px;
+  margin-bottom: 15px;
+}
+
+.left-box {
+  width: 65%;
+  height: 120px;
+  float: left;
+  padding-top: 30px;
+}
+
+.left-box1 {
+  float: left;
+}
+
+.left-box2 {
+  float: left;
+  padding-top: 10px;
+}
+
+.clothes {
+  width: 30%;
+  height: 110px;
+  padding-top: 20px;
+  float: left;
+}
+
+.Title {
+  padding-top: 15px;
+}
+
+.allImg {
+  width: 100vw;
+  text-align: center;
+  padding: 20px;
+  background-color: #eeeeee;
+}
+
+.detailsImg {
+  width: 80vw;
+  height: 30vh;
+  padding: 30px;
+}
+
+.detailsPrice {
+  text-align: right;
+  padding-right: 50px;
+  font-size: 20px;
+}
+
+.detailsCount {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.btnApply {
+  width: 180px;
+  height: 40px;
+  color: #000000;
+  background: #c7ff6d;
+  font-size: 16px;
+  border: none;
+  border-radius: 20px;
+  transition: 0.3s;
+  left: 50%;
+  top: 50%;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 10px;
+}
+.btnApply:focus {
+  outline: 0;
+}
+.btnApply:hover {
+  background: rgba(0, 79, 255, 0.9);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 79, 255, 0.6);
+}

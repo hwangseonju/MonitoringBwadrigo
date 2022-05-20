@@ -3,7 +3,10 @@ package com.ssaffron.business.api.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssaffron.business.api.entity.Response;
 import com.ssaffron.business.api.entity.SecurityMember;
+import com.ssaffron.business.api.exception.ErrorCode;
+import com.ssaffron.business.api.exception.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,26 +29,17 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException, ServletException, IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        httpServletResponse.setStatus(200);
+        httpServletResponse.setStatus(401);
         httpServletResponse.setContentType("application/json;charset=utf-8");
-        Response response = new Response("error","접근가능한 권한을 가지고 있지 않습니다.",null);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        SecurityMember member = (SecurityMember)authentication.getPrincipal();
-        Collection<GrantedAuthority> authorities = member.getAuthorities();
-
-        if(hasRole(authorities,UserRole.ROLE_NOT_PERMITTED.name())){
-            response.setMessage("사용자 인증메일을 받지 않았습니다.");
-        }
-
         PrintWriter out = httpServletResponse.getWriter();
+        ErrorResponse response = ErrorResponse.of(ErrorCode.UNAUTHORIZATION);
+        response.setDetail("권한이 없는 사용자입니다.");
+        MDC.put("Code",response.getCode());
+        MDC.put("MSG",response.getMessage());
+        log.warn(e.getMessage());
         String jsonResponse = objectMapper.writeValueAsString(response);
         out.print(jsonResponse);
 
-    }
-
-    private boolean hasRole(Collection<GrantedAuthority> authorites, String role){
-        return authorites.contains(new SimpleGrantedAuthority(role));
     }
 
 }

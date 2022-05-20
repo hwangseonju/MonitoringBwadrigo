@@ -1,0 +1,138 @@
+.Title {
+  padding-top: 15px;
+}
+
+.usePlan div {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.notice li {
+  padding-bottom: 5px;
+}
+
+.full-content {
+  height: 70vh;
+}
+
+.btnPlan {
+  width: 180px;
+  height: 40px;
+  color: #000000;
+  background: #c7ff6d;
+  font-size: 16px;
+  border: none;
+  border-radius: 20px;
+  transition: 0.3s;
+  left: 50%;
+  top: 50%;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 10px;
+}
+.btnPlan:focus {
+  outline: 0;
+}
+.btnPlan:hover {
+  background: rgba(0, 79, 255, 0.9);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 79, 255, 0.6);
+}
+
+.btnCancle {
+  width: 180px;
+  height: 40px;
+  color: #000000;
+  background: #eeeeee;
+  font-size: 16px;
+  border: none;
+  border-radius: 20px;
+  transition: 0.3s;
+  left: 50%;
+  top: 50%;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 10px;
+}
+.btnCancle:focus {
+  outline: 0;
+}
+.btnCancle:hover {
+  background: rgba(0, 79, 255, 0.9);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 79, 255, 0.6);
+}
+
+.btnCheck {
+  width: 300px;
+  height: 40px;
+  color: #000000;
+  background: #dafd75;
+  font-size: 16px;
+  border: none;
+  border-radius: 20px;
+  transition: 0.3s;
+  left: 50%;
+  top: 50%;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 10px;
+}
+.btnCheck:focus {
+  outline: 0;
+}
+.btnCheck:hover {
+  background: rgba(0, 79, 255, 0.9);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 79, 255, 0.6);
+}
+
+*,
+::after,
+::before {
+  box-sizing: border-box;
+}
+label,
+input {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  outline: 0;
+  line-height: auto;
+}
+label {
+  padding-right: 15px;
+}
+input[type="radio"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  box-shadow: none;
+  border: none;
+}
+label input[type="radio"]:after {
+  content: "";
+  display: inline-block;
+  width: 1.25em;
+  height: 1.25em;
+  margin-left: 0px;
+  border: 1px solid #d9d9d9;
+  border-radius: 100%;
+  vertical-align: middle;
+  cursor: pointer;
+}
+label input[type="radio"]:checked:after {
+  width: 1.25em;
+  height: 1.25em;
+  background: url("/src/img/usePlan/radio_check.png") 0 0 no-repeat;
+  background-size: contain;
+  border: 1px #fff;
+}
+
+.checkNotice {
+  color: #c4c4c4;
+  padding-left: 10px;
+}

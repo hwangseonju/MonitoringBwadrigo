@@ -1,0 +1,43 @@
+server:
+  port: 8083
+
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: http://k6s104.p.ssafy.io:8081,http://k6s104.p.ssafy.io:8082,https://k6s1041.p.ssafy.io,http://localhost:3000
+            allow-credentials: true
+            allowedHeaders:
+              - x-requested-with
+              - authorization
+              - content-type
+              - credential
+              - X-AUTH-TOKEN
+              - X-CSRF-TOKEN
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+
+      default-filters:
+        - name: GlobalFilter
+          args:
+            baseMessage: Spring Cloud Gateway Global Filter
+            preLogger: true
+            postLogger: true
+
+      routes:
+        - id: all
+          uri: http://k6s104.p.ssafy.io:8081
+          predicates:
+            - Path=/v1/api/member/signup,/v1/api/plan/month/**,/v1/api/plan/laundry/**,/v1/api/member/check/**
+            - Method=GET,PUT,DELETE,POST
+
+        - id: auth
+          uri: http://k6s104.p.ssafy.io:8082
+          predicates:
+            - Path=/v1/api/**
+            - Method=GET,PUT,DELETE,POST

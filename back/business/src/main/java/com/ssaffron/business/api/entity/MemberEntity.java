@@ -3,26 +3,27 @@ package com.ssaffron.business.api.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssaffron.business.api.config.UserRole;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@RequiredArgsConstructor
+@Builder
 @Table(name = "member")
 public class MemberEntity{
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
-    @Column(name = "member_index")
-    private int memberIndex;
+    @Column(name = "member_id")
+    private int memberId;
 
     @Column(name = "member_email", nullable = false, length = 30, unique = true)
     private String memberEmail;
@@ -53,10 +54,20 @@ public class MemberEntity{
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @OneToMany(mappedBy = "memberEntity",cascade = CascadeType.ALL)
-    private List<PayForEntity> chargeEntities = new ArrayList<>();
+    @Column(name = "member_create_date")
+    @CreatedDate
+    private LocalDateTime memberCreateDate;
+
+    @Column(name = "member_update_date")
+    @LastModifiedDate
+    private LocalDateTime memberUpdateDate;
 
     @OneToMany(mappedBy = "memberEntity",cascade = CascadeType.ALL)
-    private List<CollectForEntity> collectionEntities = new ArrayList<>();
+    private List<PayEntity> chargeEntities = new ArrayList<>();
 
+    @OneToMany(mappedBy = "memberEntity",cascade = CascadeType.ALL)
+    private List<CollectEntity> collectionEntities = new ArrayList<>();
+
+    @OneToOne(mappedBy = "memberEntity")
+    private ApplyEntity applyEntity;
 }

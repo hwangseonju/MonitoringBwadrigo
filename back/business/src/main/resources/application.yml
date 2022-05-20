@@ -5,13 +5,13 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/test?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: root
+    url: jdbc:mysql://k6s104.p.ssafy.io:3333/test?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ssaffron
     password: ssafy123
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto:
       jdbc:
         time_zone: Asia/Seoul
     properties:
@@ -22,13 +22,27 @@ spring:
   cache:
     type: redis
   redis:
-    host: localhost
-    port: 6379
+    host: "k6s104.p.ssafy.io"
+    port: 8180
+    password: ssafy123
 
   jwt:
     header: Authorization
     secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
     token-validity-in-seconds: 86400
 
+  output:
+    ansi:
+      enabled: always
+
+logging:
+  slack:
+    webhook-uri: https://hooks.slack.com/services
+#    /T03DDR1GRSN/B03DN60PVU4/pzD58Ox0eN5TiLAJ7uFjbIR1
+    webhook-sabaek: https://hooks.slack.com/services
+#    /T03DDR1GRSN/B03F47WK51A/M4HQA9HcpTKDM8h98LtipqYS
+  config: classpath:logback-spring.xml
+
 server:
   port: 8081
+

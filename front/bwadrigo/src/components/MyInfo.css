@@ -1,0 +1,44 @@
+.Modi-btn{
+    /*#1FB67A*/
+    background-color: #dafd75;
+    color: black;
+    padding: 10px 10px;
+    border-radius: 5px;
+    border-color: white;
+    border: 0;
+    outline: 0;
+}
+
+.Del-btn{
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 10px;
+    border-radius: 5px;
+    border: 0;
+    outline: 0;
+}
+
+.Text-bold{
+    font-size: large;
+    font-weight: bold;
+    border:1px;
+    float: left;
+    width: 100px;
+    height: 30px;
+    margin-left: 5px;
+}
+
+.Text-common{
+    /* text-indent: 1em; */
+    font-size: large;
+    color: gray;
+    display: inline-block;
+    width: 200px;
+    height: 30px;
+    margin-left: 5px;
+}
+
+.Sub-title{
+    font-weight: bold;
+    margin-left: 5px;
+}
