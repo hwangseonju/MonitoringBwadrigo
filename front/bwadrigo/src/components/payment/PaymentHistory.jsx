@@ -95,7 +95,7 @@ function PaymentHistory() {
     }
     return(
     <div>
-        <h3><Button href='/' variant="light">-</Button>결제 내역</h3>
+        <h3 className='text-center'>결제 내역</h3>
         <hr></hr>
             <Button variant="outline-secondary" name="1" onClick={select}>1개월
             </Button> | <Button variant="outline-secondary" name="3" onClick={select}>3개월

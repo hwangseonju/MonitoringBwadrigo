@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { async } from 'q';
 import { useCallback, useEffect, useState } from 'react';
-import {Button} from 'react-bootstrap';
+import {Button, Card} from 'react-bootstrap';
+import "./ApplicationResult.css";
 
 function ApplicationResult(){
 
@@ -23,7 +24,7 @@ function ApplicationResult(){
         let Authorization = localStorage.getItem("authorization")
         let RefreshToekn = localStorage.getItem("refreshtoken")
         async function getResult(){
-            axios({
+            await axios({
                 method: "get",
                 url : "/v1/api/member",
                 headers : {
@@ -32,21 +33,16 @@ function ApplicationResult(){
                 }
             }).then((res) =>{
                 console.log("loginCheck")
-                console.log(res.data)
-                axios({
-                    method: "get",
-                    url : "/v1/api/plan",
-                    headers : {
-                        "Authorization" : Authorization,
-                        "RefreshToken" : RefreshToekn 
-                    }
-                }).then((res)=>{
-                    console.log("serviceCheck")
-                    console.log(res.data == "")
-                    if(res.data == ""){
-                        setCheckApply(true);
-                        window.location.href="/pleaseService"
-                    }else{
+                console.log(res)
+                async function getPlan(){
+                    await axios({
+                        method: "get",
+                        url : "/v1/api/plan",
+                        headers : {
+                            "Authorization" : Authorization,
+                            "RefreshToken" : RefreshToekn 
+                        }
+                    }).then((res)=>{
                         axios({
                             method : "get",
                             url : "/v1/api/order/collect/check",
@@ -55,30 +51,23 @@ function ApplicationResult(){
                                 "RefreshToken" : RefreshToekn 
                             }
                         }).then((res)=>{
-                            console.log(res)
                             if(res.status == 204){
                                 window.location.href = "/applicationInfo"
                             }
-                            else
-                                setCollectDtoList(res.data)
-                        })
-                    }
-                })    
+                                else
+                                    setCollectDtoList(res.data)
+                            })
+                        }
+                    ).catch((err)=>{
+                        window.location.href="/pleaseService"
+                    })
+                }
+                getPlan();
             }).catch((err)=>{
-                if(err.response.status == 401){
                     localStorage.removeItem("memberName")
                     localStorage.removeItem("authorization");
                     localStorage.removeItem("refreshtoken");
                     window.location.replace("/pleaseLogin")
-                }else{
-                    axios({
-                        method: "delete",
-                        url:"/v1/api/member/logout"
-                    }).then(()=>{
-                        window.location.href="/pleaseLogin"
-                        
-                    })
-                }
             })
         }
         getResult();
@@ -86,10 +75,12 @@ function ApplicationResult(){
         
    
     return(
-        <div>
-            <h1>주문 접수 완료</h1>
-            <Button href='/applicationDetail' variant='success'>자세히 보기</Button>
-            <Button href='/' variant='success' size='lg'>취소</Button>
+        <div className='application_container'>
+            <Card className='result test-center'>
+                <h2>주문 접수 완료</h2>
+                <Button href='/applicationDetail' variant='success' className='button detail_btn'>자세히 보기</Button>
+                <Button href='/' variant='success' className='button cancel_btn'>취소</Button>
+            </Card>  
         </div>
     )
 }

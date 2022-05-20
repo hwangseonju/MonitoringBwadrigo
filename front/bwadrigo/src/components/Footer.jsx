@@ -1,5 +1,6 @@
 import {Nav, Image} from 'react-bootstrap';
 import {useCallback, useEffect, useState} from 'react';
+import "./Footer.css";
 
 function Footer(){
 
@@ -67,26 +68,30 @@ function Footer(){
 
 
     return(
-        <div>
+        <div className='footer_container'>
             <Nav className="justify-content-center" variant="tabs" defaultActiveKey={selectTab}>
-                <Nav.Item>
+                <Nav.Item className='footer_item'>
                     <Nav.Link eventKey="/" name="/" onClick={onChange} >
-                        <img src={require(tabStatus.homeTab ? "../img/nav/home-select.png" : "../img/nav/home.png")} name="/" onClick={onChange}/>
+                        <img className='footer_img' src={require(tabStatus.homeTab ? "../img/nav/home-select.png" : "../img/nav/home.png")} name="/" onClick={onChange}/>
+                        <div className='footer_div' style={tabStatus.homeTab ? {color: "#1FB67A"} : {color: "gray"}} >홈</div>
                     </Nav.Link>
                 </Nav.Item>
-                <Nav.Item>
+                <Nav.Item className='footer_item'>
                     <Nav.Link eventKey="/applicationResult" name="/applicationResult" onClick={onChange}>
-                        <img src={require(tabStatus.collectTab ? "../img/nav/collect-select.png" : "../img/nav/collect.png")} name="/applicationResult" onClick={onChange}/>
+                        <img className='footer_img' src={require(tabStatus.collectTab ? "../img/nav/collect-select.png" : "../img/nav/collect.png")} name="/applicationResult" onClick={onChange}/>
+                        <div className='footer_div' style={tabStatus.collectTab ? {color: "#1FB67A"} : {color: "gray"}}>수거요청</div>
                         </Nav.Link>
                 </Nav.Item>
-                <Nav.Item>
+                <Nav.Item className='footer_item'>
                     <Nav.Link eventKey="/usePlan" name="/usePlan" onClick={onChange}>
-                        <img src={require(tabStatus.documentTab ? "../img/nav/document-select.png" : "../img/nav/document.png")} name="/usePlan" onClick={onChange}/>
+                        <img className='footer_img' src={require(tabStatus.documentTab ? "../img/nav/document-select.png" : "../img/nav/document.png")} name="/usePlan" onClick={onChange}/>
+                        <div className='footer_div' style={tabStatus.documentTab ? {color: "#1FB67A"} : {color: "gray"}}>이용내역</div>
                     </Nav.Link>
                 </Nav.Item>
-                <Nav.Item>
+                <Nav.Item className='footer_item'>
                     <Nav.Link eventKey="/profile" name="/profile" onClick={onChange}>
-                        <img src={require(tabStatus.myTab ? "../img/nav/my-select.png" : "../img/nav/my.png")} name="/profile" onClick={onChange}/>
+                        <img className='footer_img' src={require(tabStatus.myTab ? "../img/nav/my-select.png" : "../img/nav/my.png")} name="/profile" onClick={onChange}/>
+                        <div className='footer_div' style={tabStatus.myTab ? {color: "#1FB67A"} : {color: "gray"}}>MY</div>
                     </Nav.Link>
                 </Nav.Item>
             </Nav>

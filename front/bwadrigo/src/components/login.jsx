@@ -1,9 +1,11 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import "./login.css";
 
 import {
     Form,
-    Button
+    Button,
+    Container
 } from "react-bootstrap"
 import { useNavigate } from 'react-router-dom';
 
@@ -56,41 +58,49 @@ function Login() {
         }).catch(e => {
             alert("이메일 혹은 비밀번호를 확인 하세요.")
         })
+
+        
     }
+    const onKeyPress = (e) => {
+        if (e.key === "Enter") {
+            submit();
+        }
+    };
     return (
-        <div>
-            <h2>로그인</h2>
+        <Container>
+            <div>
+                <div className='login_div'></div>
+                <h3>로그인</h3>
+                <div className='login_div'></div>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Label>Email address</Form.Label>
-                <Form.Control name='memberEmail' onChange={onChange} type="email" placeholder="Enter email" value={input.memberEmail}/>
-                <Form.Text className="text-muted">
-                We'll never share your email with anyone else.
-                </Form.Text>
+                    <Form.Label>이메일</Form.Label>
+                    <Form.Control name='memberEmail' onChange={onChange} type="email" placeholder="이메일을 입력해주세요" value={input.memberEmail}/>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control name='memberPassword' onChange={onChange} type="password" placeholder="Password" />
+                    <Form.Label>비밀번호</Form.Label>
+                    <Form.Control name='memberPassword' onChange={onChange} onKeyPress={onKeyPress} type="password" placeholder="비밀번호를 입력해주세요" />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicCheckbox">
                     <Form.Check type="checkbox" checked={check} onChange={checkChange} label="이메일 저장" />
                 </Form.Group>
-                <Button onClick={submit} variant="primary" type="submit">
-                    로그인
-                </Button>
-            <div className="mt-3">
-                          <Button
-                           block
-                           className="btn-round"
-                           color="primary"
-                           size="lg"
-                           type="button"
-                           href="/signup"
-                          >
-                          회원가입
-                          </Button>
-                        </div>
-        </div>
+                <div>
+                    <Button className='login_btn' onClick={submit} type="submit">
+                        <b>
+                            로그인
+                        </b>
+                    </Button>
+                    <Button
+                        className="btn-round"
+                        href="/signup"
+                        >
+                        <b>
+                            회원가입
+                        </b>
+                    </Button>
+                </div>
+            </div>
+        </Container>
         
     )
     
