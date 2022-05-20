@@ -1,9 +1,6 @@
 package com.ssaffron.business.api.controller;
 
-import com.ssaffron.business.api.dto.ApplyDto;
-import com.ssaffron.business.api.dto.LaundryPlanDto;
-import com.ssaffron.business.api.dto.RequestApplyDto;
-import com.ssaffron.business.api.dto.MonthPlanDto;
+import com.ssaffron.business.api.dto.*;
 import com.ssaffron.business.api.exception.*;
 import com.ssaffron.business.api.service.MemberService;
 import com.ssaffron.business.api.service.PlanService;
@@ -63,7 +60,7 @@ public class PlanController {
 
     // tt 요금제 신청
     @PostMapping("")
-    public ResponseEntity createApplyFor(@RequestBody RequestApplyDto requestApplyDto) throws DuplicatedApplyException{
+    public ResponseEntity createApplyFor(@RequestBody RequestApplyDto requestApplyDto){
         String memberEmail = memberService.decodeJWT();
         int monthPlanId = requestApplyDto.getMonthPlanId();
         planService.insertApply(monthPlanId, memberEmail);
@@ -73,7 +70,7 @@ public class PlanController {
 
     // tt 요금제 수정
     @PutMapping("")
-    public ResponseEntity updateApplyFor(@RequestBody RequestApplyDto requestApplyDto) throws NotFoundApplyException{
+    public ResponseEntity updateApplyFor(@RequestBody RequestApplyDto requestApplyDto){
         String memberEmail = memberService.decodeJWT();
         int monthPlanId = requestApplyDto.getMonthPlanId();
         planService.updateApply(monthPlanId, memberEmail);
@@ -83,10 +80,10 @@ public class PlanController {
 
     // tt 요금제 삭제
     @DeleteMapping("")
-    public ResponseEntity deleteApplyFor() throws DeleteApplyException{
+    public ResponseEntity deleteApplyFor(@RequestBody ReasonDto reasonDto){
         String memberEmail = memberService.decodeJWT();
         planService.deleteApply(memberEmail);
-        successHandler.sendSuccessLog(SuccessCode.DELETE_APPLY,"DELETE v1/api/plan");
+        successHandler.sendSuccessLog(SuccessCode.DELETE_APPLY,"DELETE v1/api/plan", reasonDto);
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
@@ -116,7 +113,7 @@ public class PlanController {
 
     //dd 사용중인 요금제 조회
     @GetMapping("")
-    public ResponseEntity<ApplyDto> getApplyFor() throws NotFoundApplyException{
+    public ResponseEntity<ApplyDto> getApplyFor(){
         String memberEmail = memberService.decodeJWT();
 
         ApplyDto applyone = planService.getApply(memberEmail);

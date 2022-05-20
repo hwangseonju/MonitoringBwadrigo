@@ -58,4 +58,15 @@ public class BaRestControllerAdvice {
         log.warn(e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(value = TooManyException.class)
+    @ResponseStatus(value = HttpStatus.TOO_MANY_REQUESTS)
+    public ResponseEntity tooManyHandler(TooManyException e){
+        ErrorResponse response = ErrorResponse.of(ErrorCode.TOO_MANY_REQEUSTS);
+        response.setDetail(e.getMessage());
+        MDC.put("Code", response.getCode());
+        MDC.put("MSG", response.getMessage());
+        log.error(e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.TOO_MANY_REQUESTS);
+    }
 }

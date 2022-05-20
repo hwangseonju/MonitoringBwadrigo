@@ -43,7 +43,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests() // 다음 리퀘스트에 대한 사용권한 체크
                 .antMatchers("/v1/api/member/signup").permitAll()
-                .antMatchers("/v1/api/member/login").permitAll()
                 .antMatchers("/v1/api/member/logout").permitAll()
                 .antMatchers("/v1/api/member/check/**").permitAll()
                 .antMatchers("/v1/api/plan/month/**").permitAll()
