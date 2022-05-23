@@ -33,25 +33,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable()// rest api이므로 csrf 보안이 필요없으므로 disable처리
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt 토큰으로 인증할 것이므로 세션이 필요없으므로 생성안함
-                .and()
-                .httpBasic()
-                .authenticationEntryPoint(customAuthenticationEntryPoint) // 토큰 인증 예외 발생 시 이동
-                .and()
-                .exceptionHandling().accessDeniedHandler(customAccessDeniedHandler) // 권한 예외 발생 시 이동
-                .and()
-                .authorizeRequests() // 다음 리퀘스트에 대한 사용권한 체크
-                .antMatchers("/v1/api/member/signup").permitAll()
-                .antMatchers("/v1/api/member/logout").permitAll()
-                .antMatchers("/v1/api/member/check/**").permitAll()
-                .antMatchers("/v1/api/plan/month/**").permitAll()
-                .antMatchers("/v1/api/plan/laundry/**").permitAll()
-                .antMatchers("/v1/api/manager/**").hasRole("ADMIN")
-                .antMatchers("/swagger-ui/**").permitAll()
-                .antMatchers("/v1/api/bucket").permitAll()
-                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .anyRequest().authenticated();
+        http.csrf().disable();// rest api이므로 csrf 보안이 필요없으므로 disable처리
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt 토큰으로 인증할 것이므로 세션이 필요없으므로 생성안함
+//                .and()
+//                .httpBasic()
+//                .authenticationEntryPoint(customAuthenticationEntryPoint) // 토큰 인증 예외 발생 시 이동
+//                .and()
+//                .exceptionHandling().accessDeniedHandler(customAccessDeniedHandler) // 권한 예외 발생 시 이동
+//                .and()
+//                .authorizeRequests() // 다음 리퀘스트에 대한 사용권한 체크
+//                .antMatchers("/v1/api/member/signup").permitAll()
+//                .antMatchers("/v1/api/member/logout").permitAll()
+//                .antMatchers("/v1/api/member/check/**").permitAll()
+//                .antMatchers("/v1/api/plan/month/**").permitAll()
+//                .antMatchers("/v1/api/plan/laundry/**").permitAll()
+//                .antMatchers("/v1/api/manager/**").hasRole("ADMIN")
+//                .antMatchers("/swagger-ui/**").permitAll()
+//                .antMatchers("/v1/api/bucket").permitAll()
+//                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+//                .anyRequest().authenticated();
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class); // jwt 토큰 필터를 id / password 인증 필터 전에 넣어라
     }
