@@ -34,12 +34,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.csrf().disable()// rest api이므로 csrf 보안이 필요없으므로 disable처리
+                .exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint) // 토큰 인증 예외 발생 시 이동
+                .accessDeniedHandler(customAccessDeniedHandler) // 권한 예외 발생 시 이동
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt 토큰으로 인증할 것이므로 세션이 필요없으므로 생성안함
-                .and()
-                .httpBasic()
-                .authenticationEntryPoint(customAuthenticationEntryPoint) // 토큰 인증 예외 발생 시 이동
-                .and()
-                .exceptionHandling().accessDeniedHandler(customAccessDeniedHandler) // 권한 예외 발생 시 이동
                 .and()
                 .authorizeRequests() // 다음 리퀘스트에 대한 사용권한 체크
                 .antMatchers("/v1/api/member/signup").permitAll()
