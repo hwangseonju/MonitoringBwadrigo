@@ -10,6 +10,7 @@ import com.ssaffron.business.api.success.SuccessHandler;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,7 @@ public class BucketController {
                 .build();
     }
 
+    @Operation(summary = "Too Many Requests 생성")
     @GetMapping("")
     public ResponseEntity bucketTest(){
 

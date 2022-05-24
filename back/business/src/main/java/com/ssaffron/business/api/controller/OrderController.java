@@ -5,6 +5,7 @@ import com.ssaffron.business.api.service.MemberService;
 import com.ssaffron.business.api.service.OrderService;
 import com.ssaffron.business.api.success.SuccessCode;
 import com.ssaffron.business.api.success.SuccessHandler;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ public class OrderController {
     private final MemberService memberService;
     private final SuccessHandler successHandler;
 
+    @Operation(summary = "수거요청")
     @PostMapping("")
     public ResponseEntity collectionRequest(@RequestBody List<CollectDto> collectDtoList){
         String memberEmaill = memberService.decodeJWT();
@@ -33,6 +35,7 @@ public class OrderController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @Operation(summary = "수거요청 조회")
     @GetMapping("")
     public ResponseEntity collectionRequestInquiry(){
         String memberEmail = memberService.decodeJWT();
@@ -45,6 +48,7 @@ public class OrderController {
         return new ResponseEntity(collectDtoList, HttpStatus.OK);
     }
 
+    @Operation(summary = "수거요청 철회")
     @DeleteMapping("/{collectId}")
     public ResponseEntity withdrawalOfCollection(@PathVariable("collectId") long collectId){
         orderService.withdrawalOfCollection(collectId);
@@ -52,6 +56,7 @@ public class OrderController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @Operation(summary = "청구서 조회")
     @GetMapping("/bill/{month}")
     public ResponseEntity getBill(@PathVariable("month") int month){
         String memberEmail = memberService.decodeJWT();
@@ -61,6 +66,7 @@ public class OrderController {
         return new ResponseEntity(payDtoList, HttpStatus.OK);
     }
 
+    @Operation(summary = "수거요청 여부 확인")
     @GetMapping("/collect/check")
     public ResponseEntity isCollect(){
         String memberEmail = memberService.decodeJWT();

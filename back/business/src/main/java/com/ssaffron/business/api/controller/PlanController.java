@@ -36,7 +36,7 @@ public class PlanController {
 
     // tt Laundry Plan 요금제 전체 조회
 //    @Operation(value = "정액요금제 전체 조회", notes = "정액요금제 전체 조회")
-    @Operation(summary = "정액요금제 전체 조회", description = "정액요금제 전체 조회를 한 후 성공 시 200, 미성공 시 400 error를 반환한다.")
+    @Operation(summary = "정액요금제 전체 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK !!"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
@@ -51,6 +51,7 @@ public class PlanController {
     }
 
     // tt Laundry Plan 요금제 단일 조회
+    @Operation(summary = "정액요금제 단일 조회")
     @GetMapping("/laundry/{laundry-plan-Id}")
     public ResponseEntity<LaundryPlanDto> getListLaundry(@PathVariable("laundry-plan-Id") int laundryplanId) {
         LaundryPlanDto laundryPlanDto = planService.findOneLaundryPlan(laundryplanId);
@@ -59,6 +60,7 @@ public class PlanController {
     }
 
     // tt 요금제 신청
+    @Operation(summary = "정액요금제 신청")
     @PostMapping("")
     public ResponseEntity createApplyFor(@RequestBody RequestApplyDto requestApplyDto){
         String memberEmail = memberService.decodeJWT();
@@ -69,6 +71,7 @@ public class PlanController {
     }
 
     // tt 요금제 수정
+    @Operation(summary = "이용중인 정액 요금제 변경")
     @PutMapping("")
     public ResponseEntity updateApplyFor(@RequestBody RequestApplyDto requestApplyDto){
         String memberEmail = memberService.decodeJWT();
@@ -79,6 +82,7 @@ public class PlanController {
     }
 
     // tt 요금제 삭제
+    @Operation(summary = "이용중인 정액 요금제 삭제")
     @DeleteMapping("")
     public ResponseEntity deleteApplyFor(@RequestBody ReasonDto reasonDto){
         String memberEmail = memberService.decodeJWT();
@@ -89,6 +93,7 @@ public class PlanController {
     }
 
     // dd 한달 요금제 리스트 조회
+    @Operation(summary = "한달 요금제 전체 조회")
     @GetMapping("/month/list")
     public ResponseEntity<List<MonthPlanDto>> allListMonth() {
         List<MonthPlanDto> monthlist = planService.getMonthPlanList();
@@ -96,6 +101,7 @@ public class PlanController {
         return new ResponseEntity<>(monthlist, HttpStatus.OK);
     }
     // dd 한달요금제 1개조회
+    @Operation(summary = "한달 요금제 단일 조회")
     @GetMapping("/month/{month_plan_Id}")
     public ResponseEntity<MonthPlanDto> getListMonth(@PathVariable int month_plan_Id) {
         MonthPlanDto monthone = planService.getMonthPlan(month_plan_Id);
@@ -104,6 +110,7 @@ public class PlanController {
     }
 
     //dd 사용중인 요금제 list 조회
+    @Operation(summary = "이용중인 요금제 목록 조회")
     @GetMapping("/admin/using-plan")
     public ResponseEntity<List<ApplyDto>> allListApplyFor() {
         List<ApplyDto> applylist = planService.getApplyList();
@@ -112,6 +119,7 @@ public class PlanController {
     }
 
     //dd 사용중인 요금제 조회
+    @Operation(summary = "이용중인 요금제 단일 조회")
     @GetMapping("")
     public ResponseEntity<ApplyDto> getApplyFor(){
         String memberEmail = memberService.decodeJWT();
@@ -123,6 +131,7 @@ public class PlanController {
     }
 
     // dd Test : 다음달 요금제 변경------------ 쓸거임?
+    @Operation(summary = "다음달 요금제 변경")
     @GetMapping("/change/{memberId}")
     public ResponseEntity nextMonthPlan(@PathVariable("memberId") int memberId, @RequestBody MonthPlanDto dto) { // 수정
 

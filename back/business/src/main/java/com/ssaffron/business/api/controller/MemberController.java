@@ -10,6 +10,7 @@ import com.ssaffron.business.api.service.MemberService;
 import com.ssaffron.business.api.service.RedisUtil;
 import com.ssaffron.business.api.success.SuccessCode;
 import com.ssaffron.business.api.success.SuccessHandler;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,6 +33,7 @@ public class MemberController {
     private final RedisUtil redisUtil;
     private final SuccessHandler successHandler;
 
+    @Operation(summary = "회원가입")
     @PostMapping("/signup")
     public ResponseEntity registerMember(@RequestBody MemberDto memberDto){
         memberService.registerMember(memberDto);
@@ -39,7 +41,7 @@ public class MemberController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-
+    @Operation(summary = "로그아웃")
     @DeleteMapping("/logout")
     public ResponseEntity doLogout(HttpServletRequest httpServletRequest){
         String refreshToken = HeaderUtil.getRefreshToken(httpServletRequest);
@@ -48,6 +50,7 @@ public class MemberController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @Operation(summary = "{email}통한 이메일 중복 여부 체크")
     @GetMapping("/check/{email}")
     public ResponseEntity checkDuplication(@PathVariable("email") String email){
         memberService.checkEmailDuplicate(email);
@@ -55,6 +58,7 @@ public class MemberController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @Operation(summary = "회원정보 조회")
     @GetMapping()
     public ResponseEntity<MemberDto> getMember(){
         String memberEmail = memberService.decodeJWT();
@@ -63,6 +67,7 @@ public class MemberController {
         return new ResponseEntity<>(memberDto, HttpStatus.OK);
     }
 
+    @Operation(summary = "회원정보 수정")
     @PutMapping()
     public ResponseEntity<String> updateMember(@RequestBody MemberModifyDto memberModifyDto){
         String memberEmail = memberService.decodeJWT();
@@ -72,6 +77,7 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Operation(summary = "회원탈퇴")
     @DeleteMapping()
     public ResponseEntity<String> deleteMember(){
         String memberEmail = memberService.decodeJWT();
@@ -80,6 +86,7 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Operation(summary = "JWT토큰 갱신")
     @GetMapping("/refresh")
     public ResponseEntity refreshToken(){
         String memberEmail = memberService.decodeJWT();
