@@ -45,16 +45,16 @@
         </filter>
     </appender>
 
-    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>k6s104.p.ssafy.io:5000</destination>
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder"></encoder>
+<!--    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">-->
+<!--        <destination>k6s104.p.ssafy.io:5000</destination>-->
+<!--        <encoder class="net.logstash.logback.encoder.LogstashEncoder"></encoder>-->
 
-    </appender>
+<!--    </appender>-->
 
     <root level="INFO">
         <appender-ref ref="Console" />
         <appender-ref ref="ASYNC_SLACK"/>
         <appender-ref ref="ASYNC_SLACK_ERROR"/>
-        <appender-ref ref="LOGSTASH"/>
+<!--        <appender-ref ref="LOGSTASH"/>-->
     </root>
 </configuration>
