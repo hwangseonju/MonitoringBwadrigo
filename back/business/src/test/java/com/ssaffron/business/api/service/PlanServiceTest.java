@@ -37,7 +37,7 @@ public class PlanServiceTest {
     @Test
     @DisplayName("요금제 조회 테스트")
     void selectApply(){
-        MemberEntity memberEntity = memberRepository.findByMemberEmail("test@test.com");
+        MemberEntity memberEntity = memberRepository.findByMemberEmail("abc@abc.com");
         ApplyEntity applyEntity = applyRepository.findByMemberEntity(memberEntity).get();
 
         assertEquals(1, applyEntity.getApplyId());
@@ -46,7 +46,7 @@ public class PlanServiceTest {
     @Test
     @DisplayName("요금제 신청 테스트")
     void insertApply(){
-        MemberEntity memberEntity = memberRepository.findByMemberEmail("test@test.com");
+        MemberEntity memberEntity = memberRepository.findByMemberEmail("ssaffy@ssaffy.com");
         MonthPlanEntity monthPlanEntity = monthPlanRepository.findByMonthPlanId(2);
         ApplyEntity applyEntity = new ApplyEntity(
                 3,
@@ -59,26 +59,28 @@ public class PlanServiceTest {
                 memberEntity,
                 monthPlanEntity
         );
-        applyRepository.save(applyEntity);
-        int applyId = applyEntity.getApplyId();
 
-        assertEquals(7, applyId);
+        assertEquals(applyEntity, applyRepository.save(applyEntity));
     }
 
     @Test
     @DisplayName("요금제 삭제 테스트")
     void updateApply(){
-        MemberEntity memberEntity = memberRepository.findByMemberEmail("test@test.com");
+        MemberEntity memberEntity = memberRepository.findByMemberEmail("abc@abc.com");
         ApplyEntity applyEntity = applyRepository.findByMemberEntity(memberEntity).get();
+        assertTrue(applyEntity.getApplyChange() == null);
+        //1. 변경할 요금제가 없는지 확인.
         applyEntity.setApplyChange(3);
 
-        assertEquals(3, applyEntity.getApplyChange());
+        ApplyEntity changeApplyEntity = applyRepository.findByMemberEntity(memberEntity).get();
+        assertEquals(3, changeApplyEntity.getApplyChange());
+        //2. 변경할 요금제가 들어갔는지 확인.
     }
 
     @Test
     @DisplayName("요금제 삭제 테스트")
     void deleteApply(){
-        MemberEntity memberEntity = memberRepository.findByMemberEmail("test@test.com");
+        MemberEntity memberEntity = memberRepository.findByMemberEmail("abc@abc.com");
         ApplyEntity applyEntity = applyRepository.findByMemberEntity(memberEntity).get();
         int applyId = applyEntity.getApplyId();
 
@@ -91,7 +93,7 @@ public class PlanServiceTest {
     @DisplayName("안심 정찰제 조회 테스트")
     void getAllListLaundryPlan(){
         List<LaundryPlanEntity> laundryPlanEntities = laundryPlanRepository.findAll();
-        assertEquals(2, laundryPlanEntities.size());
+        assertEquals(45, laundryPlanEntities.size());
     }
 
     @Test

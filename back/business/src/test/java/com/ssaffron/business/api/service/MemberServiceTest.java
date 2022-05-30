@@ -27,7 +27,7 @@ class MemberServiceTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    private final String testEmail = "hi@hi.com";
+    private final String testEmail = "abc@abc.com";
 
     @Test
     @DisplayName("회원가입 테스트")
