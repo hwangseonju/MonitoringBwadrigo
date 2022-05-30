@@ -1,4 +1,4 @@
-package com.ssaffron.business;
+package com.ssaffron.business.api.service;
 
 import com.ssaffron.business.api.dto.CollectDto;
 import com.ssaffron.business.api.dto.LaundryPlanDto;
